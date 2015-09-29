@@ -15,9 +15,9 @@ class ThreadServeur implements Runnable
   private int _numClient=0; // contiendra le numéro de client géré par ce thread
 
   //** Constructeur : crée les éléments nécessaires au dialogue avec le client **
-  ThreadServeur(Socket s, Serveur blablaServ) // le param s est donnée dans Serveur par ss.accept()
+  ThreadServeur(Socket s, Serveur serv) // le param s est donnée dans Serveur par ss.accept()
   {
-    _serv=blablaServ; // passage de local en global (pour gestion dans les autres méthodes)
+    _serv=serv; // passage de local en global (pour gestion dans les autres méthodes)
     _s=s; // passage de local en global
     try
     {
@@ -26,7 +26,7 @@ class ThreadServeur implements Runnable
       // fabrication d'une variable permettant l'utilisation du flux d'entrée avec des string
       _in = new BufferedReader(new InputStreamReader(_s.getInputStream()));
       // ajoute le flux de sortie dans la liste et récupération de son numero
-      _numClient = blablaServ.addClient(_out);
+      _numClient = serv.addClient(_out);
     }
     catch (IOException e){ }
 

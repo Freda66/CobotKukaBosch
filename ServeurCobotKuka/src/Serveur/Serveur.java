@@ -3,8 +3,7 @@ package Serveur;
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import WebService.ImplementWS;
-import javax.xml.ws.Endpoint;
+import WebService.PublisherWS;
 
 //** Classe principale du serveur, gère les infos globales **
 public class Serveur
@@ -15,20 +14,15 @@ public class Serveur
   //** Methode : la première méthode exécutée, elle attend les connections **
   public static void main(String args[])
   {
-    Serveur serv = new Serveur(); // instance de la classe principale
+    // Web Service
     try 
     {
-		String URI = "http://172.30.1.125:9191/cobotkuka" ;
-			
-		ImplementWS impl = new ImplementWS();
-			
-		Endpoint endpoint = Endpoint.publish(URI, impl);
-			
-		boolean status = endpoint.isPublished();
-			
-		System.out.println("Web Service disponible ? " + status);
+    	new PublisherWS("http://172.30.1.125:9191/cobotkuka");
     }
     catch (Exception e) { System.out.println("Web Service disponible ? false \nException : " + e); }
+    
+    // Serveur
+    Serveur serv = new Serveur(); // instance de la classe principale
     
     try
     {

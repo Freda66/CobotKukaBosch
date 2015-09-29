@@ -2,13 +2,13 @@ package WebService;
 import javax.xml.ws.Endpoint;
 
 public class PublisherWS {
-	
-	public static final String URI = "http://172.30.1.125:9191/cobotkuka" ;
-			
-	public static void main(String[] args) {
+		
+	public PublisherWS(String uri){
+		if(uri == null || uri == "") uri = "http://172.30.1.125:9191/cobotkuka";
+		
 		ImplementWS impl = new ImplementWS();
 		
-		Endpoint endpoint = Endpoint.publish(URI, impl);
+		Endpoint endpoint = Endpoint.publish(uri, impl);
 		
 		boolean status = endpoint.isPublished();
 		
