@@ -13,4 +13,9 @@ public class ImplementWS implements InterfaceWS {
 		return true;
 	}
 
+	public String ditBonjour(String text){
+		System.out.println("Appel fonction : ditBonjour("+text+")");
+		return ("Hello : " + text);
+	}
+	
 }

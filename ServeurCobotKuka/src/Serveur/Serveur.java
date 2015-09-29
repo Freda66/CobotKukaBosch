@@ -1,8 +1,10 @@
 package Serveur;
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
-import WebService.PublisherWS;
+import WebService.ImplementWS;
+import javax.xml.ws.Endpoint;
 
 //** Classe principale du serveur, gère les infos globales **
 public class Serveur
@@ -14,6 +16,20 @@ public class Serveur
   public static void main(String args[])
   {
     Serveur serv = new Serveur(); // instance de la classe principale
+    try 
+    {
+		String URI = "http://172.30.1.125:9191/cobotkuka" ;
+			
+		ImplementWS impl = new ImplementWS();
+			
+		Endpoint endpoint = Endpoint.publish(URI, impl);
+			
+		boolean status = endpoint.isPublished();
+			
+		System.out.println("Web Service disponible ? " + status);
+    }
+    catch (Exception e) { System.out.println("Web Service disponible ? false \nException : " + e); }
+    
     try
     {
       Integer port;
@@ -29,17 +45,12 @@ public class Serveur
         new ThreadServeur(ss.accept(),serv); // un client se connecte, un nouveau thread client est lancé
       }
     }
-    catch (Exception e) { }
+    catch (Exception e) { System.out.println("Exception : " + e); }
   }
 
   //** Methode : affiche le message d'accueil **
   static private void printWelcome(Integer port)
   {
-    System.out.println("--------");
-    System.out.println("BlablaServeur : Par Minosis - Julien Defaut");
-    System.out.println("Copyright : 2004 - Minosis.com");
-    System.out.println("Derniere version : 10/04/2004");
-    System.out.println("--------");
     System.out.println("Demarre sur le port : "+port.toString());
     System.out.println("--------");
     System.out.println("Quitter : tapez \"quit\"");

@@ -3,7 +3,7 @@ import javax.xml.ws.Endpoint;
 
 public class PublisherWS {
 	
-	public static final String URI = "http://localhost:8888/cobotkuka" ;
+	public static final String URI = "http://172.30.1.125:9191/cobotkuka" ;
 			
 	public static void main(String[] args) {
 		ImplementWS impl = new ImplementWS();
