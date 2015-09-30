@@ -4,6 +4,7 @@ package application;
 import com.kuka.generated.ioAccess.MediaFlangeIOGroup;
 import com.kuka.roboticsAPI.applicationModel.RoboticsAPIApplication;
 import static com.kuka.roboticsAPI.motionModel.BasicMotions.*;
+
 import com.kuka.roboticsAPI.controllerModel.Controller;
 import com.kuka.roboticsAPI.controllerModel.sunrise.ISafetyState;
 import com.kuka.roboticsAPI.deviceModel.LBR;
@@ -13,6 +14,7 @@ import com.kuka.roboticsAPI.geometricModel.Frame;
 import com.kuka.roboticsAPI.geometricModel.ObjectFrame;
 import com.kuka.roboticsAPI.geometricModel.Tool;
 import com.kuka.roboticsAPI.geometricModel.math.Transformation;
+import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 import com.kuka.roboticsAPI.motionModel.Spline;
 import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
@@ -34,13 +36,24 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private ObjectFrame penToolTCP;
 	
 	private ObjectFrame paperBase;
-	private Frame P1;
+	/*private Frame P1;
 	private Frame P2;
 	private Frame P3;
-	private Frame P0;
+	private Frame P0;*/
+	
+	private Vector2 P1;
+	private Vector2 P2;
+	private Vector2 P3;
+	private Vector2 P0;
 	
 	private ObjectFrame nearPaper0;
 	private ObjectFrame paperApproach;
+	
+	private BezierCurve curve;
+	
+	private Vector2[] trajectory;
+	
+	private Frame[] frames;
 	
 	
 	/*private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
@@ -86,11 +99,35 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		// On charge la base de l'application
 		paperBase = getApplicationData().getFrame("/Paper");
 		
+		// On charge les points
+		nearPaper0 = getApplicationData().getFrame("/Paper/NearPaper");
+		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
+		
 		// On définit les points du parcours
-		P1 = new Frame(0.0, 0.0, 0.0);
-		P2 = new Frame(0.0, 50.0, 0.0);
-		P3 = new Frame(50.0, 50.0, 0.0);
-		P0 = new Frame(50.0, 0.0, 0.0);
+		P1 = new Vector2();
+		P2 = new Vector2();
+		P3 = new Vector2();
+		P0 = new Vector2();
+		P1.x = 0.0;
+		P1.y = 0.0;
+		P2.x = 0.0;
+		P2.y = 50.0;
+		P3.x = 50.0;
+		P3.y = 50.0;
+		P0.x = 50.0;
+		P0.y = 0.0;
+		
+		curve = new BezierCurve(P1, P2, P3, P0);
+		
+		trajectory = curve.getTrajectory(20);
+		
+		// On crée des frames robot Kuka depuis notre courbe
+		frames = new Frame[trajectory.length];
+		for (int i=0; i < trajectory.length; i++)
+		{
+//			getLogger().info("" + trajectory[i].x + " "+ trajectory[i].y);
+			frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0);
+		}
 				
 		getLogger().info("Initialization OK");
 	}
@@ -131,29 +168,25 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		// On dessine au dessus du papier les points P0 / P1 / P2 / P3 :
 		
 		getLogger().info("Move on Paper");
-		Spline drawingSpline = new Spline(
-				
-					// On bouge en relatif
-					
-					// On va ensuite à P1, P2, P3 et P0 
-					linRel( getTranslationFromFrame(P0, P1), paperBase),
-					linRel( getTranslationFromFrame(P1, P2), paperBase),
-					linRel( getTranslationFromFrame(P2, P3), paperBase),
-					linRel( getTranslationFromFrame(P3, P0), paperBase)
-				);
 		
+		RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
+		
+		for (int i=0; i < frames.length-1; i++)
+		{
+			RelativeLIN moveLin = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
+			
+			splineArray[i] = moveLin;
+		}
+		
+		Spline linMovement = new Spline(splineArray);
 		
 		penToolTCP.move(
-				drawingSpline.setJointVelocityRel(velocity)
-				.setJointAccelerationRel(1)
-				.setMode(impedanceControlMode)
+				linMovement.setJointVelocityRel(velocity)
 			);
 		
-		// On reléve la pointe du stylo
-		penToolTCP.move( 
-				linRel( getTranslationFromFrame(P0, new Frame(P0.getX(), P0.getY(), P0.getZ() + 10)), paperBase) 
+		penToolTCP.move(
+				lin(nearPaper0).setJointVelocityRel(velocity)
 			);
-		
 		
 		// On revient à la "maison"
 		getLogger().info("Go back to home");
