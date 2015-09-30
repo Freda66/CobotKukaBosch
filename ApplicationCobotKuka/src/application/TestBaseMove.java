@@ -100,7 +100,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		paperBase = getApplicationData().getFrame("/Paper");
 		
 		// On charge les points
-		nearPaper0 = getApplicationData().getFrame("/Paper/NearPaper");
+		nearPaper0 = getApplicationData().getFrame("/Paper/NearPaper0");
 		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
 		
 		// On définit les points du parcours
