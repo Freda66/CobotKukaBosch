@@ -9,6 +9,7 @@ import com.kuka.roboticsAPI.controllerModel.sunrise.ISafetyState;
 import com.kuka.roboticsAPI.deviceModel.LBR;
 import com.kuka.roboticsAPI.deviceModel.OperationMode;
 import com.kuka.roboticsAPI.geometricModel.CartDOF;
+import com.kuka.roboticsAPI.geometricModel.Frame;
 import com.kuka.roboticsAPI.geometricModel.ObjectFrame;
 import com.kuka.roboticsAPI.geometricModel.Tool;
 import com.kuka.roboticsAPI.geometricModel.math.Transformation;
@@ -32,31 +33,26 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private Tool penTool;
 	private ObjectFrame penToolTCP;
 	
-	
-	private ObjectFrame exampleP1;
-	private ObjectFrame exampleP2;
-	private ObjectFrame exampleP3;
-	
 	private ObjectFrame paperBase;
-	private ObjectFrame paperP1;
-	private ObjectFrame paperP2;
-	private ObjectFrame paperP3;
-	private ObjectFrame paperP0;
+	private Frame P1;
+	private Frame P2;
+	private Frame P3;
+	private Frame P0;
 	
 	private ObjectFrame nearPaper0;
 	private ObjectFrame paperApproach;
 	
 	
-	private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
+	/*private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
 	{
 		return Transformation.ofTranslation(
 				frameDestination.getX()-frameBefore.getX(), 
 				frameDestination.getY()-frameBefore.getY(), 
 				z
 				);
-	}
+	}*/
 	
-	private Transformation getTranslationFromFrame(ObjectFrame frameBefore, ObjectFrame frameDestination)
+	private Transformation getTranslationFromFrame(Frame frameBefore, Frame frameDestination)
 	{
 		return Transformation.ofTranslation(
 				frameDestination.getX()-frameBefore.getX(), 
@@ -87,21 +83,15 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		penToolTCP = penTool.getFrame("/penToolTCP");
 		
 		
-		// On charge les points de l'application
+		// On charge la base de l'application
 		paperBase = getApplicationData().getFrame("/Paper");
-		paperP1 = getApplicationData().getFrame("/Paper/P1");
-		paperP2 = getApplicationData().getFrame("/Paper/P2");
-		paperP3 = getApplicationData().getFrame("/Paper/P3");
-		paperP0 = getApplicationData().getFrame("/Paper/P0");
 		
-		nearPaper0 = getApplicationData().getFrame("/Paper/NearPaper0");
-		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
-		
-		exampleP1 = getApplicationData().getFrame("/Example/P1");
-		exampleP2 = getApplicationData().getFrame("/Example/P2");
-		exampleP3 = getApplicationData().getFrame("/Example/P3");
-		
-		
+		// On définit les points du parcours
+		P1 = new Frame(0.0, 0.0, 0.0);
+		P2 = new Frame(0.0, 50.0, 0.0);
+		P3 = new Frame(50.0, 50.0, 0.0);
+		P0 = new Frame(50.0, 0.0, 0.0);
+				
 		getLogger().info("Initialization OK");
 	}
 
@@ -124,19 +114,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		ioFlange.setLEDBlue(true);
 		
-		// Mouvement "point-to-point" dans la base "World"
-		SplineJP moveToP1 = new SplineJP(
-				ptp(exampleP3),
-				ptp(exampleP2),
-				ptp(exampleP1)
-			);
-		
-		getLogger().info("Move P3-P2-P1");
-		
-		lbr_iiwa_14_R820_1.move(
-				moveToP1.setJointVelocityRel(velocity).setMode(impedanceControlMode)
-			);
-		
 		
 		// Approche de la base "Paper" en PTP puis en LIN
 		
@@ -151,20 +128,18 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			);
 		
 		
-		// On dessine au dessus du papier les points nearPaper1 / P0 / P1 / P2 / P3 :
+		// On dessine au dessus du papier les points P0 / P1 / P2 / P3 :
 		
 		getLogger().info("Move on Paper");
 		Spline drawingSpline = new Spline(
 				
 					// On bouge en relatif
-					// Premier mouvement, on va en de nearPaper1 vers P0, à +10mm au dessus de la surface
-					linRel( getTranslationWithSpecifiedZ(nearPaper0, paperP0, paperP0.getZ() - nearPaper0.getZ() +10 ), paperBase),
 					
-					// On va ensuite à P1, P2, P3 et P0, en spécifiant une translation Z nulle 
-					linRel( getTranslationWithSpecifiedZ(paperP0, paperP1, 0), paperBase),
-					linRel( getTranslationWithSpecifiedZ(paperP1, paperP2, 0), paperBase),
-					linRel( getTranslationWithSpecifiedZ(paperP2, paperP3, 0), paperBase),
-					linRel( getTranslationWithSpecifiedZ(paperP3, paperP0, 0), paperBase)
+					// On va ensuite à P1, P2, P3 et P0 
+					linRel( getTranslationFromFrame(P0, P1), paperBase),
+					linRel( getTranslationFromFrame(P1, P2), paperBase),
+					linRel( getTranslationFromFrame(P2, P3), paperBase),
+					linRel( getTranslationFromFrame(P3, P0), paperBase)
 				);
 		
 		
@@ -176,7 +151,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		// On reléve la pointe du stylo
 		penToolTCP.move( 
-				linRel( getTranslationFromFrame(paperP0, nearPaper0), paperBase) 
+				linRel( getTranslationFromFrame(P0, new Frame(P0.getX(), P0.getY(), P0.getZ() + 10)), paperBase) 
 			);
 		
 		
