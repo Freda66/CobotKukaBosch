@@ -1,0 +1,88 @@
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Server version:        Apache Tomcat/7.0.64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Server built:          Aug 19 2015 17:18:06 UTC
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Server number:         7.0.64.0
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: OS Name:               Mac OS X
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: OS Version:            10.10.4
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Architecture:          x86_64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Java Home:             /Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/jre
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: JVM Version:           1.7.0_79-b15
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: JVM Vendor:            Oracle Corporation
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: CATALINA_BASE:         /Users/Mustapha/Downloads/apache-tomcat-7.0.64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: CATALINA_HOME:         /Users/Mustapha/Downloads/apache-tomcat-7.0.64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Command line argument: -Djava.util.logging.config.file=/Users/Mustapha/Downloads/apache-tomcat-7.0.64/conf/logging.properties
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Command line argument: -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Command line argument: -Djava.endorsed.dirs=/Users/Mustapha/Downloads/apache-tomcat-7.0.64/endorsed
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Command line argument: -Dcatalina.base=/Users/Mustapha/Downloads/apache-tomcat-7.0.64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Command line argument: -Dcatalina.home=/Users/Mustapha/Downloads/apache-tomcat-7.0.64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.VersionLoggerListener log
+INFOS: Command line argument: -Djava.io.tmpdir=/Users/Mustapha/Downloads/apache-tomcat-7.0.64/temp
+sept. 29, 2015 9:33:03 PM org.apache.catalina.core.AprLifecycleListener lifecycleEvent
+INFOS: The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: /Users/Mustapha/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.
+sept. 29, 2015 9:33:03 PM org.apache.coyote.AbstractProtocol init
+INFOS: Initializing ProtocolHandler ["http-bio-8080"]
+sept. 29, 2015 9:33:03 PM org.apache.coyote.AbstractProtocol init
+INFOS: Initializing ProtocolHandler ["ajp-bio-8009"]
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.Catalina load
+INFOS: Initialization processed in 818 ms
+sept. 29, 2015 9:33:03 PM org.apache.catalina.core.StandardService startInternal
+INFOS: Démarrage du service Catalina
+sept. 29, 2015 9:33:03 PM org.apache.catalina.core.StandardEngine startInternal
+INFOS: Starting Servlet Engine: Apache Tomcat/7.0.64
+sept. 29, 2015 9:33:03 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Déploiement du répertoire /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/docs de l'application web
+sept. 29, 2015 9:33:04 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Deployment of web application directory /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/docs has finished in 587 ms
+sept. 29, 2015 9:33:04 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Déploiement du répertoire /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/examples de l'application web
+sept. 29, 2015 9:33:04 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Deployment of web application directory /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/examples has finished in 501 ms
+sept. 29, 2015 9:33:04 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Déploiement du répertoire /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/host-manager de l'application web
+sept. 29, 2015 9:33:04 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Deployment of web application directory /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/host-manager has finished in 55 ms
+sept. 29, 2015 9:33:04 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Déploiement du répertoire /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/manager de l'application web
+sept. 29, 2015 9:33:05 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Deployment of web application directory /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/manager has finished in 65 ms
+sept. 29, 2015 9:33:05 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Déploiement du répertoire /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/ROOT de l'application web
+sept. 29, 2015 9:33:05 PM org.apache.catalina.startup.HostConfig deployDirectory
+INFOS: Deployment of web application directory /Users/Mustapha/Downloads/apache-tomcat-7.0.64/webapps/ROOT has finished in 58 ms
+sept. 29, 2015 9:33:05 PM org.apache.coyote.AbstractProtocol start
+INFOS: Starting ProtocolHandler ["http-bio-8080"]
+sept. 29, 2015 9:33:05 PM org.apache.coyote.AbstractProtocol start
+INFOS: Starting ProtocolHandler ["ajp-bio-8009"]
+sept. 29, 2015 9:33:05 PM org.apache.catalina.startup.Catalina start
+INFOS: Server startup in 1340 ms
+sept. 29, 2015 10:00:46 PM org.apache.catalina.core.StandardServer await
+INFOS: A valid shutdown command was received via the shutdown port. Stopping the Server instance.
+sept. 29, 2015 10:00:46 PM org.apache.coyote.AbstractProtocol pause
+INFOS: Pausing ProtocolHandler ["http-bio-8080"]
+sept. 29, 2015 10:00:46 PM org.apache.coyote.AbstractProtocol pause
+INFOS: Pausing ProtocolHandler ["ajp-bio-8009"]
+sept. 29, 2015 10:00:46 PM org.apache.catalina.core.StandardService stopInternal
+INFOS: Arrêt du service Catalina
+sept. 29, 2015 10:00:46 PM org.apache.coyote.AbstractProtocol stop
+INFOS: Stopping ProtocolHandler ["http-bio-8080"]
+sept. 29, 2015 10:00:46 PM org.apache.coyote.AbstractProtocol stop
+INFOS: Stopping ProtocolHandler ["ajp-bio-8009"]
+sept. 29, 2015 10:00:46 PM org.apache.coyote.AbstractProtocol destroy
+INFOS: Destroying ProtocolHandler ["http-bio-8080"]
+sept. 29, 2015 10:00:46 PM org.apache.coyote.AbstractProtocol destroy
+INFOS: Destroying ProtocolHandler ["ajp-bio-8009"]
