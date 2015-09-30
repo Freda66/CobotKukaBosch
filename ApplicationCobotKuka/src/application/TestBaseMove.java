@@ -111,10 +111,10 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		P1.x = 0.0;
 		P1.y = 0.0;
 		P2.x = 0.0;
-		P2.y = 50.0;
-		P3.x = 50.0;
-		P3.y = 50.0;
-		P0.x = 50.0;
+		P2.y = 150.0;
+		P3.x = 150.0;
+		P3.y = 150.0;
+		P0.x = 150.0;
 		P0.y = 0.0;
 		
 		curve = new BezierCurve(P1, P2, P3, P0);
