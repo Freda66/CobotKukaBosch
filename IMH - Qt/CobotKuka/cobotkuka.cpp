@@ -48,7 +48,6 @@ void CobotKuka::on_connect_pushButton_clicked(bool checked)
 
 		if(ip.setAddress(ui->connect_ip_lineEdit->text())){
 				tcpSocket->connectToHost(ip, ui->connect_port_lineEdit->text().toInt());
-				/* TODO : voir web services avec qt (wsdl) */
 				ui->connect_status_label->setText("Connected !");
 				ui->connect_status_label->setStyleSheet("QLabel { color : green; }");
 				ui->connect_pushButton->setText("Disconnect");
@@ -66,11 +65,10 @@ void CobotKuka::on_connect_pushButton_clicked(bool checked)
 			QMessageBox::warning(this,"Socket Error : IP Adress Invalid", "The IP Adress is invalid. \nIP Adress must be in the form of xxx.xxx.xxx.xxx with only digits and dots. example : 192.168.0.18 \nPlease enter a valid Adress and retry.", QMessageBox::Ok, QMessageBox::NoButton);
 
 		}
-
-
-
 	}
 	else{
+		tcpSocket->disconnectFromHost();
+		tcpSocket->close();
 		/* TODO : Include code de deconnection au serveur*/
 		ui->connect_pushButton->setText("Connect");
 		ui->connect_status_label->setText("Disconnected !");
@@ -177,7 +175,11 @@ void CobotKuka::on_svg_file_pushButton_clicked()
 void CobotKuka::on_send_pushButton_clicked()
 {
 	/* TODO : procedure to send the data to the server */
-
+	//tcpSocket->write((QByteArray)"{\"svg\":[{\"x\":1,\"y\":0},{\"x\":1,\"y\":0}]}");
+	QString test = "{\"svg\"}";
+	QByteArray aaa = QtJson::serialize(QtJson::parse(test));
+	tcpSocket->write(aaa);
+	qDebug(aaa);
 	ui->send_pushButton->setEnabled(false);
 }
 
@@ -198,7 +200,8 @@ void CobotKuka::on_picture_file_pushButton_clicked()
 
 void CobotKuka::on_actionQuit_triggered()
 {
-	/*TODO : Include code to disconnect from the server */
+	tcpSocket->disconnectFromHost();
+	tcpSocket->close();
 
 	//close the program
 	this->close();

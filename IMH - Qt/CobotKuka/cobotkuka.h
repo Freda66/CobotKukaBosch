@@ -12,6 +12,8 @@
 #include <QAbstractSocket>
 #include <QHostAddress>
 
+#include "json.h"
+
 
 namespace Ui {
 class CobotKuka;
