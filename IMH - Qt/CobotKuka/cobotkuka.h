@@ -30,8 +30,10 @@ public:
 
 private slots:
 
-	//Client slots
-	//void displayError(QAbstractSocket::SocketError socketError);
+//	Client slots
+	void displayError(QAbstractSocket::SocketError socketError);
+	void serverConnected();
+	void serverDisconnected();
 
 	//ui slots
 	void on_connect_pushButton_clicked(bool checked);
@@ -57,6 +59,8 @@ private slots:
 	void on_picture_file_pushButton_clicked();
 
 	void on_actionQuit_triggered();
+
+	void on_ok_pushButton_clicked();
 
 	private:
 	//ui variables

@@ -32,168 +32,6 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
-      <item row="0" column="1">
-       <layout class="QHBoxLayout" name="connect_horizontalLayout">
-        <property name="spacing">
-         <number>5</number>
-        </property>
-        <property name="sizeConstraint">
-         <enum>QLayout::SetFixedSize</enum>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QGroupBox" name="connect_groupBox">
-          <property name="title">
-           <string/>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <property name="spacing">
-            <number>5</number>
-           </property>
-           <property name="leftMargin">
-            <number>2</number>
-           </property>
-           <property name="topMargin">
-            <number>2</number>
-           </property>
-           <property name="rightMargin">
-            <number>2</number>
-           </property>
-           <property name="bottomMargin">
-            <number>2</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="connect_ip_label">
-             <property name="text">
-              <string>IP : </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="connect_ip_lineEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="text">
-              <string>172.30.1.125</string>
-             </property>
-             <property name="maxLength">
-              <number>15</number>
-             </property>
-             <property name="cursorMoveStyle">
-              <enum>Qt::VisualMoveStyle</enum>
-             </property>
-             <property name="clearButtonEnabled">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="connect_port_label">
-             <property name="text">
-              <string>Port : </string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="connect_port_lineEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="inputMethodHints">
-              <set>Qt::ImhDigitsOnly</set>
-             </property>
-             <property name="text">
-              <string>30004</string>
-             </property>
-             <property name="maxLength">
-              <number>5</number>
-             </property>
-             <property name="cursorMoveStyle">
-              <enum>Qt::VisualMoveStyle</enum>
-             </property>
-             <property name="clearButtonEnabled">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <spacer name="connect_horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>10</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="connect_status_label">
-          <property name="styleSheet">
-           <string notr="true">QLabel { color : red; }</string>
-          </property>
-          <property name="text">
-           <string>Disconnected</string>
-          </property>
-          <property name="textFormat">
-           <enum>Qt::AutoText</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="connect_pushButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Connect</string>
-          </property>
-          <property name="checkable">
-           <bool>true</bool>
-          </property>
-          <property name="autoDefault">
-           <bool>false</bool>
-          </property>
-          <property name="default">
-           <bool>true</bool>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="2" column="0" colspan="3">
-       <widget class="QPushButton" name="send_pushButton">
-        <property name="text">
-         <string>-&gt; Send &lt;-</string>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0" colspan="2">
        <widget class="QGroupBox" name="mod_groupBox">
         <property name="autoFillBackground">
@@ -305,6 +143,9 @@
                    <property name="text">
                     <string>file : </string>
                    </property>
+                   <property name="buddy">
+                    <cstring>svg_file_lineEdit</cstring>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -414,6 +255,9 @@
                      <property name="text">
                       <string>Font : </string>
                      </property>
+                     <property name="buddy">
+                      <cstring>text_font_fontComboBox</cstring>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -434,6 +278,9 @@
                     <widget class="QLabel" name="text_text_label">
                      <property name="text">
                       <string>Your text : </string>
+                     </property>
+                     <property name="buddy">
+                      <cstring>text_text_lineEdit</cstring>
                      </property>
                     </widget>
                    </item>
@@ -679,6 +526,187 @@
         </layout>
        </widget>
       </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="connect_horizontalLayout">
+        <property name="spacing">
+         <number>5</number>
+        </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetFixedSize</enum>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QGroupBox" name="connect_groupBox">
+          <property name="title">
+           <string/>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="topMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
+           <property name="bottomMargin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="connect_ip_label">
+             <property name="text">
+              <string>IP : </string>
+             </property>
+             <property name="buddy">
+              <cstring>connect_ip_lineEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="connect_ip_lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>172.30.1.125</string>
+             </property>
+             <property name="maxLength">
+              <number>15</number>
+             </property>
+             <property name="cursorMoveStyle">
+              <enum>Qt::VisualMoveStyle</enum>
+             </property>
+             <property name="clearButtonEnabled">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="connect_port_label">
+             <property name="text">
+              <string>Port : </string>
+             </property>
+             <property name="buddy">
+              <cstring>connect_port_lineEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="connect_port_lineEdit">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="inputMethodHints">
+              <set>Qt::ImhDigitsOnly</set>
+             </property>
+             <property name="text">
+              <string>30004</string>
+             </property>
+             <property name="maxLength">
+              <number>5</number>
+             </property>
+             <property name="cursorMoveStyle">
+              <enum>Qt::VisualMoveStyle</enum>
+             </property>
+             <property name="clearButtonEnabled">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="connect_horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="connect_status_label">
+          <property name="styleSheet">
+           <string notr="true">QLabel { color : red; }</string>
+          </property>
+          <property name="text">
+           <string>Disconnected</string>
+          </property>
+          <property name="textFormat">
+           <enum>Qt::AutoText</enum>
+          </property>
+          <property name="buddy">
+           <cstring>connect_pushButton</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="connect_pushButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Connect</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+          <property name="default">
+           <bool>true</bool>
+          </property>
+          <property name="flat">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QPushButton" name="send_pushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>-&gt; Send &lt;-</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QPushButton" name="ok_pushButton">
+        <property name="text">
+         <string>&gt; OK &lt;</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
@@ -726,10 +754,31 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>connect_ip_lineEdit</tabstop>
+  <tabstop>connect_port_lineEdit</tabstop>
+  <tabstop>connect_pushButton</tabstop>
+  <tabstop>svg_radioButton</tabstop>
+  <tabstop>svg_file_lineEdit</tabstop>
+  <tabstop>svg_file_pushButton</tabstop>
+  <tabstop>text_radioButton</tabstop>
+  <tabstop>text_font_fontComboBox</tabstop>
+  <tabstop>text_text_lineEdit</tabstop>
+  <tabstop>picture_radioButton</tabstop>
+  <tabstop>picture_file_radioButton</tabstop>
+  <tabstop>picture_file_lineEdit</tabstop>
+  <tabstop>picture_file_pushButton</tabstop>
+  <tabstop>picture_webcam_radioButton</tabstop>
+  <tabstop>picture_webcam_pushButton</tabstop>
+  <tabstop>sketch_radioButton</tabstop>
+  <tabstop>sketch_pushButton</tabstop>
+  <tabstop>ok_pushButton</tabstop>
+  <tabstop>send_pushButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_Picture"/>
   <buttongroup name="buttonGroup_Mod"/>
+  <buttongroup name="buttonGroup_Picture"/>
  </buttongroups>
 </ui>

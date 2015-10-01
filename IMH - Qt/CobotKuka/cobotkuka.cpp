@@ -23,6 +23,9 @@ void CobotKuka::init(){
 	//initialise the TCP Socket
 	tcpSocket = new QTcpSocket(this);
 	connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),				this, SLOT(displayError(QAbstractSocket::SocketError)));
+	connect(tcpSocket, SIGNAL(connected()), this, SLOT(serverConnected()));
+	connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(serverDisconnected()));
+
 
 }
 
@@ -42,46 +45,15 @@ CobotKuka::~CobotKuka()
 void CobotKuka::on_connect_pushButton_clicked(bool checked)
 {
 	if(checked){
-		/*
-		 * TODO : Include code de connection au serveur
-		 */
-
 		if(ip.setAddress(ui->connect_ip_lineEdit->text())){
 				tcpSocket->connectToHost(ip, ui->connect_port_lineEdit->text().toInt());
-				ui->connect_status_label->setText("Connected !");
-				ui->connect_status_label->setStyleSheet("QLabel { color : green; }");
-				ui->connect_pushButton->setText("Disconnect");
-				ui->connect_pushButton->setDefault(false);
-
-				ui->picture_groupBox->setEnabled(true);
-				ui->text_groupBox->setEnabled(true);
-				ui->svg_groupBox->setEnabled(true);
-				ui->sketch_groupBox->setEnabled(true);
-
-				//can't change the socket while connected
-				ui->connect_groupBox->setEnabled(false);
 		}
 		else {
 			QMessageBox::warning(this,"Socket Error : IP Adress Invalid", "The IP Adress is invalid. \nIP Adress must be in the form of xxx.xxx.xxx.xxx with only digits and dots. example : 192.168.0.18 \nPlease enter a valid Adress and retry.", QMessageBox::Ok, QMessageBox::NoButton);
-
 		}
 	}
 	else{
 		tcpSocket->disconnectFromHost();
-		tcpSocket->close();
-		/* TODO : Include code de deconnection au serveur*/
-		ui->connect_pushButton->setText("Connect");
-		ui->connect_status_label->setText("Disconnected !");
-		ui->connect_status_label->setStyleSheet("QLabel { color : red; }");
-		ui->connect_pushButton->setDefault(true);
-		ui->connect_groupBox->setEnabled(true);
-
-		ui->picture_groupBox->setEnabled(false);
-		ui->text_groupBox->setEnabled(false);
-		ui->svg_groupBox->setEnabled(false);
-		ui->sketch_groupBox->setEnabled(false);
-
-		ui->send_pushButton->setEnabled(false);
 	}
 }
 /* Setting Font */
@@ -172,15 +144,42 @@ void CobotKuka::on_svg_file_pushButton_clicked()
 
 }
 
+void CobotKuka::on_ok_pushButton_clicked()
+{
+	if(ui->svg_radioButton->isChecked()){
+		qDebug() << "svg button is checked";
+		/* TODO : traitement pour extraire points d'un svg */
+	}
+	else if(ui->text_radioButton->isChecked()){
+		qDebug() << "svg button is checked";
+		/* TODO : traitement pour extraire points d'un texte */
+	}
+	else if(ui->picture_radioButton->isChecked()){
+		qDebug() << "svg button is checked";
+		/* TODO : traitement pour extraire contour et points d'une image */
+	}
+	else if(ui->sketch_radioButton->isChecked()){
+		qDebug() << "svg button is checked";
+		/* TODO : traitement pour extraire points d'un dessin en temps reel */
+	}
+	else{
+		qDebug() << "no radio button checked";
+	}
+
+	ui->send_pushButton->setEnabled(true);
+	ui->send_pushButton->setStyleSheet("color:green");
+}
+
 void CobotKuka::on_send_pushButton_clicked()
 {
 	/* TODO : procedure to send the data to the server */
 	//tcpSocket->write((QByteArray)"{\"svg\":[{\"x\":1,\"y\":0},{\"x\":1,\"y\":0}]}");
-	QString test = "{\"svg\"}";
-	QByteArray aaa = QtJson::serialize(QtJson::parse(test));
-	tcpSocket->write(aaa);
-	qDebug(aaa);
+	//QString test = "coucou les amis";
+	//QByteArray aaa = QtJson::serialize(test);
+	tcpSocket->write((QByteArray)"svg");
+	//qDebug(aaa);
 	ui->send_pushButton->setEnabled(false);
+	ui->send_pushButton->setStyleSheet("color:grey");
 }
 
 void CobotKuka::on_picture_file_pushButton_clicked()
@@ -205,4 +204,60 @@ void CobotKuka::on_actionQuit_triggered()
 
 	//close the program
 	this->close();
+}
+
+void CobotKuka::serverConnected(){
+	qDebug() << "client connected !" << tcpSocket->peerAddress() << ":" << tcpSocket->peerPort() ;
+	ui->connect_status_label->setText("Connected !");
+	ui->connect_status_label->setStyleSheet("QLabel { color : green; }");
+	ui->connect_pushButton->setText("Disconnect");
+	ui->connect_pushButton->setDefault(false);
+
+	ui->picture_groupBox->setEnabled(true);
+	ui->text_groupBox->setEnabled(true);
+	ui->svg_groupBox->setEnabled(true);
+	ui->sketch_groupBox->setEnabled(true);
+
+	//can't change the socket while connected
+	ui->connect_groupBox->setEnabled(false);
+
+	/*DEBUG*/
+	ui->send_pushButton->setEnabled(true);
+}
+
+void CobotKuka::serverDisconnected(){
+	qDebug() << "Client disconnected from server" << tcpSocket->peerAddress() << ":" << tcpSocket->peerPort();
+	tcpSocket->close();
+	qDebug() << "socket closed";
+	/* TODO : Include code de deconnection au serveur*/
+	ui->connect_pushButton->setText("Connect");
+	ui->connect_status_label->setText("Disconnected !");
+	ui->connect_status_label->setStyleSheet("QLabel { color : red; }");
+	ui->connect_pushButton->setDefault(true);
+	ui->connect_groupBox->setEnabled(true);
+
+	ui->picture_groupBox->setEnabled(false);
+	ui->text_groupBox->setEnabled(false);
+	ui->svg_groupBox->setEnabled(false);
+	ui->sketch_groupBox->setEnabled(false);
+
+	ui->send_pushButton->setEnabled(false);
+}
+
+
+void CobotKuka::displayError(QAbstractSocket::SocketError socketError)
+{
+	switch (socketError) {
+	case QAbstractSocket::RemoteHostClosedError:
+		break;
+	case QAbstractSocket::HostNotFoundError:
+		QMessageBox::information(this, tr("Fortune Client"), tr("The host was not found. Please check the host name and port settings."));
+		break;
+	case QAbstractSocket::ConnectionRefusedError:
+		QMessageBox::information(this, tr("Fortune Client"), tr("The connection was refused by the peer. Make sure the fortune server is running, and check that the host name and port settings are correct."));
+		break;
+	default:
+		QMessageBox::information(this, tr("Fortune Client"),
+								 tr("The following error occurred: %1.").arg(tcpSocket->errorString()));
+	}
 }
