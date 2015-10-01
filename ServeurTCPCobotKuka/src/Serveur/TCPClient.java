@@ -29,7 +29,7 @@ public class TCPClient {
         	// do something with the line
         	
         	//System.out.print("MESSAGE: "+strLine+"\n");
-        	socket = new Socket(host.getHostName(), 9191);
+        	socket = new Socket("172.30.1.125", 9191); // host.getHostName(); 
             //write to socket using ObjectOutputStream
             oos = new ObjectOutputStream(socket.getOutputStream());
             //System.out.println("Sending request to Socket Server");
