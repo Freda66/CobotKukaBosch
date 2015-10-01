@@ -28,15 +28,18 @@ public:
 	void init();
 	~CobotKuka();
 
+	void disconnectFromServer();
+
 private slots:
 
 //	Client slots
 	void displayError(QAbstractSocket::SocketError socketError);
 	void serverConnected();
 	void serverDisconnected();
+	void datawritten(qint64 w);
 
 	//ui slots
-	void on_connect_pushButton_clicked(bool checked);
+	void on_connect_pushButton_clicked();
 
 	void on_text_font_fontComboBox_currentFontChanged(const QFont &f);
 
@@ -62,11 +65,14 @@ private slots:
 
 	void on_ok_pushButton_clicked();
 
+	void on_CobotKuka_destroyed();
+
 	private:
 	//ui variables
 	Ui::CobotKuka *ui;
 	QFileDialog *filedialog ;
 	QSvgRenderer *svgrenderer ;
+	boolean connected;
 
 	//Client variables
 	QTcpSocket *tcpSocket;
