@@ -19,7 +19,7 @@ import com.kuka.roboticsAPI.motionModel.Spline;
  * 
  */
 public class TestSpl extends RoboticsAPIApplication {
-	private Controller kuka_Sunrise_Cabinet_1;
+	/*private Controller kuka_Sunrise_Cabinet_1;
 	private LBR lbr_iiwa_14_R820_1;
 
 	private Tool penTool;
@@ -41,10 +41,10 @@ public class TestSpl extends RoboticsAPIApplication {
 				frameDestination.getY()-frameBefore.getY(), 
 				frameDestination.getZ()-frameBefore.getZ()
 				);
-	}
+	}*/
 	
 	public void initialize() {
-		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
+		/*kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1,
 				"LBR_iiwa_14_R820_1");
 		
@@ -91,12 +91,12 @@ public class TestSpl extends RoboticsAPIApplication {
 //			getLogger().info("" + trajectory[i].x + " "+ trajectory[i].y);
 			
 			frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0);
-		}
+		}*/
 		
 	}
 
 	public void run() {
-		lbr_iiwa_14_R820_1.move(ptpHome());
+		/*lbr_iiwa_14_R820_1.move(ptpHome());
 		
 		double velocity = 0.2;
 		
@@ -175,8 +175,8 @@ public class TestSpl extends RoboticsAPIApplication {
 				);
 		end = System.currentTimeMillis();
 		getLogger().info("SPL Move time: " + (end - start));
+
 */	
-	
 	}
 
 	/**
