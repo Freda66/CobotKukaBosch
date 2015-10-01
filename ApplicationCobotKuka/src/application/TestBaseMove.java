@@ -1,12 +1,10 @@
 package application;
 
-
-import java.io.IOException;
+import serveur.TCPServer;
 
 import com.kuka.generated.ioAccess.MediaFlangeIOGroup;
 import com.kuka.roboticsAPI.applicationModel.RoboticsAPIApplication;
 import static com.kuka.roboticsAPI.motionModel.BasicMotions.*;
-
 import com.kuka.roboticsAPI.controllerModel.Controller;
 import com.kuka.roboticsAPI.controllerModel.sunrise.ISafetyState;
 import com.kuka.roboticsAPI.deviceModel.LBR;
@@ -22,11 +20,18 @@ import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
 
 
-/* Test des mouvements du robot Kuka avec la base "Paper"
- * 
+/**
+ * Classe TestBaseMove
+ * @author Bosch, Berriche, Cano, Danjoux, Durand, Olivieri
+ * @date 29/09/2015
  */
-
 public class TestBaseMove extends RoboticsAPIApplication {
+	
+	/**
+	 * Variables 
+	 */
+	private TCPServer serveur; // Objet Serveur
+	
 	private Controller kuka_Sunrise_Cabinet_1;
 	private LBR lbr_iiwa_14_R820_1;
 
@@ -61,8 +66,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	
 	//private Frame[] frames;
 	
-	private TCPServer serveur;
-	private int arret =0;
 	
 	
 	/*private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
@@ -74,6 +77,12 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				);
 	}*/
 	
+	/**
+	 * 
+	 * @param frameBefore
+	 * @param frameDestination
+	 * @return
+	 */
 	private Transformation getTranslationFromFrame(Frame frameBefore, Frame frameDestination)
 	{
 		return Transformation.ofTranslation(
@@ -83,15 +92,13 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				);
 	}
 	
+	/**
+	 * 
+	 */
 	public void initialize() {
 		
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
-		try {
-			TCPServer serveur = new TCPServer();
-		} catch (IOException e) {
-			// TODO Bloc catch généré automatiquement
-			e.printStackTrace();
-		}
+		serveur = new TCPServer();
 		
 		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1, "LBR_iiwa_14_R820_1");
@@ -154,6 +161,9 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		getLogger().info("Initialization OK");
 	}
 
+	/**
+	 * 
+	 */
 	public void run() {
 		
 		//Paper approach
@@ -183,17 +193,21 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				ptp(paperApproach).setJointVelocityRel(velocity)
 			);
 		
+		// Boolean qui indique la fin du dessin et du programme
 		boolean end = false;
+		// Tant que le boolean est faux on reste dans la boucle
 		while(!end)
 		{
-			// Attend message client
+			// Attend la connexion et le message du client
 			this.serveur.run();
 			
 			// Verifie le message du client
 			if(this.serveur.getMessage() == "stop") {
-				this.serveur.closeServer();
-				end = true;
-			} else if (this.serveur.getMessage() != ""){
+				this.serveur.closeServer(); // Arrete le serveur
+				end = true; // Indique que la boucle est terminée
+			} 
+			// Si le message est différent de vide on rentre dans la condition / Sinon on attend un nouveau message du client
+			else if (this.serveur.getMessage() != ""){
 				
 				Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), new Frame(P1.getX(), P1.getY(), P1.getZ())), paperBase));
 				
@@ -283,29 +297,31 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						linMovement.setJointVelocityRel(velocity)
 					);
 				
+				// Vide la valeur du message du serveur
 				this.serveur.setMessage("");
 			}
 		}
 		
 		// Initialise la position du robot
-		getLogger().info("Go back to home");
+		getLogger().info("Retour position initiale");
 		
 		penToolTCP.move( lin(paperApproach).setJointVelocityRel(velocity));
 		
 		SplineJP moveBackToHome = new SplineJP( ptpHome());
 		
 		getLogger().info("Move Back");
-		lbr_iiwa_14_R820_1.move(
-				moveBackToHome.setJointVelocityRel(velocity)
-			);
+		lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
 		
 		ioFlange.setLEDBlue(false);
 	}
 
-	
+	/**
+	 * Entrée principale du programme
+	 * Lancement de l'application 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		TestBaseMove app = new TestBaseMove();
 		app.runApplication();
-		
 	}
 }
