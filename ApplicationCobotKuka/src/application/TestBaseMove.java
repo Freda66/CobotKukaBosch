@@ -114,6 +114,9 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		P4 = new Frame(10.0, 20.0, 0.0);
 		P5 = new Frame(30.0, 20.0, 0.0);
 		
+		trajectory = new Frame[3];
+		trajectory2 = new Frame[2];
+		
 		trajectory[0] = P1;
 		trajectory[1] = P2;
 		trajectory[2] = P3;
