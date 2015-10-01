@@ -5,10 +5,10 @@ public class Vector2 {
 	public double x;
 	public double y;
 	
-	Vector2()
+	Vector2(double x, double y)
 	{
-		x = 0;
-		y = 0;
+		this.x = x;
+		this.y = y;
 	}
 	
 }
