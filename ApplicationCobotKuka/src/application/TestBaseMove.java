@@ -36,24 +36,28 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private ObjectFrame penToolTCP;
 	
 	private ObjectFrame paperBase;
-	/*private Frame P1;
+	private Frame P1;
 	private Frame P2;
 	private Frame P3;
-	private Frame P0;*/
+	private Frame P4;
+	private Frame P5;
 	
-	private Vector2 P1;
+	/*private Vector2 P1;
 	private Vector2 P2;
 	private Vector2 P3;
-	private Vector2 P0;
+	private Vector2 P4;
+	private Vector2 P5;*/
 	
 	private ObjectFrame nearPaper0;
 	private ObjectFrame paperApproach;
 	
-	private BezierCurve curve;
+	//private BezierCurve curve;
 	
-	private Vector2[] trajectory;
+	private Frame[] trajectory;
+	private Frame[] trajectory2;
 	
-	private Frame[] frames;
+	
+	//private Frame[] frames;
 	
 	
 	/*private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
@@ -104,20 +108,21 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
 		
 		// On définit les points du parcours
-		P1 = new Vector2();
-		P2 = new Vector2();
-		P3 = new Vector2();
-		P0 = new Vector2();
-		P1.x = 0.0;
-		P1.y = 0.0;
-		P2.x = 0.0;
-		P2.y = 150.0;
-		P3.x = 150.0;
-		P3.y = 150.0;
-		P0.x = 150.0;
-		P0.y = 0.0;
+		P1 = new Frame(0.0, 0.0, 0.0);
+		P2 = new Frame(20.0, 40.0, 0.0);
+		P3 = new Frame(40.0, 0.0, 0.0);
+		P4 = new Frame(10.0, 20.0, 0.0);
+		P5 = new Frame(30.0, 20.0, 0.0);
 		
-		curve = new BezierCurve(P1, P2, P3, P0);
+		trajectory[0] = P1;
+		trajectory[1] = P2;
+		trajectory[2] = P3;
+		
+		trajectory2[0] = P4;
+		trajectory2[0] = P5; 
+		
+		
+		/*curve = new BezierCurve(P1, P2, P3, P0);
 		
 		trajectory = curve.getTrajectory(40);
 		
@@ -127,7 +132,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		{
 //			getLogger().info("" + trajectory[i].x + " "+ trajectory[i].y);
 			frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0);
-		}
+		}*/
 				
 		getLogger().info("Initialization OK");
 	}
@@ -160,13 +165,15 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				ptp(paperApproach).setJointVelocityRel(velocity)
 			);
 		
+		Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), new Frame(P1.getX(), P1.getY(), P1.getZ())), paperBase));
+		
 		penToolTCP.move(
-				lin(nearPaper0).setJointVelocityRel(velocity)
+				linMovement.setJointVelocityRel(velocity)
 			);
 		
 		getLogger().info("Move on paper");
 		
-		Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(nearPaper0.getX(), nearPaper0.getY(), nearPaper0.getZ()), new Frame(nearPaper0.getX(), nearPaper0.getY(), -3)), paperBase));
+		linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(P1.getX(), P1.getY(), P1.getZ()), new Frame(P1.getX(), P1.getY(), -3)), paperBase));
 		
 		penToolTCP.move(
 				linMovement.setJointVelocityRel(0.05)
@@ -177,7 +184,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		getLogger().info("Move on Paper");
 		
-		RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
+		/*RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
 		
 		for (int i=0; i < frames.length-1; i++)
 		{
@@ -190,10 +197,60 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		penToolTCP.move(
 				linMovement2.setJointVelocityRel(velocity)
+			);*/
+		
+		linMovement = new Spline(
+				
+				// On bouge en relatif
+				
+				// On va ensuite à P1, P2, P3 et P0, en spécifiant une translation Z nulle 
+				linRel( getTranslationFromFrame(P1, P2), paperBase),
+				linRel( getTranslationFromFrame(P2, P3), paperBase)
+			);
+		
+		getLogger().info("draw first spline");
+		
+		penToolTCP.move(
+				linMovement.setJointVelocityRel(velocity)
+			);
+		
+		getLogger().info("Move to second spline");
+		
+		linMovement = new Spline(
+				
+				// On remonte le stylo
+				linRel( getTranslationFromFrame(P3, new Frame(P3.getX(), P3.getY(), 3)), paperBase),
+				// On déplace vers le point de la spline suivante
+				linRel( getTranslationFromFrame(new Frame(P3.getX(), P3.getY(), 3), new Frame(P4.getX(), P4.getY(), 3)), paperBase),
+				// On rabaisse le stylo
+				linRel( getTranslationFromFrame(new Frame(P4.getX(), P4.getY(), 3), new Frame(P4.getX(), P4.getY(), -3)), paperBase)
 			);
 		
 		penToolTCP.move(
-				lin(nearPaper0).setJointVelocityRel(velocity)
+				linMovement.setJointVelocityRel(0.05)
+			);
+		
+		getLogger().info("draw second spline");
+		
+		linMovement = new Spline(
+				
+				// On remonte le stylo
+				linRel( getTranslationFromFrame(P4, P5), paperBase)
+			);
+		
+		penToolTCP.move(
+				linMovement.setJointVelocityRel(velocity)
+			);
+		
+		// On rmeonte le stylo
+		linMovement = new Spline(
+				
+				// On remonte le stylo
+				linRel( getTranslationFromFrame(P5, new Frame(P5.getX(), P5.getY(), 3)), paperBase)
+			);
+		
+		penToolTCP.move(
+				linMovement.setJointVelocityRel(velocity)
 			);
 		
 		// On revient à la "maison"
