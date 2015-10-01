@@ -222,11 +222,11 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		linMovement = new Spline(
 				
 				// On remonte le stylo
-				linRel( getTranslationFromFrame(P3, new Frame(P3.getX(), P3.getY(), 3)), paperBase),
+				linRel( getTranslationFromFrame(P3, new Frame(P3.getX(), P3.getY(), 10)), paperBase),
 				// On déplace vers le point de la spline suivante
-				linRel( getTranslationFromFrame(new Frame(P3.getX(), P3.getY(), 3), new Frame(P4.getX(), P4.getY(), 3)), paperBase),
+				linRel( getTranslationFromFrame(new Frame(P3.getX(), P3.getY(), 10), new Frame(P4.getX(), P4.getY(), 10)), paperBase),
 				// On rabaisse le stylo
-				linRel( getTranslationFromFrame(new Frame(P4.getX(), P4.getY(), 3), new Frame(P4.getX(), P4.getY(), -3)), paperBase)
+				linRel( getTranslationFromFrame(new Frame(P4.getX(), P4.getY(), 10), new Frame(P4.getX(), P4.getY(), -3)), paperBase)
 			);
 		
 		penToolTCP.move(
