@@ -119,7 +119,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		curve = new BezierCurve(P1, P2, P3, P0);
 		
-		trajectory = curve.getTrajectory(20);
+		trajectory = curve.getTrajectory(40);
 		
 		// On crée des frames robot Kuka depuis notre courbe
 		frames = new Frame[trajectory.length];
@@ -164,6 +164,14 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				lin(nearPaper0).setJointVelocityRel(velocity)
 			);
 		
+		getLogger().info("Move on paper");
+		
+		Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(nearPaper0.getX(), nearPaper0.getY(), nearPaper0.getZ()), new Frame(nearPaper0.getX(), nearPaper0.getY(), -3)), paperBase));
+		
+		penToolTCP.move(
+				linMovement.setJointVelocityRel(0.05)
+				);
+		
 		
 		// On dessine au dessus du papier les points P0 / P1 / P2 / P3 :
 		
@@ -173,15 +181,15 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		for (int i=0; i < frames.length-1; i++)
 		{
-			RelativeLIN moveLin = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
+			RelativeLIN moveLin2 = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
 			
-			splineArray[i] = moveLin;
+			splineArray[i] = moveLin2;
 		}
 		
-		Spline linMovement = new Spline(splineArray);
+		Spline linMovement2 = new Spline(splineArray);
 		
 		penToolTCP.move(
-				linMovement.setJointVelocityRel(velocity)
+				linMovement2.setJointVelocityRel(velocity)
 			);
 		
 		penToolTCP.move(
