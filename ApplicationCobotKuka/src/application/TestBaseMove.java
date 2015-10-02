@@ -175,7 +175,10 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		String message = "";
 		
-		ArrayList<Spline> alSpline = new ArrayList<Spline>();
+		int zOffsetForPen = 10;
+		int zOffsetForPaper = -3;
+		
+		RelativeLIN[] alSpline = null;
 		ArrayList<ArrayList<Frame>> trajectories = new ArrayList<ArrayList<Frame>>();
 		
 		ISafetyState currentState = lbr_iiwa_14_R820_1.getSafetyState();
@@ -225,30 +228,68 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				try {
 					// On récupère la chaîne de caractère qu'on converti en JSON
 					org.json.JSONObject jMainObject  = new org.json.JSONObject(message);
-					// On récupère l'objet principale
+					// On récupère l'objet principale pointé par la key "svg"
 					org.json.JSONArray jArray = jMainObject.getJSONArray("svg");
-					// On parcours chaque tableau
-					for (int j = 0; j < jMainObject.length(); j++) {
+					// On renseigne la taille tu tablea de mouvement
+					alSpline = new RelativeLIN[jArray.length()];
+					// On parcours chaque tableau de l'objet principal
+					for (int j = 0; j < jArray.length(); j++) {
 						// On récupère le tableau en question
 						org.json.JSONArray jArray2 = jArray.getJSONArray(j);
 						// On créé l'ArrayList qui va récupérer les Frames
 						ArrayList<Frame> trajectories2 = new ArrayList<Frame>();
-						// On parcours chaque élément du tableau
+						// On parcours chaque élément du tableau des frames
 						for (int i = 0; i < jArray2.length(); i++) {
-							if (j != 0 && i == 0) {
-								alSpline.add(new Spline(linRel(getTranslationFromFrame(trajectories, frameDestination))))
-							}
 							// On récupère le dit-élément
 							org.json.JSONObject jArrayObject = jArray2.getJSONObject(i);
 							// On créé les Frames (points) qu'on stock dans une ArrayList
 							trajectories2.add(new Frame(jArrayObject.getInt("x"), jArrayObject.getInt("y"), 0.0));
+							
+							/* On traite la remonte du stylo entre chaque segment à dessiner
+							 * On ajoute 3 mouvements :
+							 *			- La remonté du stylo
+							 *			- La translation vers le nouveau point
+							 * 			- La descente du stylo vers le papier
+							 */
+							if (j != 0 && i == 0) {
+								// On récupère le dernier segment ajouté
+								ArrayList<Frame> lastSegment = trajectories.get(trajectories.size() - 1);
+								// On récupère la dernière frame ajoutée
+								Frame lastFrame = lastSegment.get(lastSegment.size() - 1);
+								// On créé le nouveau point offset en Z pour remonter le stylo
+								Frame offsetLastFrame = new Frame(lastFrame.getX(), lastFrame.getY(), zOffsetForPen);
+								// On remonte le stylo
+								alSpline[j] = linRel(getTranslationFromFrame(lastFrame, offsetLastFrame), paperBase);
+								// On récupère la dernière frame ajoutée
+								Frame aimFrame = trajectories2.get(trajectories2.size() - 1);
+								// On créer le nouveau point offset du point d'arrivé
+								Frame offsetAimFrame = new Frame(aimFrame.getX(), aimFrame.getY(), zOffsetForPen);
+								// On ajoute la translation vers le nouveau point
+								alSpline[j] = linRel(getTranslationFromFrame(offsetLastFrame, offsetAimFrame));
+								// On créer le point sur le papier
+								Frame aimFrameOnPaper = new Frame (aimFrame.getX(), aimFrame.getY(), zOffsetForPaper);
+								// On ajoute la translation suivant Z pour toucher le papier
+								alSpline[j] = linRel(getTranslationFromFrame(offsetAimFrame, aimFrameOnPaper), paperBase);
+							} else if (j == 0 && i == 0) {
+								// On récupère le permier point pour se placer au-dessus
+								Frame firstFrame = trajectories2.get(0);
+								// On créé le point offset de firstFrame
+								Frame offsetFirstFrame = new Frame(firstFrame.getX(), firstFrame.getY(), zOffsetForPen);
+								// On ajoute le déplacement vers le premier point
+								alSpline[j] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), offsetFirstFrame), paperBase);
+								// On créé le premier point sur le papier
+								Frame firstFrameOnPaper = new Frame(offsetFirstFrame.getX(), offsetFirstFrame.getY(), zOffsetForPaper);
+								// On ajoute le mouvement de descente sur le papier
+								alSpline[j] = linRel(getTranslationFromFrame(offsetFirstFrame, firstFrameOnPaper), paperBase);
+							}
 						}
 						
+						// On stock les frames séparées dans chaque segment
 						trajectories.add(trajectories2);
 							
 						// On enregistre les mouvements dans une ArrayList
 						for (int i = 0; i < trajectories2.size() - 1; i++) {
-							alSpline.add(new Spline( linRel(getTranslationFromFrame(trajectories2.get(i), trajectories2.get(i + 1)), paperBase)));
+							alSpline[j] = linRel(getTranslationFromFrame(trajectories2.get(i), trajectories2.get(i + 1)), paperBase);
 						}
 					}
 				} catch (JSONException e) {
@@ -258,22 +299,11 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				getLogger().info("Message du client : " + this.serveur.getMessage());
 				
-				Spline linMovement = new Spline(linRel(getTranslationFromFrame(
-						new Frame(paperApproach.getX(), 
-								paperApproach.getY(), 
-								paperApproach.getZ()),
-						new Frame(((Frame)trajectories.get(0).get(0)).getX(), 
-								((Frame) trajectories.get(0).get(0)).getY(), 
-								0.0)), 
-						paperBase));
+				Spline linMovement = new Spline(alSpline);
 				
-				penToolTCP.move(
-						linMovement.setJointVelocityRel(velocity)
-					);
+				penToolTCP.move(linMovement.setJointVelocityRel(velocity));
 				
-				
-				
-				getLogger().info("Move on paper");
+				/*getLogger().info("Move on paper");
 				
 				linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(P1.getX(), P1.getY(), P1.getZ()), new Frame(P1.getX(), P1.getY(), -3)), paperBase));
 				
@@ -286,7 +316,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				getLogger().info("Move on Paper");
 				
-				/*RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
+				RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
 				
 				for (int i=0; i < frames.length-1; i++)
 				{
@@ -299,7 +329,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				penToolTCP.move(
 						linMovement2.setJointVelocityRel(velocity)
-					);*/
+					);
 				
 				linMovement = new Spline(
 						
@@ -316,7 +346,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						linMovement.setJointVelocityRel(velocity)
 					);
 				
-				/*getLogger().info("Move to second spline");
+				getLogger().info("Move to second spline");
 				
 				linMovement = new Spline(
 						
@@ -342,7 +372,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				penToolTCP.move(
 						linMovement.setJointVelocityRel(velocity)
-					);*/
+					);
 				
 				// On rmeonte le stylo
 				linMovement = new Spline(
@@ -357,20 +387,21 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				// Vide la valeur du message du serveur
 				this.serveur.setMessage("");
+			}*/
+		
+			// Initialise la position du robot
+			getLogger().info("Retour position initiale");
+			
+			penToolTCP.move(lin(paperApproach).setJointVelocityRel(velocity));
+			
+			SplineJP moveBackToHome = new SplineJP( ptpHome());
+			
+			getLogger().info("Move Back");
+			lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
+			
+			ioFlange.setLEDBlue(false);
 			}
 		}
-		
-		// Initialise la position du robot
-		getLogger().info("Retour position initiale");
-		
-		penToolTCP.move( lin(paperApproach).setJointVelocityRel(velocity));
-		
-		SplineJP moveBackToHome = new SplineJP( ptpHome());
-		
-		getLogger().info("Move Back");
-		lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
-		
-		ioFlange.setLEDBlue(false);
 	}
 
 	/**
