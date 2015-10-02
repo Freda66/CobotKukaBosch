@@ -29,7 +29,7 @@ public class TCPServer extends RoboticsAPIApplication {
         // Créer l'objet serveur socket
         try { 
         	server = new ServerSocket(port); 
-        } catch (IOException e) { e.printStackTrace(); }    
+        } catch (IOException e) { this.closeServer(); e.printStackTrace(); }    
     }
 
     /**
@@ -46,7 +46,7 @@ public class TCPServer extends RoboticsAPIApplication {
 	        ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
 	        // Lit dans la socket et converti l'objet en string
 	        this.setMessage((String) ois.readObject());
-	        getLogger().info("Message du client : " + this.getMessage()); // Log le message recu par le serveur du client
+	        //getLogger().info("Message du client : " + this.getMessage()); // Log le message recu par le serveur du client
 	   
 	        // Crée un objet qui permet d'écrire dans la socket vers le client
 	        //ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -57,7 +57,7 @@ public class TCPServer extends RoboticsAPIApplication {
 	        //oos.close();
 	        ois.close();
 	        socket.close();
-		} catch (IOException e) { e.printStackTrace(); } catch (ClassNotFoundException e) { e.printStackTrace(); }
+		} catch (IOException e) { e.printStackTrace(); } catch (ClassNotFoundException e) { this.closeServer(); e.printStackTrace(); }
 	}
  
 	/**

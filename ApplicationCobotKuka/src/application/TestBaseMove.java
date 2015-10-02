@@ -198,6 +198,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		// Tant que le boolean est faux on reste dans la boucle
 		while(!end)
 		{
+			getLogger().info("Serveur en attente de commandes");
+			
 			// Attend la connexion et le message du client
 			this.serveur.run();
 			
@@ -208,6 +210,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			} 
 			// Si le message est différent de vide on rentre dans la condition / Sinon on attend un nouveau message du client
 			else if (this.serveur.getMessage() != ""){
+				
+				getLogger().info("Message du client : " + this.serveur.getMessage());
 				
 				Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), new Frame(P1.getX(), P1.getY(), P1.getZ())), paperBase));
 				
