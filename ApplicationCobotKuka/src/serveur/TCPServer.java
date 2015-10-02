@@ -19,13 +19,25 @@ public class TCPServer extends RoboticsAPIApplication {
 	 * Attributs
 	 */
     private ServerSocket server;
-    private int port = 30004;
+    private int port;
     private String message = "";
     
     /**
      * Constructeur
      */
     public  TCPServer() {
+        port = 30006;
+        // Créer l'objet serveur socket
+        try { 
+        	server = new ServerSocket(port); 
+        } catch (IOException e) { this.closeServer(); e.printStackTrace(); }    
+    }
+    
+    /**
+     * Constructeur surcharge
+     */
+    public  TCPServer(int p) {
+        port = p;
         // Créer l'objet serveur socket
         try { 
         	server = new ServerSocket(port); 

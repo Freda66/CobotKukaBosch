@@ -66,6 +66,8 @@ public class TCPClient {
 	        oos.flush();
 	        oos.close();
 	        socket.close(); 
+	        
+	        System.out.println("Message correctement envoyé au robot kuka"); // Log l'envoi du message au robot
     	} catch(Exception e) {
         	System.out.println("Erreur lors de la connexion ou l'envoi du message au serveur kuka : " + e); // Log le message d'erreur
     	}
