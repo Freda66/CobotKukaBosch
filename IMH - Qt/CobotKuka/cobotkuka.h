@@ -28,7 +28,18 @@ public:
 	void init();
 	~CobotKuka();
 
-	void disconnectFromServer();
+
+	void activate_OK_pushButton();
+	void desactivate_OK_pushButton();
+	void activate_Send_pushButton();
+	void desactivate_Send_pushButton();
+	void activate_Stop_pushButton();
+	void desactivate_Stop_pushButton();
+
+	void writeJSONToServer(const QStringList& jsonList);
+	bool connectToServer();
+	bool disconnectFromServer();
+
 
 private slots:
 
@@ -67,16 +78,27 @@ private slots:
 
 	void on_CobotKuka_destroyed();
 
+	void on_text_text_lineEdit_editingFinished();
+
+	void on_stop_pushButton_clicked();
+
+	void on_picture_webcam_pushButton_clicked();
+
+	void on_sketch_pushButton_clicked();
+
 	private:
 	//ui variables
 	Ui::CobotKuka *ui;
 	QFileDialog *filedialog ;
 	QSvgRenderer *svgrenderer ;
 	boolean connected;
+	QString svgFile;
+	QString pictureFile;
 
 	//Client variables
 	QTcpSocket *tcpSocket;
 	QHostAddress ip;
+	QStringList jsonChainList;
 };
 
 #endif // COBOTKUKA_H

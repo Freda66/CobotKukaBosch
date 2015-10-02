@@ -32,7 +32,59 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetMaximumSize</enum>
       </property>
-      <item row="1" column="0" colspan="2">
+      <item row="2" column="0" colspan="3">
+       <widget class="QPushButton" name="ok_pushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>&gt; OK &lt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" rowspan="2">
+       <widget class="QPushButton" name="stop_pushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">color:orange; background-color: red</string>
+        </property>
+        <property name="text">
+         <string>STOP</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="3">
+       <widget class="QPushButton" name="send_pushButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>-&gt; Send &lt;-</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
        <widget class="QGroupBox" name="mod_groupBox">
         <property name="autoFillBackground">
          <bool>false</bool>
@@ -526,7 +578,7 @@
         </layout>
        </widget>
       </item>
-      <item row="0" column="1">
+      <item row="0" column="0" colspan="4">
        <layout class="QHBoxLayout" name="connect_horizontalLayout">
         <property name="spacing">
          <number>5</number>
@@ -690,23 +742,6 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QPushButton" name="send_pushButton">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>-&gt; Send &lt;-</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QPushButton" name="ok_pushButton">
-        <property name="text">
-         <string>&gt; OK &lt;</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
    </layout>
@@ -773,12 +808,11 @@
   <tabstop>sketch_radioButton</tabstop>
   <tabstop>sketch_pushButton</tabstop>
   <tabstop>ok_pushButton</tabstop>
-  <tabstop>send_pushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_Mod"/>
   <buttongroup name="buttonGroup_Picture"/>
+  <buttongroup name="buttonGroup_Mod"/>
  </buttongroups>
 </ui>

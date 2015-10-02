@@ -40,6 +40,9 @@ public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout_7;
     QGridLayout *global_gridLayout;
+    QPushButton *ok_pushButton;
+    QPushButton *stop_pushButton;
+    QPushButton *send_pushButton;
     QGroupBox *mod_groupBox;
     QGridLayout *gridLayout;
     QGridLayout *mod_gridLayout;
@@ -90,14 +93,12 @@ public:
     QSpacerItem *connect_horizontalSpacer;
     QLabel *connect_status_label;
     QPushButton *connect_pushButton;
-    QPushButton *send_pushButton;
-    QPushButton *ok_pushButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuAbout;
     QStatusBar *statusBar;
-    QButtonGroup *buttonGroup_Mod;
     QButtonGroup *buttonGroup_Picture;
+    QButtonGroup *buttonGroup_Mod;
 
     void setupUi(QMainWindow *CobotKuka)
     {
@@ -125,6 +126,39 @@ public:
         global_gridLayout->setSpacing(6);
         global_gridLayout->setObjectName(QStringLiteral("global_gridLayout"));
         global_gridLayout->setSizeConstraint(QLayout::SetMaximumSize);
+        ok_pushButton = new QPushButton(centralWidget);
+        ok_pushButton->setObjectName(QStringLiteral("ok_pushButton"));
+        ok_pushButton->setEnabled(false);
+
+        global_gridLayout->addWidget(ok_pushButton, 2, 0, 1, 3);
+
+        stop_pushButton = new QPushButton(centralWidget);
+        stop_pushButton->setObjectName(QStringLiteral("stop_pushButton"));
+        stop_pushButton->setEnabled(false);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(stop_pushButton->sizePolicy().hasHeightForWidth());
+        stop_pushButton->setSizePolicy(sizePolicy1);
+        QFont font;
+        font.setPointSize(12);
+        font.setBold(true);
+        font.setWeight(75);
+        stop_pushButton->setFont(font);
+        stop_pushButton->setStyleSheet(QStringLiteral("color:orange; background-color: red"));
+
+        global_gridLayout->addWidget(stop_pushButton, 2, 3, 2, 1);
+
+        send_pushButton = new QPushButton(centralWidget);
+        send_pushButton->setObjectName(QStringLiteral("send_pushButton"));
+        send_pushButton->setEnabled(false);
+        QFont font1;
+        font1.setBold(true);
+        font1.setWeight(75);
+        send_pushButton->setFont(font1);
+
+        global_gridLayout->addWidget(send_pushButton, 3, 0, 1, 3);
+
         mod_groupBox = new QGroupBox(centralWidget);
         mod_groupBox->setObjectName(QStringLiteral("mod_groupBox"));
         mod_groupBox->setAutoFillBackground(false);
@@ -154,11 +188,11 @@ public:
         buttonGroup_Mod->setObjectName(QStringLiteral("buttonGroup_Mod"));
         buttonGroup_Mod->addButton(svg_radioButton);
         svg_radioButton->setObjectName(QStringLiteral("svg_radioButton"));
-        QFont font;
-        font.setPointSize(10);
-        font.setBold(true);
-        font.setWeight(75);
-        svg_radioButton->setFont(font);
+        QFont font2;
+        font2.setPointSize(10);
+        font2.setBold(true);
+        font2.setWeight(75);
+        svg_radioButton->setFont(font2);
         svg_radioButton->setChecked(true);
 
         svg_verticalLayout->addWidget(svg_radioButton, 0, Qt::AlignHCenter);
@@ -209,7 +243,7 @@ public:
         text_radioButton = new QRadioButton(text_groupBox);
         buttonGroup_Mod->addButton(text_radioButton);
         text_radioButton->setObjectName(QStringLiteral("text_radioButton"));
-        text_radioButton->setFont(font);
+        text_radioButton->setFont(font2);
 
         text_verticalLayout->addWidget(text_radioButton, 0, Qt::AlignHCenter);
 
@@ -226,22 +260,22 @@ public:
         text_font_horizontalLayout->setObjectName(QStringLiteral("text_font_horizontalLayout"));
         text_font_label = new QLabel(text_actions_groupBox);
         text_font_label->setObjectName(QStringLiteral("text_font_label"));
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(text_font_label->sizePolicy().hasHeightForWidth());
-        text_font_label->setSizePolicy(sizePolicy1);
+        QSizePolicy sizePolicy2(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
+        sizePolicy2.setHeightForWidth(text_font_label->sizePolicy().hasHeightForWidth());
+        text_font_label->setSizePolicy(sizePolicy2);
         text_font_label->setMinimumSize(QSize(144, 0));
 
         text_font_horizontalLayout->addWidget(text_font_label);
 
         text_font_fontComboBox = new QFontComboBox(text_actions_groupBox);
         text_font_fontComboBox->setObjectName(QStringLiteral("text_font_fontComboBox"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(text_font_fontComboBox->sizePolicy().hasHeightForWidth());
-        text_font_fontComboBox->setSizePolicy(sizePolicy2);
+        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(text_font_fontComboBox->sizePolicy().hasHeightForWidth());
+        text_font_fontComboBox->setSizePolicy(sizePolicy3);
 
         text_font_horizontalLayout->addWidget(text_font_fontComboBox);
 
@@ -284,7 +318,7 @@ public:
         picture_radioButton = new QRadioButton(picture_groupBox);
         buttonGroup_Mod->addButton(picture_radioButton);
         picture_radioButton->setObjectName(QStringLiteral("picture_radioButton"));
-        picture_radioButton->setFont(font);
+        picture_radioButton->setFont(font2);
 
         picture_verticalLayout->addWidget(picture_radioButton, 0, Qt::AlignHCenter);
 
@@ -334,8 +368,8 @@ public:
 
         picture_webcam_pushButton = new QPushButton(picture_actions_groupBox);
         picture_webcam_pushButton->setObjectName(QStringLiteral("picture_webcam_pushButton"));
-        sizePolicy2.setHeightForWidth(picture_webcam_pushButton->sizePolicy().hasHeightForWidth());
-        picture_webcam_pushButton->setSizePolicy(sizePolicy2);
+        sizePolicy3.setHeightForWidth(picture_webcam_pushButton->sizePolicy().hasHeightForWidth());
+        picture_webcam_pushButton->setSizePolicy(sizePolicy3);
         picture_webcam_pushButton->setAutoFillBackground(false);
 
         picture_webcam_horizontalLayout->addWidget(picture_webcam_pushButton);
@@ -362,7 +396,7 @@ public:
         sketch_radioButton = new QRadioButton(sketch_groupBox);
         buttonGroup_Mod->addButton(sketch_radioButton);
         sketch_radioButton->setObjectName(QStringLiteral("sketch_radioButton"));
-        sketch_radioButton->setFont(font);
+        sketch_radioButton->setFont(font2);
 
         sketch_verticalLayout->addWidget(sketch_radioButton, 0, Qt::AlignHCenter);
 
@@ -390,7 +424,7 @@ public:
         gridLayout->addLayout(mod_gridLayout, 0, 0, 1, 1);
 
 
-        global_gridLayout->addWidget(mod_groupBox, 1, 0, 1, 2);
+        global_gridLayout->addWidget(mod_groupBox, 1, 0, 1, 4);
 
         connect_horizontalLayout = new QHBoxLayout();
         connect_horizontalLayout->setSpacing(5);
@@ -412,11 +446,11 @@ public:
 
         connect_ip_lineEdit = new QLineEdit(connect_groupBox);
         connect_ip_lineEdit->setObjectName(QStringLiteral("connect_ip_lineEdit"));
-        QSizePolicy sizePolicy3(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(connect_ip_lineEdit->sizePolicy().hasHeightForWidth());
-        connect_ip_lineEdit->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy4(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy4.setHorizontalStretch(0);
+        sizePolicy4.setVerticalStretch(0);
+        sizePolicy4.setHeightForWidth(connect_ip_lineEdit->sizePolicy().hasHeightForWidth());
+        connect_ip_lineEdit->setSizePolicy(sizePolicy4);
         connect_ip_lineEdit->setMaxLength(15);
         connect_ip_lineEdit->setCursorMoveStyle(Qt::VisualMoveStyle);
         connect_ip_lineEdit->setClearButtonEnabled(true);
@@ -430,8 +464,8 @@ public:
 
         connect_port_lineEdit = new QLineEdit(connect_groupBox);
         connect_port_lineEdit->setObjectName(QStringLiteral("connect_port_lineEdit"));
-        sizePolicy3.setHeightForWidth(connect_port_lineEdit->sizePolicy().hasHeightForWidth());
-        connect_port_lineEdit->setSizePolicy(sizePolicy3);
+        sizePolicy4.setHeightForWidth(connect_port_lineEdit->sizePolicy().hasHeightForWidth());
+        connect_port_lineEdit->setSizePolicy(sizePolicy4);
         connect_port_lineEdit->setInputMethodHints(Qt::ImhDigitsOnly);
         connect_port_lineEdit->setMaxLength(5);
         connect_port_lineEdit->setCursorMoveStyle(Qt::VisualMoveStyle);
@@ -455,8 +489,8 @@ public:
 
         connect_pushButton = new QPushButton(centralWidget);
         connect_pushButton->setObjectName(QStringLiteral("connect_pushButton"));
-        sizePolicy2.setHeightForWidth(connect_pushButton->sizePolicy().hasHeightForWidth());
-        connect_pushButton->setSizePolicy(sizePolicy2);
+        sizePolicy3.setHeightForWidth(connect_pushButton->sizePolicy().hasHeightForWidth());
+        connect_pushButton->setSizePolicy(sizePolicy3);
         connect_pushButton->setCheckable(true);
         connect_pushButton->setAutoDefault(false);
         connect_pushButton->setDefault(true);
@@ -465,18 +499,7 @@ public:
         connect_horizontalLayout->addWidget(connect_pushButton);
 
 
-        global_gridLayout->addLayout(connect_horizontalLayout, 0, 1, 1, 1);
-
-        send_pushButton = new QPushButton(centralWidget);
-        send_pushButton->setObjectName(QStringLiteral("send_pushButton"));
-        send_pushButton->setEnabled(false);
-
-        global_gridLayout->addWidget(send_pushButton, 3, 0, 1, 3);
-
-        ok_pushButton = new QPushButton(centralWidget);
-        ok_pushButton->setObjectName(QStringLiteral("ok_pushButton"));
-
-        global_gridLayout->addWidget(ok_pushButton, 2, 0, 1, 2);
+        global_gridLayout->addLayout(connect_horizontalLayout, 0, 0, 1, 4);
 
 
         horizontalLayout_7->addLayout(global_gridLayout);
@@ -518,7 +541,6 @@ public:
         QWidget::setTabOrder(picture_webcam_pushButton, sketch_radioButton);
         QWidget::setTabOrder(sketch_radioButton, sketch_pushButton);
         QWidget::setTabOrder(sketch_pushButton, ok_pushButton);
-        QWidget::setTabOrder(ok_pushButton, send_pushButton);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuAbout->menuAction());
@@ -539,6 +561,9 @@ public:
 #endif // QT_NO_TOOLTIP
         actionQuit->setShortcut(QApplication::translate("CobotKuka", "Esc", 0));
         actionAbout->setText(QApplication::translate("CobotKuka", "About", 0));
+        ok_pushButton->setText(QApplication::translate("CobotKuka", "> OK <", 0));
+        stop_pushButton->setText(QApplication::translate("CobotKuka", "STOP", 0));
+        send_pushButton->setText(QApplication::translate("CobotKuka", "-> Send <-", 0));
         mod_groupBox->setTitle(QString());
         svg_radioButton->setText(QApplication::translate("CobotKuka", "SVG", 0));
         svg_actions_groupBox->setTitle(QString());
@@ -564,8 +589,6 @@ public:
         connect_port_lineEdit->setText(QApplication::translate("CobotKuka", "9191", 0));
         connect_status_label->setText(QApplication::translate("CobotKuka", "Disconnected", 0));
         connect_pushButton->setText(QApplication::translate("CobotKuka", "Connect", 0));
-        send_pushButton->setText(QApplication::translate("CobotKuka", "-> Send <-", 0));
-        ok_pushButton->setText(QApplication::translate("CobotKuka", "> OK <", 0));
         menuFile->setTitle(QApplication::translate("CobotKuka", "File", 0));
         menuAbout->setTitle(QApplication::translate("CobotKuka", "About", 0));
     } // retranslateUi
