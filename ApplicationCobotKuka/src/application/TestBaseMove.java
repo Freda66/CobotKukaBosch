@@ -1,5 +1,9 @@
 package application;
 
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import serveur.TCPServer;
 
 import com.kuka.generated.ioAccess.MediaFlangeIOGroup;
@@ -18,8 +22,7 @@ import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 import com.kuka.roboticsAPI.motionModel.Spline;
 import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
-
-
+import com.kuka.roboticsAPI.publishing.common.ncf.serialization.json.JSONObject;
 /**
  * Classe TestBaseMove
  * @author Bosch, Berriche, Cano, Danjoux, Durand, Olivieri
@@ -96,7 +99,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 * 
 	 */
 	public void initialize() {
-		
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
 		serveur = new TCPServer();
 		
@@ -130,10 +132,10 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		// On définit les points du parcours
 		P1 = new Frame(0.0, 0.0, 0.0);
-		P2 = new Frame(20.0, 40.0, 0.0);
-		P3 = new Frame(40.0, 0.0, 0.0);
-		P4 = new Frame(10.0, 20.0, 0.0);
-		P5 = new Frame(30.0, 20.0, 0.0);
+		P2 = new Frame(0.0, 0.0, 0.0);
+		P3 = new Frame(0.0, 0.0, 0.0);
+		P4 = new Frame(0.0, 0.0, 0.0);
+		P5 = new Frame(0.0, 0.0, 0.0);
 		
 		trajectory = new Frame[3];
 		trajectory2 = new Frame[2];
@@ -143,7 +145,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		trajectory[2] = P3;
 		
 		trajectory2[0] = P4;
-		trajectory2[0] = P5; 
+		trajectory2[0] = P5;
+		
 		
 		
 		/*curve = new BezierCurve(P1, P2, P3, P0);
@@ -168,6 +171,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		//Paper approach
 		double velocity = 0.2;
+		
+		String message = "";
 		
 		ISafetyState currentState = lbr_iiwa_14_R820_1.getSafetyState();
 		OperationMode mode = currentState.getOperationMode();
@@ -203,13 +208,30 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			// Attend la connexion et le message du client
 			this.serveur.run();
 			
+			message = this.serveur.getMessage();
+			
 			// Verifie le message du client
-			if(this.serveur.getMessage() == "stop") {
+			if(message == "stop") {
 				this.serveur.closeServer(); // Arrete le serveur
 				end = true; // Indique que la boucle est terminée
 			} 
 			// Si le message est différent de vide on rentre dans la condition / Sinon on attend un nouveau message du client
-			else if (this.serveur.getMessage() != ""){
+			else if (message != ""){
+				
+				try {
+					org.json.JSONObject jObject  = new org.json.JSONObject(message);
+					org.json.JSONArray jArray = jObject.getJSONArray("svg");
+					for (int i = 0; i < 3; i++) {
+						org.json.JSONObject jArray2 = jArray.getJSONObject(i);
+						trajectory[i].setX(jArray2.getInt("x"));
+						trajectory[i].setY(jArray2.getInt("y"));
+					}
+				} catch (JSONException e) {
+					// TODO Bloc catch généré automatiquement
+					e.printStackTrace();
+				}
+				
+				
 				
 				getLogger().info("Message du client : " + this.serveur.getMessage());
 				
@@ -262,7 +284,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						linMovement.setJointVelocityRel(velocity)
 					);
 				
-				getLogger().info("Move to second spline");
+				/*getLogger().info("Move to second spline");
 				
 				linMovement = new Spline(
 						
@@ -288,7 +310,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				penToolTCP.move(
 						linMovement.setJointVelocityRel(velocity)
-					);
+					);*/
 				
 				// On rmeonte le stylo
 				linMovement = new Spline(

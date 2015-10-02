@@ -22,5 +22,7 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/KUKAIMERIR/KUKAJavaLib/applicationServer.publishing-javadoc.zip!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/marc/Telechargements/org.json.jar/org.json.jar"/>
+	<classpathentry kind="lib" path="D:/marc/Telechargements/jersey-bundle-1.19.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
