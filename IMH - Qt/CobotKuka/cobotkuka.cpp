@@ -180,11 +180,9 @@ void CobotKuka::on_send_pushButton_clicked()
 {
 	/* DEBUG */
 	QString tst = "[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]";
-	QString tst2 = "[{\"x\":50,\"y\":50},{\"x\":80,\"y\":80},{\"x\":44,\"y\":12},{\"x\":48,\"y\":18}]";
-	QString tst3 = "[{\"x\":99,\"y\":99},{\"x\":88,\"y\":55}]";
+	QString tst2 = "[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]";
 	jsonChainList.append(tst);
 	jsonChainList.append(tst2);
-	jsonChainList.append(tst3);
 
 	//creation de la socket et connection au serveur
 	if(!connected) {
