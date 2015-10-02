@@ -2,12 +2,9 @@ package Serveur;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.ClassNotFoundException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Arrays;
  
 /**
  * Classe du serveur TCP
@@ -24,18 +21,42 @@ public class TCPServer {
     private String message; // Message client
     private char[] characters; // Message du buffer
     private int sizeChar; // Taille max du message
+    private boolean isRun = false; // Boolean qui indique si le serveur est en marche
     
     /**
-     * Constructeur
+     * Constructeur par defaut
      * @throws IOException 
      */
     public TCPServer() throws IOException {
         port = 9191; // Port socket du serveur
         message = ""; // Initialisation du message
-        server = new ServerSocket(port); // Créer un objet ServerSocket
         sizeChar = 4096; // Fixe la taille du nombre de caractere
         characters = new char[sizeChar]; // Chaine de caractere
-        System.out.println("Serveur connecté"); // Log le démarrage du serveur socket
+        // Demarre le serveur
+        try {
+			server = new ServerSocket(port); // Créer un objet ServerSocket
+			isRun = true; // Serveur en marche
+	        System.out.println("Serveur connecté"); // Log le démarrage du serveur socket
+		} catch (IOException e) { closeServer(); System.out.println("Erreur : " + e); } 
+    }
+    
+    /**
+     * Constructeur surcharge 
+     * @param port : port d'ecoute du serveur pour le client IHM
+     * @param sizeBuffer : taille du tableau de char pour la lecture du buffer
+     * @throws IOException
+     */
+    public TCPServer(int p, int sizeBuffer) throws IOException {
+        port = p; // Port socket du serveur
+        message = ""; // Initialisation du message
+        sizeChar = sizeBuffer; // Fixe la taille du nombre de caractere
+        characters = new char[sizeChar]; // Chaine de caractere
+        // Demarre le serveur
+        try {
+			server = new ServerSocket(port); // Créer un objet ServerSocket  
+			isRun = true; // Serveur en marche
+	        System.out.println("Serveur connecté"); // Log le démarrage du serveur socket
+		} catch (IOException e) { closeServer(); System.out.println("Erreur : " + e); }   
     }
     
     /**
@@ -51,9 +72,12 @@ public class TCPServer {
 	        // Créer un objet pour lire le message du client dans la socket
 	        InputStreamReader isr = new InputStreamReader(socket.getInputStream(),"utf-8");
 	        // Lit le buffer
-	        isr.read(characters);
+	        int bytesread = isr.read(characters);
+
 	        // Converti le char en string
 		    message = new String(characters);
+		    // Recupère la sous chaine du message
+		    message = message.substring(0, bytesread);
 		    
 		    // Initialise le char
 		    characters = new char[sizeChar]; 
@@ -61,27 +85,27 @@ public class TCPServer {
 	        isr.close();
 	        socket.close();
 	
-	        System.out.println("Message du client (IHM) : " +  this.getMessage()); // Log le message
+	        System.out.println("Message du client (IHM) : " +  getMessage()); // Log le message
         } catch(Exception e){
-        	 this.setMessage(""); // Vide le message
+        	message = ""; // Vide le message
         	System.out.println("Erreur lors de la réception du message du client (IHM) : " + e); // Log le message d'erreur
         }
     }
    
     /**
-     * Accesseurs get
+     * Accesseurs get message
      * @return String (message client)
      */
 	public String getMessage() {
 		return message;
 	}
-
-	/**
-	 * Accesseur set
-	 * @param message
-	 */
-	public void setMessage(String message) {
-		this.message = message;
+    
+    /**
+     * Accesseurs get isRun
+     * @return boolean (serveur en cours ?)
+     */
+	public boolean getIsRun() {
+		return isRun;
 	}
     
 	/**
@@ -89,7 +113,8 @@ public class TCPServer {
 	 * @throws IOException
 	 */
     public void closeServer() throws IOException{
-    	this.server.close();
+    	server.close(); // Arrete le serveur
+    	isRun = false; // Serveur en marche
         System.out.println("Serveur arreté"); // Log l'arret du serveur socket
     }
 }

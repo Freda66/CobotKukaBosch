@@ -23,11 +23,24 @@ public class TCPClient {
     int portSocket;
     
     /**
-     * Constructeur
+     * Constructeur par defaut
      */
     public TCPClient(){
-    	this.ipServeurKuka = "172.30.1.125"; //"192.168.1.7";
+    	this.ipServeurKuka = "192.168.1.7"; 
     	this.portSocket = 30004;
+    	socket = null;
+    	oos = null;
+    	ois = null;
+    }
+    
+    /**
+     * Constructeur surcharge
+     * @param ip : IP du robot kuka
+     * @param port : Port de communication du robot kuka
+     */
+    public TCPClient(String ip, int port){
+    	this.ipServeurKuka = ip; 
+    	this.portSocket = port;
     	socket = null;
     	oos = null;
     	ois = null;
@@ -40,7 +53,7 @@ public class TCPClient {
      * @throws ClassNotFoundException 
      */
     public void sendMessage(String message) throws UnknownHostException, IOException, ClassNotFoundException{
-    	try{
+    	try {
     		// Créer la socket
 	        socket = new Socket(ipServeurKuka, portSocket); 
 	        
@@ -49,18 +62,11 @@ public class TCPClient {
 	        // Ecrit le message
 	        oos.writeObject(message);
 	
-	        // Créer un objet InputStream pour lire le message du serveur dans la socket
-	        //ois = new ObjectInputStream(socket.getInputStream());
-	        // Lit le message de reponse du serveur
-	        //String messageReponse = (String) ois.readObject();
-	       
 	        // Ferme les ressources
-	        //ois.close();
 	        oos.flush();
 	        oos.close();
-	        
-	        //System.out.println("Message du serveur kuka : " + messageReponse+"\n");  // Log le message
-    	} catch(Exception e){
+	        socket.close(); 
+    	} catch(Exception e) {
         	System.out.println("Erreur lors de la connexion ou l'envoi du message au serveur kuka : " + e); // Log le message d'erreur
     	}
     }
