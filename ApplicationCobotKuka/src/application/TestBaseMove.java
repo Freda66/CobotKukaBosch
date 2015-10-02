@@ -1,6 +1,8 @@
 package application;
 
 
+import java.util.ArrayList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -61,10 +63,9 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private ObjectFrame nearPaper0;
 	private ObjectFrame paperApproach;
 	
-	//private BezierCurve curve;
+	//private BezierCurve curve
 	
-	private Frame[] trajectory;
-	private Frame[] trajectory2;
+	//private Frame[][] trajectory;
 	
 	
 	//private Frame[] frames;
@@ -130,7 +131,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		nearPaper0 = getApplicationData().getFrame("/Paper/NearPaper0");
 		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
 		
-		// On définit les points du parcours
+		/*// On définit les points du parcours
 		P1 = new Frame(0.0, 0.0, 0.0);
 		P2 = new Frame(0.0, 0.0, 0.0);
 		P3 = new Frame(0.0, 0.0, 0.0);
@@ -145,7 +146,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		trajectory[2] = P3;
 		
 		trajectory2[0] = P4;
-		trajectory2[0] = P5;
+		trajectory2[0] = P5;*/
 		
 		
 		
@@ -173,6 +174,9 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		double velocity = 0.2;
 		
 		String message = "";
+		
+		ArrayList<Spline> alSpline = new ArrayList<Spline>();
+		ArrayList<ArrayList<Frame>> trajectories = new ArrayList<ArrayList<Frame>>();
 		
 		ISafetyState currentState = lbr_iiwa_14_R820_1.getSafetyState();
 		OperationMode mode = currentState.getOperationMode();
@@ -219,27 +223,55 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			else if (message != ""){
 				
 				try {
-					org.json.JSONObject jObject  = new org.json.JSONObject(message);
-					org.json.JSONArray jArray = jObject.getJSONArray("svg");
-					for (int i = 0; i < 3; i++) {
-						org.json.JSONObject jArray2 = jArray.getJSONObject(i);
-						trajectory[i].setX(jArray2.getInt("x"));
-						trajectory[i].setY(jArray2.getInt("y"));
+					// On récupère la chaîne de caractère qu'on converti en JSON
+					org.json.JSONObject jMainObject  = new org.json.JSONObject(message);
+					// On récupère l'objet principale
+					org.json.JSONArray jArray = jMainObject.getJSONArray("svg");
+					// On parcours chaque tableau
+					for (int j = 0; j < jMainObject.length(); j++) {
+						// On récupère le tableau en question
+						org.json.JSONArray jArray2 = jArray.getJSONArray(j);
+						// On créé l'ArrayList qui va récupérer les Frames
+						ArrayList<Frame> trajectories2 = new ArrayList<Frame>();
+						// On parcours chaque élément du tableau
+						for (int i = 0; i < jArray2.length(); i++) {
+							if (j != 0 && i == 0) {
+								alSpline.add(new Spline(linRel(getTranslationFromFrame(trajectories, frameDestination))))
+							}
+							// On récupère le dit-élément
+							org.json.JSONObject jArrayObject = jArray2.getJSONObject(i);
+							// On créé les Frames (points) qu'on stock dans une ArrayList
+							trajectories2.add(new Frame(jArrayObject.getInt("x"), jArrayObject.getInt("y"), 0.0));
+						}
+						
+						trajectories.add(trajectories2);
+							
+						// On enregistre les mouvements dans une ArrayList
+						for (int i = 0; i < trajectories2.size() - 1; i++) {
+							alSpline.add(new Spline( linRel(getTranslationFromFrame(trajectories2.get(i), trajectories2.get(i + 1)), paperBase)));
+						}
 					}
 				} catch (JSONException e) {
 					// TODO Bloc catch généré automatiquement
 					e.printStackTrace();
-				}
-				
-				
+				}				
 				
 				getLogger().info("Message du client : " + this.serveur.getMessage());
 				
-				Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), new Frame(P1.getX(), P1.getY(), P1.getZ())), paperBase));
+				Spline linMovement = new Spline(linRel(getTranslationFromFrame(
+						new Frame(paperApproach.getX(), 
+								paperApproach.getY(), 
+								paperApproach.getZ()),
+						new Frame(((Frame)trajectories.get(0).get(0)).getX(), 
+								((Frame) trajectories.get(0).get(0)).getY(), 
+								0.0)), 
+						paperBase));
 				
 				penToolTCP.move(
 						linMovement.setJointVelocityRel(velocity)
 					);
+				
+				
 				
 				getLogger().info("Move on paper");
 				
