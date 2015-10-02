@@ -22,7 +22,7 @@ public class Main {
     	// Gestion du serveur
     	if(server.getIsRun()){
     		// Tant qu'on ne demande pas d'arreter le robot et le serveur
-	    	while(server.getMessage() != "stop"){
+	    	while(server.getMessage().equals("stop") == false){
 	    		// Attente d'un message par le client (IHM)
 	    		server.listenSocket();
 	    		// Envoi le message au serveur kuka

@@ -113,8 +113,8 @@ public class TCPServer {
 	 * @throws IOException
 	 */
     public void closeServer() throws IOException{
-    	server.close(); // Arrete le serveur
-    	isRun = false; // Serveur en marche
         System.out.println("Serveur arreté"); // Log l'arret du serveur socket
+    	isRun = false; // Serveur en marche
+    	server.close(); // Arrete le serveur
     }
 }
