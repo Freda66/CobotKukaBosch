@@ -141,12 +141,11 @@ void CobotKuka::on_svg_file_pushButton_clicked()
 	//show it. return 1 if OK and 0 otherwise.
 	int res = filedialog->exec();
 	if(res){
+		//recupere le path du fichier
 		svgFile = filedialog->selectedFiles().takeFirst();
-		//TODO : get this working
-		svgrenderer = new QSvgRenderer(this);
-		svgrenderer->load(svgFile);
 		ui->svg_file_lineEdit->setText(svgFile);
 
+		//une fois le json generé, on peut l'envoyer.
 		activate_OK_pushButton();
 	}
 }
@@ -155,7 +154,8 @@ void CobotKuka::on_ok_pushButton_clicked()
 {
 	if(ui->svg_radioButton->isChecked()){
 		qDebug() << "svg button is checked";
-		/* TODO : traitement pour extraire points d'un svg */
+		//decode le fichier pour obtenir le json
+		getJsonFromSvg(svgFile);
 	}
 	else if(ui->text_radioButton->isChecked()){
 		qDebug() << "text button is checked";
@@ -302,6 +302,10 @@ void CobotKuka::on_CobotKuka_destroyed()
 
 void CobotKuka::on_text_text_lineEdit_editingFinished()
 {
+	/*QString aaa = ui->text_font_fontComboBox->currentText();
+	QFont currentFont = ui->text_font_fontComboBox->currentFont();
+	DWORD outline = GetGlyphOutlineW(this, (uint)aaa.at(0), GGO_BEZIER, );
+	*/
 	activate_OK_pushButton();
 }
 
@@ -367,7 +371,7 @@ void CobotKuka::on_sketch_pushButton_clicked()
 void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 
 
-	ui->stop_pushButton->setEnabled(true);
+//	ui->stop_pushButton->setEnabled(true);
 	/* coordonnes pour dessiner un A
 	 * 0,0
 	 * 20,40
@@ -407,6 +411,7 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 	foreach (QString str, jsonList) {
 		if(str != jsonList.first()) finalchain += ",";
 		finalchain += str;
+		jsonChainList.pop_front();
 		qDebug() << "str -> " << str;
 	}
 	finalchain += "]}";
@@ -417,4 +422,111 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 	}
 	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
 
+}
+
+void CobotKuka::getJsonFromSvg(QString svgpath){
+
+
+	QString json="";
+
+	QDomDocument *dom = new QDomDocument("MonDom");
+
+	QFile svg_doc(svgpath);
+	if (!svg_doc.open(QIODevice::ReadOnly)) {
+		qDebug("false");
+	}
+
+	else {
+	}
+
+
+	dom->setContent(&svg_doc);
+
+	QDomElement dom_element = dom->documentElement();
+	QDomNode node = dom_element.firstChild(); //balise d
+	node = node.firstChild();
+	QString ligne= "";
+
+
+
+	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
+
+		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
+
+
+		int nb = charList.count(); //compter le nombre d'élément dans la liste
+
+		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			ligne+=" "+charList.at(j).toLatin1().replace("\n","");
+
+		}
+
+		// Création d'une liste avec chaque paramètre
+		QStringList query = ligne.split(" ");
+
+		json=+"";
+
+		for (QStringList::iterator it = query.begin();it != query.end(); ++it) {
+			int index = std::distance(query.begin(), it);
+
+				QString str = *it;
+				QString jsonelement="";
+			   if(str!="")
+			   {
+				   if(str.startsWith("M"))
+				   {
+						jsonelement+="M:["+QString("%1").arg(str.right(str.size()-1));
+						jsonelement+=",";
+				   }
+				   else if(str.startsWith("m"))
+				   {
+					   jsonelement+=",m:["+QString("%1").arg(str.right(str.size()-1));
+				   }
+				   else if(str.startsWith("c"))
+				   {
+					   jsonelement+="],c:["+QString("%1").arg(str.right(str.size()-1));
+						jsonelement+=",";
+				   }
+				   else if(str.startsWith("l"))
+				   {
+					   jsonelement+="],l:["+QString("%1").arg(str.right(str.size()-1));
+						jsonelement+=",";
+				   }
+				   else if (str.endsWith("z"))
+				   {
+					  jsonelement+="]";
+					  jsonelement+="}\n";
+				   }
+				   else
+				   {
+					   jsonelement+=QString("%1").arg(str);
+					   jsonelement+=",";
+				   }
+
+				   json+=jsonelement;
+
+
+
+			   }
+
+		}
+
+		json=json.replace("\n","");
+		json=json.replace(",]","]");
+		json=json.replace("M","{\"M\"");
+		json=json.replace("c","\"c\"");
+		json=json.replace("l","\"l\"");
+		json=json.replace("m","\"m\"");
+		json=json.replace("\n\"","");
+
+		qDebug() <<json +"\n\r";
+
+		//TODO : expression reguliere et methode pour corriger chaine.
+		//QRegExp("(/d)-(/d)")
+
+		//ajoute le json à la liste des vecteurs
+		jsonChainList.append(json);
+		node = node.nextSibling(); //Aller au Path suivant
+
+	}
 }

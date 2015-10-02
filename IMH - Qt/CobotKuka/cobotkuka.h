@@ -13,7 +13,10 @@
 #include <QHostAddress>
 
 #include "json.h"
+#include <wingdi.h>
 
+#include <QtXml/QtXml>
+#include <iostream>
 
 namespace Ui {
 class CobotKuka;
@@ -39,6 +42,7 @@ public:
 	void writeJSONToServer(const QStringList& jsonList);
 	bool connectToServer();
 	bool disconnectFromServer();
+	void getJsonFromSvg(QString svgpath);
 
 
 private slots:
