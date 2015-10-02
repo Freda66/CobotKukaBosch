@@ -1,12 +1,14 @@
 package application;
 
 
-import java.io.IOException;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import serveur.TCPServer;
 
 import com.kuka.generated.ioAccess.MediaFlangeIOGroup;
 import com.kuka.roboticsAPI.applicationModel.RoboticsAPIApplication;
 import static com.kuka.roboticsAPI.motionModel.BasicMotions.*;
-
 import com.kuka.roboticsAPI.controllerModel.Controller;
 import com.kuka.roboticsAPI.controllerModel.sunrise.ISafetyState;
 import com.kuka.roboticsAPI.deviceModel.LBR;
@@ -20,13 +22,19 @@ import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 import com.kuka.roboticsAPI.motionModel.Spline;
 import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
-
-
-/* Test des mouvements du robot Kuka avec la base "Paper"
- * 
+import com.kuka.roboticsAPI.publishing.common.ncf.serialization.json.JSONObject;
+/**
+ * Classe TestBaseMove
+ * @author Bosch, Berriche, Cano, Danjoux, Durand, Olivieri
+ * @date 29/09/2015
  */
-
 public class TestBaseMove extends RoboticsAPIApplication {
+	
+	/**
+	 * Variables 
+	 */
+	private TCPServer serveur; // Objet Serveur
+	
 	private Controller kuka_Sunrise_Cabinet_1;
 	private LBR lbr_iiwa_14_R820_1;
 
@@ -61,8 +69,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	
 	//private Frame[] frames;
 	
-	private TCPServer serveur;
-	private int arret =0;
 	
 	
 	/*private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
@@ -74,6 +80,12 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				);
 	}*/
 	
+	/**
+	 * 
+	 * @param frameBefore
+	 * @param frameDestination
+	 * @return
+	 */
 	private Transformation getTranslationFromFrame(Frame frameBefore, Frame frameDestination)
 	{
 		return Transformation.ofTranslation(
@@ -83,15 +95,12 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				);
 	}
 	
+	/**
+	 * 
+	 */
 	public void initialize() {
-		
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
-		try {
-			TCPServer serveur = new TCPServer();
-		} catch (IOException e) {
-			// TODO Bloc catch généré automatiquement
-			e.printStackTrace();
-		}
+		serveur = new TCPServer();
 		
 		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1, "LBR_iiwa_14_R820_1");
@@ -123,10 +132,10 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		// On définit les points du parcours
 		P1 = new Frame(0.0, 0.0, 0.0);
-		P2 = new Frame(20.0, 40.0, 0.0);
-		P3 = new Frame(40.0, 0.0, 0.0);
-		P4 = new Frame(10.0, 20.0, 0.0);
-		P5 = new Frame(30.0, 20.0, 0.0);
+		P2 = new Frame(0.0, 0.0, 0.0);
+		P3 = new Frame(0.0, 0.0, 0.0);
+		P4 = new Frame(0.0, 0.0, 0.0);
+		P5 = new Frame(0.0, 0.0, 0.0);
 		
 		trajectory = new Frame[3];
 		trajectory2 = new Frame[2];
@@ -136,7 +145,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		trajectory[2] = P3;
 		
 		trajectory2[0] = P4;
-		trajectory2[0] = P5; 
+		trajectory2[0] = P5;
+		
 		
 		
 		/*curve = new BezierCurve(P1, P2, P3, P0);
@@ -154,10 +164,15 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		getLogger().info("Initialization OK");
 	}
 
+	/**
+	 * 
+	 */
 	public void run() {
 		
 		//Paper approach
 		double velocity = 0.2;
+		
+		String message = "";
 		
 		ISafetyState currentState = lbr_iiwa_14_R820_1.getSafetyState();
 		OperationMode mode = currentState.getOperationMode();
@@ -183,17 +198,42 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				ptp(paperApproach).setJointVelocityRel(velocity)
 			);
 		
+		// Boolean qui indique la fin du dessin et du programme
 		boolean end = false;
+		// Tant que le boolean est faux on reste dans la boucle
 		while(!end)
 		{
-			// Attend message client
+			getLogger().info("Serveur en attente de commandes");
+			
+			// Attend la connexion et le message du client
 			this.serveur.run();
 			
+			message = this.serveur.getMessage();
+			
 			// Verifie le message du client
-			if(this.serveur.getMessage() == "stop") {
-				this.serveur.closeServer();
-				end = true;
-			} else if (this.serveur.getMessage() != ""){
+			if(message == "stop") {
+				this.serveur.closeServer(); // Arrete le serveur
+				end = true; // Indique que la boucle est terminée
+			} 
+			// Si le message est différent de vide on rentre dans la condition / Sinon on attend un nouveau message du client
+			else if (message != ""){
+				
+				try {
+					org.json.JSONObject jObject  = new org.json.JSONObject(message);
+					org.json.JSONArray jArray = jObject.getJSONArray("svg");
+					for (int i = 0; i < 3; i++) {
+						org.json.JSONObject jArray2 = jArray.getJSONObject(i);
+						trajectory[i].setX(jArray2.getInt("x"));
+						trajectory[i].setY(jArray2.getInt("y"));
+					}
+				} catch (JSONException e) {
+					// TODO Bloc catch généré automatiquement
+					e.printStackTrace();
+				}
+				
+				
+				
+				getLogger().info("Message du client : " + this.serveur.getMessage());
 				
 				Spline linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), new Frame(P1.getX(), P1.getY(), P1.getZ())), paperBase));
 				
@@ -244,7 +284,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						linMovement.setJointVelocityRel(velocity)
 					);
 				
-				getLogger().info("Move to second spline");
+				/*getLogger().info("Move to second spline");
 				
 				linMovement = new Spline(
 						
@@ -270,7 +310,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				
 				penToolTCP.move(
 						linMovement.setJointVelocityRel(velocity)
-					);
+					);*/
 				
 				// On rmeonte le stylo
 				linMovement = new Spline(
@@ -283,29 +323,31 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						linMovement.setJointVelocityRel(velocity)
 					);
 				
+				// Vide la valeur du message du serveur
 				this.serveur.setMessage("");
 			}
 		}
 		
 		// Initialise la position du robot
-		getLogger().info("Go back to home");
+		getLogger().info("Retour position initiale");
 		
 		penToolTCP.move( lin(paperApproach).setJointVelocityRel(velocity));
 		
 		SplineJP moveBackToHome = new SplineJP( ptpHome());
 		
 		getLogger().info("Move Back");
-		lbr_iiwa_14_R820_1.move(
-				moveBackToHome.setJointVelocityRel(velocity)
-			);
+		lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
 		
 		ioFlange.setLEDBlue(false);
 	}
 
-	
+	/**
+	 * Entrée principale du programme
+	 * Lancement de l'application 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		TestBaseMove app = new TestBaseMove();
 		app.runApplication();
-		
 	}
 }
