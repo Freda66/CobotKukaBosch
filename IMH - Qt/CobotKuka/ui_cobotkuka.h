@@ -40,17 +40,6 @@ public:
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout_7;
     QGridLayout *global_gridLayout;
-    QHBoxLayout *connect_horizontalLayout;
-    QGroupBox *connect_groupBox;
-    QHBoxLayout *horizontalLayout;
-    QLabel *connect_ip_label;
-    QLineEdit *connect_ip_lineEdit;
-    QLabel *connect_port_label;
-    QLineEdit *connect_port_lineEdit;
-    QSpacerItem *connect_horizontalSpacer;
-    QLabel *connect_status_label;
-    QPushButton *connect_pushButton;
-    QPushButton *send_pushButton;
     QGroupBox *mod_groupBox;
     QGridLayout *gridLayout;
     QGridLayout *mod_gridLayout;
@@ -91,12 +80,24 @@ public:
     QGroupBox *sketch_actions_groupBox;
     QVBoxLayout *verticalLayout_3;
     QPushButton *sketch_pushButton;
+    QHBoxLayout *connect_horizontalLayout;
+    QGroupBox *connect_groupBox;
+    QHBoxLayout *horizontalLayout;
+    QLabel *connect_ip_label;
+    QLineEdit *connect_ip_lineEdit;
+    QLabel *connect_port_label;
+    QLineEdit *connect_port_lineEdit;
+    QSpacerItem *connect_horizontalSpacer;
+    QLabel *connect_status_label;
+    QPushButton *connect_pushButton;
+    QPushButton *send_pushButton;
+    QPushButton *ok_pushButton;
     QMenuBar *menuBar;
     QMenu *menuFile;
     QMenu *menuAbout;
     QStatusBar *statusBar;
-    QButtonGroup *buttonGroup_Picture;
     QButtonGroup *buttonGroup_Mod;
+    QButtonGroup *buttonGroup_Picture;
 
     void setupUi(QMainWindow *CobotKuka)
     {
@@ -124,89 +125,6 @@ public:
         global_gridLayout->setSpacing(6);
         global_gridLayout->setObjectName(QStringLiteral("global_gridLayout"));
         global_gridLayout->setSizeConstraint(QLayout::SetMaximumSize);
-        connect_horizontalLayout = new QHBoxLayout();
-        connect_horizontalLayout->setSpacing(5);
-        connect_horizontalLayout->setObjectName(QStringLiteral("connect_horizontalLayout"));
-        connect_horizontalLayout->setSizeConstraint(QLayout::SetFixedSize);
-        connect_horizontalLayout->setContentsMargins(0, -1, -1, -1);
-        connect_groupBox = new QGroupBox(centralWidget);
-        connect_groupBox->setObjectName(QStringLiteral("connect_groupBox"));
-        connect_groupBox->setFlat(true);
-        horizontalLayout = new QHBoxLayout(connect_groupBox);
-        horizontalLayout->setSpacing(5);
-        horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
-        horizontalLayout->setContentsMargins(2, 2, 2, 2);
-        connect_ip_label = new QLabel(connect_groupBox);
-        connect_ip_label->setObjectName(QStringLiteral("connect_ip_label"));
-
-        horizontalLayout->addWidget(connect_ip_label);
-
-        connect_ip_lineEdit = new QLineEdit(connect_groupBox);
-        connect_ip_lineEdit->setObjectName(QStringLiteral("connect_ip_lineEdit"));
-        QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        sizePolicy1.setHorizontalStretch(0);
-        sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(connect_ip_lineEdit->sizePolicy().hasHeightForWidth());
-        connect_ip_lineEdit->setSizePolicy(sizePolicy1);
-        connect_ip_lineEdit->setMaxLength(15);
-        connect_ip_lineEdit->setCursorMoveStyle(Qt::VisualMoveStyle);
-        connect_ip_lineEdit->setClearButtonEnabled(true);
-
-        horizontalLayout->addWidget(connect_ip_lineEdit);
-
-        connect_port_label = new QLabel(connect_groupBox);
-        connect_port_label->setObjectName(QStringLiteral("connect_port_label"));
-
-        horizontalLayout->addWidget(connect_port_label);
-
-        connect_port_lineEdit = new QLineEdit(connect_groupBox);
-        connect_port_lineEdit->setObjectName(QStringLiteral("connect_port_lineEdit"));
-        sizePolicy1.setHeightForWidth(connect_port_lineEdit->sizePolicy().hasHeightForWidth());
-        connect_port_lineEdit->setSizePolicy(sizePolicy1);
-        connect_port_lineEdit->setInputMethodHints(Qt::ImhDigitsOnly);
-        connect_port_lineEdit->setMaxLength(5);
-        connect_port_lineEdit->setCursorMoveStyle(Qt::VisualMoveStyle);
-        connect_port_lineEdit->setClearButtonEnabled(true);
-
-        horizontalLayout->addWidget(connect_port_lineEdit);
-
-
-        connect_horizontalLayout->addWidget(connect_groupBox);
-
-        connect_horizontalSpacer = new QSpacerItem(10, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-
-        connect_horizontalLayout->addItem(connect_horizontalSpacer);
-
-        connect_status_label = new QLabel(centralWidget);
-        connect_status_label->setObjectName(QStringLiteral("connect_status_label"));
-        connect_status_label->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
-        connect_status_label->setTextFormat(Qt::AutoText);
-
-        connect_horizontalLayout->addWidget(connect_status_label);
-
-        connect_pushButton = new QPushButton(centralWidget);
-        connect_pushButton->setObjectName(QStringLiteral("connect_pushButton"));
-        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
-        sizePolicy2.setHorizontalStretch(0);
-        sizePolicy2.setVerticalStretch(0);
-        sizePolicy2.setHeightForWidth(connect_pushButton->sizePolicy().hasHeightForWidth());
-        connect_pushButton->setSizePolicy(sizePolicy2);
-        connect_pushButton->setCheckable(true);
-        connect_pushButton->setAutoDefault(false);
-        connect_pushButton->setDefault(true);
-        connect_pushButton->setFlat(false);
-
-        connect_horizontalLayout->addWidget(connect_pushButton);
-
-
-        global_gridLayout->addLayout(connect_horizontalLayout, 0, 1, 1, 1);
-
-        send_pushButton = new QPushButton(centralWidget);
-        send_pushButton->setObjectName(QStringLiteral("send_pushButton"));
-
-        global_gridLayout->addWidget(send_pushButton, 2, 0, 1, 3);
-
         mod_groupBox = new QGroupBox(centralWidget);
         mod_groupBox->setObjectName(QStringLiteral("mod_groupBox"));
         mod_groupBox->setAutoFillBackground(false);
@@ -308,17 +226,20 @@ public:
         text_font_horizontalLayout->setObjectName(QStringLiteral("text_font_horizontalLayout"));
         text_font_label = new QLabel(text_actions_groupBox);
         text_font_label->setObjectName(QStringLiteral("text_font_label"));
-        QSizePolicy sizePolicy3(QSizePolicy::Minimum, QSizePolicy::Preferred);
-        sizePolicy3.setHorizontalStretch(0);
-        sizePolicy3.setVerticalStretch(0);
-        sizePolicy3.setHeightForWidth(text_font_label->sizePolicy().hasHeightForWidth());
-        text_font_label->setSizePolicy(sizePolicy3);
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Preferred);
+        sizePolicy1.setHorizontalStretch(0);
+        sizePolicy1.setVerticalStretch(0);
+        sizePolicy1.setHeightForWidth(text_font_label->sizePolicy().hasHeightForWidth());
+        text_font_label->setSizePolicy(sizePolicy1);
         text_font_label->setMinimumSize(QSize(144, 0));
 
         text_font_horizontalLayout->addWidget(text_font_label);
 
         text_font_fontComboBox = new QFontComboBox(text_actions_groupBox);
         text_font_fontComboBox->setObjectName(QStringLiteral("text_font_fontComboBox"));
+        QSizePolicy sizePolicy2(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        sizePolicy2.setHorizontalStretch(0);
+        sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(text_font_fontComboBox->sizePolicy().hasHeightForWidth());
         text_font_fontComboBox->setSizePolicy(sizePolicy2);
 
@@ -471,6 +392,92 @@ public:
 
         global_gridLayout->addWidget(mod_groupBox, 1, 0, 1, 2);
 
+        connect_horizontalLayout = new QHBoxLayout();
+        connect_horizontalLayout->setSpacing(5);
+        connect_horizontalLayout->setObjectName(QStringLiteral("connect_horizontalLayout"));
+        connect_horizontalLayout->setSizeConstraint(QLayout::SetFixedSize);
+        connect_horizontalLayout->setContentsMargins(0, -1, -1, -1);
+        connect_groupBox = new QGroupBox(centralWidget);
+        connect_groupBox->setObjectName(QStringLiteral("connect_groupBox"));
+        connect_groupBox->setFlat(true);
+        horizontalLayout = new QHBoxLayout(connect_groupBox);
+        horizontalLayout->setSpacing(5);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setContentsMargins(2, 2, 2, 2);
+        connect_ip_label = new QLabel(connect_groupBox);
+        connect_ip_label->setObjectName(QStringLiteral("connect_ip_label"));
+
+        horizontalLayout->addWidget(connect_ip_label);
+
+        connect_ip_lineEdit = new QLineEdit(connect_groupBox);
+        connect_ip_lineEdit->setObjectName(QStringLiteral("connect_ip_lineEdit"));
+        QSizePolicy sizePolicy3(QSizePolicy::Fixed, QSizePolicy::Fixed);
+        sizePolicy3.setHorizontalStretch(0);
+        sizePolicy3.setVerticalStretch(0);
+        sizePolicy3.setHeightForWidth(connect_ip_lineEdit->sizePolicy().hasHeightForWidth());
+        connect_ip_lineEdit->setSizePolicy(sizePolicy3);
+        connect_ip_lineEdit->setMaxLength(15);
+        connect_ip_lineEdit->setCursorMoveStyle(Qt::VisualMoveStyle);
+        connect_ip_lineEdit->setClearButtonEnabled(true);
+
+        horizontalLayout->addWidget(connect_ip_lineEdit);
+
+        connect_port_label = new QLabel(connect_groupBox);
+        connect_port_label->setObjectName(QStringLiteral("connect_port_label"));
+
+        horizontalLayout->addWidget(connect_port_label);
+
+        connect_port_lineEdit = new QLineEdit(connect_groupBox);
+        connect_port_lineEdit->setObjectName(QStringLiteral("connect_port_lineEdit"));
+        sizePolicy3.setHeightForWidth(connect_port_lineEdit->sizePolicy().hasHeightForWidth());
+        connect_port_lineEdit->setSizePolicy(sizePolicy3);
+        connect_port_lineEdit->setInputMethodHints(Qt::ImhDigitsOnly);
+        connect_port_lineEdit->setMaxLength(5);
+        connect_port_lineEdit->setCursorMoveStyle(Qt::VisualMoveStyle);
+        connect_port_lineEdit->setClearButtonEnabled(true);
+
+        horizontalLayout->addWidget(connect_port_lineEdit);
+
+
+        connect_horizontalLayout->addWidget(connect_groupBox);
+
+        connect_horizontalSpacer = new QSpacerItem(10, 20, QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+
+        connect_horizontalLayout->addItem(connect_horizontalSpacer);
+
+        connect_status_label = new QLabel(centralWidget);
+        connect_status_label->setObjectName(QStringLiteral("connect_status_label"));
+        connect_status_label->setStyleSheet(QStringLiteral("QLabel { color : red; }"));
+        connect_status_label->setTextFormat(Qt::AutoText);
+
+        connect_horizontalLayout->addWidget(connect_status_label);
+
+        connect_pushButton = new QPushButton(centralWidget);
+        connect_pushButton->setObjectName(QStringLiteral("connect_pushButton"));
+        sizePolicy2.setHeightForWidth(connect_pushButton->sizePolicy().hasHeightForWidth());
+        connect_pushButton->setSizePolicy(sizePolicy2);
+        connect_pushButton->setCheckable(true);
+        connect_pushButton->setAutoDefault(false);
+        connect_pushButton->setDefault(true);
+        connect_pushButton->setFlat(false);
+
+        connect_horizontalLayout->addWidget(connect_pushButton);
+
+
+        global_gridLayout->addLayout(connect_horizontalLayout, 0, 1, 1, 1);
+
+        send_pushButton = new QPushButton(centralWidget);
+        send_pushButton->setObjectName(QStringLiteral("send_pushButton"));
+        send_pushButton->setEnabled(false);
+
+        global_gridLayout->addWidget(send_pushButton, 3, 0, 1, 3);
+
+        ok_pushButton = new QPushButton(centralWidget);
+        ok_pushButton->setObjectName(QStringLiteral("ok_pushButton"));
+
+        global_gridLayout->addWidget(ok_pushButton, 2, 0, 1, 2);
+
 
         horizontalLayout_7->addLayout(global_gridLayout);
 
@@ -486,6 +493,32 @@ public:
         statusBar = new QStatusBar(CobotKuka);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         CobotKuka->setStatusBar(statusBar);
+#ifndef QT_NO_SHORTCUT
+        svg_file_label->setBuddy(svg_file_lineEdit);
+        text_font_label->setBuddy(text_font_fontComboBox);
+        text_text_label->setBuddy(text_text_lineEdit);
+        connect_ip_label->setBuddy(connect_ip_lineEdit);
+        connect_port_label->setBuddy(connect_port_lineEdit);
+        connect_status_label->setBuddy(connect_pushButton);
+#endif // QT_NO_SHORTCUT
+        QWidget::setTabOrder(connect_ip_lineEdit, connect_port_lineEdit);
+        QWidget::setTabOrder(connect_port_lineEdit, connect_pushButton);
+        QWidget::setTabOrder(connect_pushButton, svg_radioButton);
+        QWidget::setTabOrder(svg_radioButton, svg_file_lineEdit);
+        QWidget::setTabOrder(svg_file_lineEdit, svg_file_pushButton);
+        QWidget::setTabOrder(svg_file_pushButton, text_radioButton);
+        QWidget::setTabOrder(text_radioButton, text_font_fontComboBox);
+        QWidget::setTabOrder(text_font_fontComboBox, text_text_lineEdit);
+        QWidget::setTabOrder(text_text_lineEdit, picture_radioButton);
+        QWidget::setTabOrder(picture_radioButton, picture_file_radioButton);
+        QWidget::setTabOrder(picture_file_radioButton, picture_file_lineEdit);
+        QWidget::setTabOrder(picture_file_lineEdit, picture_file_pushButton);
+        QWidget::setTabOrder(picture_file_pushButton, picture_webcam_radioButton);
+        QWidget::setTabOrder(picture_webcam_radioButton, picture_webcam_pushButton);
+        QWidget::setTabOrder(picture_webcam_pushButton, sketch_radioButton);
+        QWidget::setTabOrder(sketch_radioButton, sketch_pushButton);
+        QWidget::setTabOrder(sketch_pushButton, ok_pushButton);
+        QWidget::setTabOrder(ok_pushButton, send_pushButton);
 
         menuBar->addAction(menuFile->menuAction());
         menuBar->addAction(menuAbout->menuAction());
@@ -504,16 +537,8 @@ public:
 #ifndef QT_NO_TOOLTIP
         actionQuit->setToolTip(QApplication::translate("CobotKuka", "Disconnect from the server and exit the program", 0));
 #endif // QT_NO_TOOLTIP
-        actionQuit->setShortcut(QApplication::translate("CobotKuka", "Alt+Q, Esc", 0));
+        actionQuit->setShortcut(QApplication::translate("CobotKuka", "Esc", 0));
         actionAbout->setText(QApplication::translate("CobotKuka", "About", 0));
-        connect_groupBox->setTitle(QString());
-        connect_ip_label->setText(QApplication::translate("CobotKuka", "IP : ", 0));
-        connect_ip_lineEdit->setText(QString());
-        connect_port_label->setText(QApplication::translate("CobotKuka", "Port : ", 0));
-        connect_port_lineEdit->setText(QString());
-        connect_status_label->setText(QApplication::translate("CobotKuka", "Disconnected", 0));
-        connect_pushButton->setText(QApplication::translate("CobotKuka", "Connect", 0));
-        send_pushButton->setText(QApplication::translate("CobotKuka", "-> Send <-", 0));
         mod_groupBox->setTitle(QString());
         svg_radioButton->setText(QApplication::translate("CobotKuka", "SVG", 0));
         svg_actions_groupBox->setTitle(QString());
@@ -532,6 +557,15 @@ public:
         sketch_radioButton->setText(QApplication::translate("CobotKuka", "SKETCH", 0));
         sketch_actions_groupBox->setTitle(QString());
         sketch_pushButton->setText(QApplication::translate("CobotKuka", "Open Sketch Window", 0));
+        connect_groupBox->setTitle(QString());
+        connect_ip_label->setText(QApplication::translate("CobotKuka", "IP : ", 0));
+        connect_ip_lineEdit->setText(QApplication::translate("CobotKuka", "172.30.1.125", 0));
+        connect_port_label->setText(QApplication::translate("CobotKuka", "Port : ", 0));
+        connect_port_lineEdit->setText(QApplication::translate("CobotKuka", "9191", 0));
+        connect_status_label->setText(QApplication::translate("CobotKuka", "Disconnected", 0));
+        connect_pushButton->setText(QApplication::translate("CobotKuka", "Connect", 0));
+        send_pushButton->setText(QApplication::translate("CobotKuka", "-> Send <-", 0));
+        ok_pushButton->setText(QApplication::translate("CobotKuka", "> OK <", 0));
         menuFile->setTitle(QApplication::translate("CobotKuka", "File", 0));
         menuAbout->setTitle(QApplication::translate("CobotKuka", "About", 0));
     } // retranslateUi

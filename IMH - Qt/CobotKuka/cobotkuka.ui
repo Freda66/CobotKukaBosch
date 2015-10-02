@@ -615,7 +615,7 @@
               <set>Qt::ImhDigitsOnly</set>
              </property>
              <property name="text">
-              <string>30004</string>
+              <string>9191</string>
              </property>
              <property name="maxLength">
               <number>5</number>

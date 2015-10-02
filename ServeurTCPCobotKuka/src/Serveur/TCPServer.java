@@ -22,7 +22,8 @@ public class TCPServer {
     private ServerSocket server; // Variable static du ServerSocket 
     private int port; // Port d'ecoute du serveur socket 
     private String message; // Message client
-    private char[] characters; //
+    private char[] characters; // Message du buffer
+    private int sizeChar; // Taille max du message
     
     /**
      * Constructeur
@@ -32,7 +33,8 @@ public class TCPServer {
         port = 9191; // Port socket du serveur
         message = ""; // Initialisation du message
         server = new ServerSocket(port); // Créer un objet ServerSocket
-        characters = new char[255]; // 
+        sizeChar = 4096; // Fixe la taille du nombre de caractere
+        characters = new char[sizeChar]; // Chaine de caractere
         System.out.println("Serveur connecté"); // Log le démarrage du serveur socket
     }
     
@@ -53,6 +55,8 @@ public class TCPServer {
 	        // Converti le char en string
 		    message = new String(characters);
 		    
+		    // Initialise le char
+		    characters = new char[sizeChar]; 
 		    // Ferme les ressources
 	        isr.close();
 	        socket.close();
