@@ -17,7 +17,7 @@ public class Main {
     	// Créer le serveur pour écouter les commandes de dessin du client
     	TCPServer server = new TCPServer(9191, 4096); // Port du serveur (moi), longueur du char pour le buffer 
     	// Créer le client pour communiquer avec le serveur kuka
-    	TCPClient client = new TCPClient("192.168.1.7", 30004); // Ip et port du robot kuka
+    	TCPClient client = new TCPClient("192.168.1.7", 30001); // Ip et port du robot kuka
     	
     	// Gestion du serveur
     	if(server.getIsRun()){
