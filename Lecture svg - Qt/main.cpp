@@ -15,15 +15,14 @@ int main(int argc, char *argv[])
 
 	QDomDocument *dom = new QDomDocument("MonDom");
 
-<<<<<<< HEAD
-    QFile svg_doc("/Users/Mustapha/Qt/Projets/lireSvg/package7.svg");
-=======
+
+	//QFile svg_doc("/Users/Mustapha/Qt/Projets/lireSvg/package7.svg");
+
 	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/pirate.svg");
 	QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/line.svg");
 	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/city21.svg");
 
 
->>>>>>> 0be62175ab6f5593fb368ca86187b7df553aa8ca
 	if (!svg_doc.open(QIODevice::ReadOnly)) {
 		qDebug("false");
 	}
@@ -36,45 +35,43 @@ int main(int argc, char *argv[])
 	node = node.firstChild();
 	QString ligne= "";
 
-    /***/
-        QRegExp rx("(<g.+\n.+)\>");
+	/***/
+		QRegExp rx("(<g.+\n.+)\>");
 
-         QStringList list;
-         int pos = 0;
-         QString translate_property="";
-         QString scale_property="";
-         if((pos = rx.indexIn(dom->toString(), pos)) != -1)
-         {
-            QString nn=(QString)rx.cap(1);
-            QStringList charList =nn.split(' ');
-            QString chaineq="";
-            QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
+		 QStringList list;
+		 int pos = 0;
+		 QString translate_property="";
+		 QString scale_property="";
+		 if((pos = rx.indexIn(dom->toString(), pos)) != -1)
+		 {
+			QString nn=(QString)rx.cap(1);
+			QStringList charList =nn.split(' ');
+			QString chaineq="";
+			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
 
-            int nb = charList.count(); //compter le nombre d'élément dans la liste
-            for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-            QString chaine =charList.at(j).toLatin1().replace("\n"," ");
-                if(chaine.contains("translate") >= 1)
-                {
-                    QStringList query = chaine.split(rxproperties);
-                    translate_property+="{translate:x:"+query.at(1)+",y:"+query.at(2)+"}";
-                }else if(chaine.contains("scale") >= 1)
-                {
-                    QStringList query = chaine.split(rxproperties);
-                    scale_property+="{scale:x:"+query.at(1)+",y:"+query.at(2)+"}";
-                }
-            }
-         }
-        /***/
+			int nb = charList.count(); //compter le nombre d'élément dans la liste
+			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
+				if(chaine.contains("translate") >= 1)
+				{
+					QStringList query = chaine.split(rxproperties);
+					translate_property+="{translate:x:"+query.at(1)+",y:"+query.at(2)+"}";
+				}else if(chaine.contains("scale") >= 1)
+				{
+					QStringList query = chaine.split(rxproperties);
+					scale_property+="{scale:x:"+query.at(1)+",y:"+query.at(2)+"}";
+				}
+			}
+		 }
+		/***/
 
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
 		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
 
-<<<<<<< HEAD
-        ligne= "";
-=======
+
 		ligne = "";
->>>>>>> 0be62175ab6f5593fb368ca86187b7df553aa8ca
+
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
 
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
@@ -141,25 +138,25 @@ int main(int argc, char *argv[])
 		json=json.replace("m","\"m\"");
 		json=json.replace("\n\"","");
 
-        /*if(translate_property!="")
-        {
-            json= translate_property;
-        } */
+		/*if(translate_property!="")
+		{
+			json= translate_property;
+		} */
 
 		node = node.nextSibling(); //Aller au Path suivant
 
 	}
-    if(translate_property!="")
-    {
-        json= translate_property+","+json;
-    }
+	if(translate_property!="")
+	{
+		json= translate_property+","+json;
+	}
 
-    if(scale_property!="")
-    {
-        json= scale_property+","+json;
-    }
-    //json= translate_property+","+scale_property+","+json;
-    qDebug() <<json +"\n\r";
+	if(scale_property!="")
+	{
+		json= scale_property+","+json;
+	}
+	//json= translate_property+","+scale_property+","+json;
+	qDebug() <<json +"\n\r";
 
 	return 0;
 }
