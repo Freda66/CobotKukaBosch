@@ -15,15 +15,10 @@ int main(int argc, char *argv[])
 
 	QDomDocument *dom = new QDomDocument("MonDom");
 
-<<<<<<< HEAD
-    QFile svg_doc("/Users/Mustapha/Qt/Projets/lireSvg/package7.svg");
-=======
-	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/pirate.svg");
-	QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/line.svg");
-	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/city21.svg");
+
+    QFile svg_doc("/Users/Mustapha/Qt/Projets/lireSvg/pirate.svg");
 
 
->>>>>>> 0be62175ab6f5593fb368ca86187b7df553aa8ca
 	if (!svg_doc.open(QIODevice::ReadOnly)) {
 		qDebug("false");
 	}
@@ -56,11 +51,11 @@ int main(int argc, char *argv[])
                 if(chaine.contains("translate") >= 1)
                 {
                     QStringList query = chaine.split(rxproperties);
-                    translate_property+="{translate:x:"+query.at(1)+",y:"+query.at(2)+"}";
+                    translate_property+="\"translate\":["+query.at(1)+","+query.at(2)+"]";
                 }else if(chaine.contains("scale") >= 1)
                 {
                     QStringList query = chaine.split(rxproperties);
-                    scale_property+="{scale:x:"+query.at(1)+",y:"+query.at(2)+"}";
+                    scale_property+="{\"scale\":["+query.at(1)+","+query.at(2)+"]";
                 }
             }
          }
@@ -70,20 +65,29 @@ int main(int argc, char *argv[])
 
 		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
 
-<<<<<<< HEAD
-        ligne= "";
-=======
-		ligne = "";
->>>>>>> 0be62175ab6f5593fb368ca86187b7df553aa8ca
+        ligne = "";
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
-
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
 			ligne+=" "+charList.at(j).toLatin1().replace("\n"," ");
-
 		}
 
 		// Création d'une liste avec chaque paramètre
+        ligne.replace("\n","");
+        ligne.replace("\t","");
+        ligne.replace("\r","");
+        ligne.replace("l"," l");
+        ligne.replace("c"," c");
+        ligne.replace("L"," L");
+        ligne.replace("C"," C");
+        ligne.replace("-"," -");
+        ligne.replace("[,","[");
+        ligne.replace(",-","-");
+        ligne.replace(","," ");
+
+
+
 		QStringList query = ligne.split(" ");
+
 
 		json=+"";
 
@@ -92,27 +96,46 @@ int main(int argc, char *argv[])
 
 				QString str = *it;
 				QString jsonelement="";
+
+                //qDebug() << str;
+
 			   if(str!="")
 			   {
 				   if(str.startsWith("M"))
 				   {
-						jsonelement+="M:["+QString("%1").arg(str.right(str.size()-1));
+                        jsonelement+="M:["+QString("%1").arg(str.right(str.size()-1));
 						jsonelement+=",";
 				   }
 				   else if(str.startsWith("m"))
 				   {
-					   jsonelement+=",m:["+QString("%1").arg(str.right(str.size()-1));
+                       jsonelement+="],m:["+QString("%1").arg(str.right(str.size()-1));
 				   }
 				   else if(str.startsWith("c"))
 				   {
 					   jsonelement+="],c:["+QString("%1").arg(str.right(str.size()-1));
-						jsonelement+=",";
+                       if(QString("%1").arg(str.right(str.size()-1))!="")
+                       {
+                           jsonelement+=",";
+                       }
 				   }
+                   else if(str.startsWith("C"))
+                   {
+                       jsonelement+="],C:["+QString("%1").arg(str.right(str.size()-1));
+                        jsonelement+=",";
+                   }
 				   else if(str.startsWith("l"))
 				   {
 					   jsonelement+="],l:["+QString("%1").arg(str.right(str.size()-1));
-						jsonelement+=",";
+                       if(QString("%1").arg(str.right(str.size()-1))!="")
+                       {
+                           jsonelement+=",";
+                       }
 				   }
+                   else if(str.startsWith("L"))
+                   {
+                       jsonelement+="],L:["+QString("%1").arg(str.right(str.size()-1));
+                        jsonelement+=",";
+                   }
 				   else if (str.endsWith("z"))
 				   {
 					  jsonelement+= QString("%1").arg(str.left(str.size()-1));
@@ -134,17 +157,26 @@ int main(int argc, char *argv[])
 		}
 
 		json=json.replace("\n","");
+        json=json.replace("\r","");
+        json=json.replace("\t","");
 		json=json.replace(",]","]");
-		json=json.replace("M","{\"M\"");
+        json=json.replace("M","\"M\"");
+        json=json.replace(",{\"M\"","],\"M\"");
+        json=json.replace("L","\"L\"");
+        json=json.replace("C","\"C\"");
 		json=json.replace("c","\"c\"");
 		json=json.replace("l","\"l\"");
 		json=json.replace("m","\"m\"");
 		json=json.replace("\n\"","");
+        json=json.replace("}{",",");
+        json=json.replace("],{","],");
+        json=json.replace("]}]","]");
+        json=json.replace("}\"M\":","},\"M\":");
+        json=json.replace("]},","],");
+        json=json.replace(",\"M\"","],\"M\"");
+        json=json.replace("]]","]");
 
-        /*if(translate_property!="")
-        {
-            json= translate_property;
-        } */
+
 
 		node = node.nextSibling(); //Aller au Path suivant
 
@@ -159,6 +191,10 @@ int main(int argc, char *argv[])
         json= scale_property+","+json;
     }
     //json= translate_property+","+scale_property+","+json;
+    if(!json.startsWith("{"))
+    {
+        json="{"+json;
+    }
     qDebug() <<json +"\n\r";
 
 	return 0;
