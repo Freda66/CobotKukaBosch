@@ -632,7 +632,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>172.30.1.125</string>
+              <string>172.30.1.150</string>
              </property>
              <property name="maxLength">
               <number>15</number>
@@ -812,7 +812,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_Picture"/>
   <buttongroup name="buttonGroup_Mod"/>
+  <buttongroup name="buttonGroup_Picture"/>
  </buttongroups>
 </ui>

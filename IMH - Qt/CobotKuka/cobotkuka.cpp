@@ -179,8 +179,13 @@ void CobotKuka::on_ok_pushButton_clicked()
 void CobotKuka::on_send_pushButton_clicked()
 {
 	/* DEBUG */
-	QString tst = "[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]";
-	QString tst2 = "[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]";
+	// lettre A
+	//QString tst = "[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]";
+	//QString tst2 = "[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]";
+
+	//
+	QString tst = "[{\"x\":150,\"y\":150},{\"x\":110,\"y\":150},{\"x\":110,\"y\":110},{\"x\":150,\"y\":110}]";
+	QString tst2 = "[{\"x\":110,\"y\":110},{\"x\":110,\"y\":70},{\"x\":150,\"y\":70}]";
 	jsonChainList.append(tst);
 	jsonChainList.append(tst2);
 
@@ -417,8 +422,18 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 	finalchain += "]}";
 	qDebug() << "finalchain => " << finalchain;
 
-	if(connected) {tcpSocket->write( QtJson::serialize(QtJson::parse(finalchain.toUtf8())));
-	tcpSocket->flush();
+	QRegExp regex("(\\d+)-(\\d+)");
+	regex.indexIn(finalchain);
+	QString tempString = regex.capturedTexts().at(0);
+	int i = tempString.indexOf('-');
+	tempString.insert(i, ",");
+	qDebug() << "tempstring : " << tempString;
+	finalchain.replace(regex, tempString);
+	qDebug() << "finalchain apres replace : " << finalchain;
+
+	if(connected) {//tcpSocket->write( QtJson::serialize(QtJson::parse(finalchain.toUtf8())));
+		tcpSocket->write((QByteArray)finalchain.toUtf8());
+		tcpSocket->flush();
 	}
 	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
 

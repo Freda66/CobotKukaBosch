@@ -97,8 +97,8 @@ public:
     QMenu *menuFile;
     QMenu *menuAbout;
     QStatusBar *statusBar;
-    QButtonGroup *buttonGroup_Picture;
     QButtonGroup *buttonGroup_Mod;
+    QButtonGroup *buttonGroup_Picture;
 
     void setupUi(QMainWindow *CobotKuka)
     {
@@ -584,7 +584,7 @@ public:
         sketch_pushButton->setText(QApplication::translate("CobotKuka", "Open Sketch Window", 0));
         connect_groupBox->setTitle(QString());
         connect_ip_label->setText(QApplication::translate("CobotKuka", "IP : ", 0));
-        connect_ip_lineEdit->setText(QApplication::translate("CobotKuka", "172.30.1.125", 0));
+        connect_ip_lineEdit->setText(QApplication::translate("CobotKuka", "172.30.1.150", 0));
         connect_port_label->setText(QApplication::translate("CobotKuka", "Port : ", 0));
         connect_port_lineEdit->setText(QApplication::translate("CobotKuka", "9191", 0));
         connect_status_label->setText(QApplication::translate("CobotKuka", "Disconnected", 0));

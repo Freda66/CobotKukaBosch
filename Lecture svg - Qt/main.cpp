@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 
 	QDomDocument *dom = new QDomDocument("MonDom");
 
-	QFile svg_doc("C:\Users\Thomas\Desktop\IMERIR\3A\Projet Robotique - Kuka\Git\Lecture svg - Qt\line.svg");
+	QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/pirate.svg");
 	if (!svg_doc.open(QIODevice::ReadOnly)) {
 		qDebug("false");
 	}
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
 
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-			ligne+=" "+charList.at(j).toLatin1().replace("\n","");
+			ligne+=" "+charList.at(j).toLatin1().replace("\n"," ");
 
 		}
 
@@ -78,7 +78,8 @@ int main(int argc, char *argv[])
 				   }
 				   else if (str.endsWith("z"))
 				   {
-					  jsonelement+="]";
+					  jsonelement+= QString("%1").arg(str.left(str.size()-1));
+					  jsonelement+= "]";
 					  jsonelement+="}\n";
 				   }
 				   else
