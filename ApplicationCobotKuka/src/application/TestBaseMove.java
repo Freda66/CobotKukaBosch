@@ -198,7 +198,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						int i = 0;
 						while (cpt < jCArray.length()) {
 							bezierControlPoints[i].x = jCArray.getInt(cpt) * 297 / 4000;
-							bezierControlPoints[i].y = 210 + (jCArray.getInt(++cpt) * 210 / 4000);
+							bezierControlPoints[i].y = 105 + (jCArray.getInt(++cpt) * 210 / 4000);
 							cpt++;
 							i++;
 						}
