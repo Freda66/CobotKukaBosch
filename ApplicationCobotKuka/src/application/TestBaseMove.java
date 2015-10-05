@@ -113,37 +113,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		
 		// On charge les points
 		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
-		
-		/*// On définit les points du parcours
-		P1 = new Frame(0.0, 0.0, 0.0);
-		P2 = new Frame(0.0, 0.0, 0.0);
-		P3 = new Frame(0.0, 0.0, 0.0);
-		P4 = new Frame(0.0, 0.0, 0.0);
-		P5 = new Frame(0.0, 0.0, 0.0);
-		
-		trajectory = new Frame[3];
-		trajectory2 = new Frame[2];
-		
-		trajectory[0] = P1;
-		trajectory[1] = P2;
-		trajectory[2] = P3;
-		
-		trajectory2[0] = P4;
-		trajectory2[0] = P5;*/
-		
-		
-		
-		/*curve = new BezierCurve(P1, P2, P3, P0);
-		
-		trajectory = curve.getTrajectory(40);
-		
-		// On crée des frames robot Kuka depuis notre courbe
-		frames = new Frame[trajectory.length];
-		for (int i=0; i < trajectory.length; i++)
-		{
-//			getLogger().info("" + trajectory[i].x + " "+ trajectory[i].y);
-			frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0);
-		}*/
 				
 		getLogger().info("Initialization OK");
 	}
@@ -153,7 +122,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 */
 	public void run() {
 		try {
-			//Paper approach
 			double velocity = 0.2;
 			
 			String message = "";
@@ -181,7 +149,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			ioFlange.setLEDBlue(true);
 			
 			
-			// Approche de la base "Paper" en PTP puis en LIN
+			// Approche de la base "Paper" en PTP
 			
 			getLogger().info("Move near Paper");
 					
@@ -259,6 +227,9 @@ public class TestBaseMove extends RoboticsAPIApplication {
 									getLogger().info("aimFrameOnPaper " + j + " " + i + " " + aimFrameOnPaper.toString());
 									// On ajoute la translation suivant Z pour toucher le papier
 									alSpline.add(linRel(getTranslationFromFrame(offsetAimFrame, aimFrameOnPaper), paperBase));
+									
+								/* On se place au dessus du premier point à dessiner
+								 */
 								} else if (j == 0 && i == 0) {
 									// On récupère le permier point pour se placer au-dessus
 									Frame firstFrame = trajectories2.get(0);
@@ -298,104 +269,18 @@ public class TestBaseMove extends RoboticsAPIApplication {
 					Spline linMovement = new Spline(relAlSpline);
 					
 					penToolTCP.move(linMovement.setJointVelocityRel(velocity));
-					
-					/*getLogger().info("Move on paper");
-					
-					linMovement = new Spline(linRel(getTranslationFromFrame(new Frame(P1.getX(), P1.getY(), P1.getZ()), new Frame(P1.getX(), P1.getY(), -3)), paperBase));
-					
-					penToolTCP.move(
-							linMovement.setJointVelocityRel(0.05)
-							);
-					
-					
-					// On dessine au dessus du papier les points P0 / P1 / P2 / P3 :
-					
-					getLogger().info("Move on Paper");
-					
-					RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
-					
-					for (int i=0; i < frames.length-1; i++)
-					{
-						RelativeLIN moveLin2 = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
-						
-						splineArray[i] = moveLin2;
-					}
-					
-					Spline linMovement2 = new Spline(splineArray);
-					
-					penToolTCP.move(
-							linMovement2.setJointVelocityRel(velocity)
-						);
-					
-					linMovement = new Spline(
-							
-							// On bouge en relatif
-							
-							// On va ensuite à P1, P2, P3 et P0, en spécifiant une translation Z nulle 
-							linRel( getTranslationFromFrame(P1, P2), paperBase),
-							linRel( getTranslationFromFrame(P2, P3), paperBase)
-						);
-					
-					getLogger().info("draw first spline");
-					
-					penToolTCP.move(
-							linMovement.setJointVelocityRel(velocity)
-						);
-					
-					getLogger().info("Move to second spline");
-					
-					linMovement = new Spline(
-							
-							// On remonte le stylo
-							linRel( getTranslationFromFrame(P3, new Frame(P3.getX(), P3.getY(), 10)), paperBase),
-							// On déplace vers le point de la spline suivante
-							linRel( getTranslationFromFrame(new Frame(P3.getX(), P3.getY(), 10), new Frame(P4.getX(), P4.getY(), 10)), paperBase),
-							// On rabaisse le stylo
-							linRel( getTranslationFromFrame(new Frame(P4.getX(), P4.getY(), 10), new Frame(P4.getX(), P4.getY(), -3)), paperBase)
-						);
-					
-					penToolTCP.move(
-							linMovement.setJointVelocityRel(0.05)
-						);
-					
-					getLogger().info("draw second spline");
-					
-					linMovement = new Spline(
-							
-							// On remonte le stylo
-							linRel( getTranslationFromFrame(P4, P5), paperBase)
-						);
-					
-					penToolTCP.move(
-							linMovement.setJointVelocityRel(velocity)
-						);
-					
-					// On rmeonte le stylo
-					linMovement = new Spline(
-							
-							// On remonte le stylo
-							linRel( getTranslationFromFrame(P5, new Frame(P5.getX(), P5.getY(), 10)), paperBase)
-						);
-					
-					penToolTCP.move(
-							linMovement.setJointVelocityRel(velocity)
-						);
-					
-					// Vide la valeur du message du serveur
-					this.serveur.setMessage("");
-				}*/
 			
-				// Initialise la position du robot
-				getLogger().info("Retour position initiale");
-				
-				penToolTCP.move(lin(paperApproach).setJointVelocityRel(velocity));
-				
-				SplineJP moveBackToHome = new SplineJP( ptpHome());
-				
-				getLogger().info("Move Back");
-				lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
-				
-				ioFlange.setLEDBlue(false);
+					// On retourne à la position initiale du robot
+					getLogger().info("Retour position initiale");
+					
+					penToolTCP.move(lin(paperApproach).setJointVelocityRel(velocity));
+					
+					SplineJP moveBackToHome = new SplineJP( ptpHome());
+					
+					getLogger().info("Move Back");
+					lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
+					
+					ioFlange.setLEDBlue(false);
 				}
 			}
 			
