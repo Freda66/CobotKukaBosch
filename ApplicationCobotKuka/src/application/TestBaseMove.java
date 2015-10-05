@@ -128,12 +128,12 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			
 			String message = "";
 			
-			int zOffsetForPen = 10;
+			/*int zOffsetForPen = 10;
 			int zOffsetForPaper = -3;
 			
 			ArrayList<RelativeLIN> alSpline = new ArrayList<RelativeLIN>();
 			RelativeLIN[] relAlSpline = null; 
-			ArrayList<ArrayList<Frame>> trajectories = new ArrayList<ArrayList<Frame>>();
+			ArrayList<ArrayList<Frame>> trajectories = new ArrayList<ArrayList<Frame>>();*/
 			
 			int cpt = 0;
 			
@@ -190,7 +190,9 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						// On récupère l'objet pointé par "M"
 						org.json.JSONArray jMArray = jMainObject.getJSONArray("M");
 						// On créé la première frame
-						Frame firstFrame = new Frame(jMArray.getInt(0), jMArray.getInt(1), 0.0);
+						Frame firstFrame = new Frame(jMArray.getInt(0), jMArray.getInt(1), 10.0);
+						//
+						Frame firstFrameOnPaper = new Frame(jMArray.getInt(0), jMArray.getInt(1), -3.0);
 						// On récupère l'Array des points de la courbe de bezier
 						org.json.JSONArray jCArray = jMainObject.getJSONArray("c");
 						// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
@@ -210,12 +212,16 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						{	
 							frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0);
 						}
-						RelativeLIN [] splineArray = new RelativeLIN[frames.length-1];
+						RelativeLIN [] splineArray = new RelativeLIN[frames.length+1];
+						// 
+						splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
+						// Le style touche la feuille
+						splineArray[0] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
 						
 						for (i = 0; i < frames.length-1; i++)
 						{
 							RelativeLIN moveLin = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
-							splineArray[i] = moveLin;
+							splineArray[i+2] = moveLin;
 						}
 						linMovement = new Spline(splineArray);
 						
