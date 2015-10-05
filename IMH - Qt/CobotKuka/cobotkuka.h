@@ -38,7 +38,7 @@ public:
 	void desactivate_Send_pushButton();
 	void activate_Stop_pushButton();
 	void desactivate_Stop_pushButton();
-
+	void change_Action_Group_Color();
 	void writeJSONToServer(const QStringList& jsonList);
 	bool connectToServer();
 	bool disconnectFromServer();
@@ -54,7 +54,7 @@ private slots:
 	void datawritten(qint64 w);
 
 	//ui slots
-	void on_connect_pushButton_clicked();
+	void on_connect_pushButton_clicked(bool checked);
 
 	void on_text_font_fontComboBox_currentFontChanged(const QFont &f);
 
