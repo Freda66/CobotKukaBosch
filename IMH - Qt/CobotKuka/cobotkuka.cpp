@@ -223,10 +223,10 @@ void CobotKuka::on_send_pushButton_clicked()
 	//QString tst2 = "[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]";
 
 	//
-	QString tst = "[{\"x\":150,\"y\":150},{\"x\":110,\"y\":150},{\"x\":110,\"y\":110},{\"x\":150,\"y\":110}]";
-	QString tst2 = "[{\"x\":110,\"y\":110},{\"x\":110,\"y\":70},{\"x\":150,\"y\":70}]";
-	jsonChainList.append(tst);
-	jsonChainList.append(tst2);
+	//QString tst = "[{\"x\":150,\"y\":150},{\"x\":110,\"y\":150},{\"x\":110,\"y\":110},{\"x\":150,\"y\":110}]";
+	//QString tst2 = "[{\"x\":110,\"y\":110},{\"x\":110,\"y\":70},{\"x\":150,\"y\":70}]";
+	//jsonChainList.append(tst);
+	//jsonChainList.append(tst2);
 
 	//creation de la socket et connection au serveur
 	if(!connected) {
@@ -385,7 +385,6 @@ void CobotKuka::desactivate_Stop_pushButton(){
 	ui->stop_pushButton->setStyleSheet("color:sandybrown; background-color: lightpink");
 }
 
-
 void CobotKuka::on_stop_pushButton_clicked()
 {
 	QString stop = "stop";
@@ -453,27 +452,51 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 //		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(test"));
 
 	/* DEBUG */
-	QString finalchain = "{\"svg\":[";
+	QString finalchain = "{";
+	//to verify if the scale and translate parameters have been read
+	bool translate = false;
+	bool scale = false;
+	//allow to test if the element read is the first of the list, to know if a ',' is needed. Can't use the first() method in the foreach because of the pop_front() method : every iteration, the first element changes
+	QString last = jsonList.last();
+
 	foreach (QString str, jsonList) {
-		if(str != jsonList.first()) finalchain += ",";
+
+
+		if(str.contains("translate")) {translate = true; qDebug()<<"translate : " + str;}
+		if(str.contains("scale")) {scale = true;qDebug()<<"scale : " + str;}
+
+
 		finalchain += str;
+
+
+		if(str != last) finalchain += ",";
+
+		if(scale && translate) {
+			finalchain += "\"svg\":";
+			scale = translate = false;
+		}
+
+
+
 		jsonChainList.pop_front();
 		qDebug() << "str -> " << str;
 	}
-	finalchain += "]}";
+	finalchain += "}";
 	qDebug() << "finalchain => " << finalchain;
 
-	QRegExp regex("(\\d+)-(\\d+)");
-	regex.indexIn(finalchain);
-	QString tempString = regex.capturedTexts().at(0);
-	int i = tempString.indexOf('-');
-	tempString.insert(i, ",");
-	qDebug() << "tempstring : " << tempString;
-	finalchain.replace(regex, tempString);
-	qDebug() << "finalchain apres replace : " << finalchain;
+//	QRegExp regex("(\\d+)-(\\d+)");
+//	regex.indexIn(finalchain);
+//	QString tempString = regex.capturedTexts().at(0);
+//	int i = tempString.indexOf('-');
+//	tempString.insert(i, ",");
+//	qDebug() << "tempstring : " << tempString;
+//	finalchain.replace(regex, tempString);
+//	qDebug() << "finalchain apres replace : " << finalchain;
 
 	if(connected) {//tcpSocket->write( QtJson::serialize(QtJson::parse(finalchain.toUtf8())));
+
 		tcpSocket->write((QByteArray)finalchain.toUtf8());
+
 		tcpSocket->flush();
 	}
 	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
@@ -488,14 +511,6 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 	QDomDocument *dom = new QDomDocument("MonDom");
 
 	QFile svg_doc(svgpath);
-	if (!svg_doc.open(QIODevice::ReadOnly)) {
-		qDebug("false");
-	}
-
-	else {
-	}
-
-
 	dom->setContent(&svg_doc);
 
 	QDomElement dom_element = dom->documentElement();
@@ -503,11 +518,40 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 	node = node.firstChild();
 	QString ligne= "";
 
+	/***/
+		QRegExp rx("(<g.+\n.+)\>");
 
+		 QStringList list;
+		 int pos = 0;
+		 QString translate_property="";
+		 QString scale_property="";
+		 if((pos = rx.indexIn(dom->toString(), pos)) != -1)
+		 {
+			QString nn=(QString)rx.cap(1);
+			QStringList charList =nn.split(' ');
+			QString chaineq="";
+			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
+
+			int nb = charList.count(); //compter le nombre d'élément dans la liste
+			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
+				if(chaine.contains("translate") >= 1)
+				{
+					QStringList query = chaine.split(rxproperties);
+					translate_property+="\"translate\":["+query.at(1)+","+query.at(2)+"]";
+				}else if(chaine.contains("scale") >= 1)
+				{
+					QStringList query = chaine.split(rxproperties);
+					scale_property+="\"scale\":["+query.at(1)+","+query.at(2)+"]";
+				}
+			}
+		 }
+		/***/
 
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
 		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
+
 
 		ligne = "";
 
@@ -551,7 +595,8 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 				   }
 				   else if (str.endsWith("z"))
 				   {
-					  jsonelement+="]";
+					  jsonelement+= QString("%1").arg(str.left(str.size()-1));
+					  jsonelement+= "]";
 					  jsonelement+="}\n";
 				   }
 				   else
@@ -576,7 +621,27 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		json=json.replace("m","\"m\"");
 		json=json.replace("\n\"","");
 
-		qDebug() <<json +"\n\r";
+		/*if(translate_property!="")
+		{
+			json= translate_property;
+		} */
+
+		node = node.nextSibling(); //Aller au Path suivant
+
+	}
+	if(translate_property!="")
+	{
+		//json= translate_property+","+json;
+		jsonChainList.prepend(translate_property);
+	}
+
+	if(scale_property!="")
+	{
+		//json= scale_property+","+json;
+		jsonChainList.prepend(scale_property);
+	}
+	//json= translate_property+","+scale_property+","+json;
+	qDebug() <<json +"\n\r";
 
 		//TODO : expression reguliere et methode pour corriger chaine.
 		//QRegExp("(/d)-(/d)")
@@ -585,7 +650,6 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		jsonChainList.append(json);
 		node = node.nextSibling(); //Aller au Path suivant
 
-	}
 }
 
 void CobotKuka::change_Action_Group_Color(){

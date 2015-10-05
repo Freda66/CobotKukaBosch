@@ -16,7 +16,15 @@ int main(int argc, char *argv[])
 	QDomDocument *dom = new QDomDocument("MonDom");
 
 
+<<<<<<< HEAD
     QFile svg_doc("/Users/Mustapha/Qt/Projets/lireSvg/pirate.svg");
+=======
+	//QFile svg_doc("/Users/Mustapha/Qt/Projets/lireSvg/package7.svg");
+
+	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/pirate.svg");
+	QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/line.svg");
+	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/city21.svg");
+>>>>>>> afc1a39c9f20f25d3fa3fe8859749f332ef5029b
 
 
 	if (!svg_doc.open(QIODevice::ReadOnly)) {
@@ -31,6 +39,7 @@ int main(int argc, char *argv[])
 	node = node.firstChild();
 	QString ligne= "";
 
+<<<<<<< HEAD
     /***/
         QRegExp rx("(<g.+\n.+)\>");
 
@@ -60,12 +69,49 @@ int main(int argc, char *argv[])
             }
          }
         /***/
+=======
+	/***/
+		QRegExp rx("(<g.+\n.+)\>");
+
+		 QStringList list;
+		 int pos = 0;
+		 QString translate_property="";
+		 QString scale_property="";
+		 if((pos = rx.indexIn(dom->toString(), pos)) != -1)
+		 {
+			QString nn=(QString)rx.cap(1);
+			QStringList charList =nn.split(' ');
+			QString chaineq="";
+			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
+
+			int nb = charList.count(); //compter le nombre d'élément dans la liste
+			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
+				if(chaine.contains("translate") >= 1)
+				{
+					QStringList query = chaine.split(rxproperties);
+					translate_property+="{translate:x:"+query.at(1)+",y:"+query.at(2)+"}";
+				}else if(chaine.contains("scale") >= 1)
+				{
+					QStringList query = chaine.split(rxproperties);
+					scale_property+="{scale:x:"+query.at(1)+",y:"+query.at(2)+"}";
+				}
+			}
+		 }
+		/***/
+>>>>>>> afc1a39c9f20f25d3fa3fe8859749f332ef5029b
 
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
 		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
 
+<<<<<<< HEAD
         ligne = "";
+=======
+
+		ligne = "";
+
+>>>>>>> afc1a39c9f20f25d3fa3fe8859749f332ef5029b
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
 			ligne+=" "+charList.at(j).toLatin1().replace("\n"," ");
@@ -177,10 +223,18 @@ int main(int argc, char *argv[])
         json=json.replace("]]","]");
 
 
+<<<<<<< HEAD
+=======
+		/*if(translate_property!="")
+		{
+			json= translate_property;
+		} */
+>>>>>>> afc1a39c9f20f25d3fa3fe8859749f332ef5029b
 
 		node = node.nextSibling(); //Aller au Path suivant
 
 	}
+<<<<<<< HEAD
     if(translate_property!="")
     {
         json= translate_property+","+json;
@@ -196,6 +250,19 @@ int main(int argc, char *argv[])
         json="{"+json;
     }
     qDebug() <<json +"\n\r";
+=======
+	if(translate_property!="")
+	{
+		json= translate_property+","+json;
+	}
+
+	if(scale_property!="")
+	{
+		json= scale_property+","+json;
+	}
+	//json= translate_property+","+scale_property+","+json;
+	qDebug() <<json +"\n\r";
+>>>>>>> afc1a39c9f20f25d3fa3fe8859749f332ef5029b
 
 	return 0;
 }
