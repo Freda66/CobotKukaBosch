@@ -13,12 +13,19 @@ void CobotKuka::init(){
 
 	//TODO : load TTF fonts exclusively
 
-	ui->svg_actions_groupBox->setEnabled(true);
+	ui->svg_actions_groupBox->setEnabled(false);
 
 	ui->text_actions_groupBox->setEnabled(false);
 	ui->picture_actions_groupBox->setEnabled(false);
 	ui->sketch_actions_groupBox->setEnabled(false);
 
+	//load the action groupboxes background colors
+	ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+	ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+	ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+	ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+
+	//disable the buttons and set the correct stylesheet
 	desactivate_OK_pushButton();
 	desactivate_Send_pushButton();
 	desactivate_Stop_pushButton();
@@ -46,25 +53,49 @@ CobotKuka::~CobotKuka()
 	delete ui;
 }
 
-void CobotKuka::on_connect_pushButton_clicked()
+void CobotKuka::on_connect_pushButton_clicked(bool checked)
 {
 	/* Code de connection au serveur déporté dans la foncton on_send_pushButton_clicked()*/
+	if(checked){
+		ui->connect_status_label->setText("Connected !");
+		ui->connect_status_label->setStyleSheet("QLabel { color : green; }");
+		ui->connect_pushButton->setText("Disconnect");
+		ui->connect_pushButton->setDefault(false);
 
-	ui->connect_status_label->setText("Connected !");
-	ui->connect_status_label->setStyleSheet("QLabel { color : green; }");
-	ui->connect_pushButton->setText("Disconnect");
-	ui->connect_pushButton->setDefault(false);
+		//once connected, enable the action buttons
+		ui->picture_groupBox->setEnabled(true);
+		ui->text_groupBox->setEnabled(true);
+		ui->svg_groupBox->setEnabled(true);
+		ui->sketch_groupBox->setEnabled(true);
 
-	//once connected, enable the action buttons
-	ui->picture_groupBox->setEnabled(true);
-	ui->text_groupBox->setEnabled(true);
-	ui->svg_groupBox->setEnabled(true);
-	ui->sketch_groupBox->setEnabled(true);
+		//can't change the socket while connected
+		ui->connect_groupBox->setEnabled(false);
 
-	//can't change the socket while connected
-	ui->connect_groupBox->setEnabled(false);
+		//once connected, possibility to send the stop signal at any moment
+		activate_Stop_pushButton();
 
-	activate_Stop_pushButton();
+		//the svg action groupbox is selected by default, setting the correct stylesheet
+		change_Action_Group_Color();
+	}
+	else{
+		//indicates the status and activate the lineEdits
+		ui->connect_pushButton->setText("Connect");
+		ui->connect_status_label->setText("Disconnected !");
+		ui->connect_status_label->setStyleSheet("QLabel { color : red; }");
+		ui->connect_pushButton->setDefault(true);
+		ui->connect_groupBox->setEnabled(true);
+
+		//if not connected, block the access to the actions
+		ui->picture_groupBox->setEnabled(false);
+		ui->text_groupBox->setEnabled(false);
+		ui->svg_groupBox->setEnabled(false);
+		ui->sketch_groupBox->setEnabled(false);
+
+		//once deconnected, impossible to send anything
+		desactivate_OK_pushButton();
+		desactivate_Send_pushButton();
+		desactivate_Stop_pushButton();
+	}
 }
 
 
@@ -79,6 +110,8 @@ void CobotKuka::on_svg_radioButton_clicked()
 {
 	ui->svg_actions_groupBox->setEnabled(true);
 
+	change_Action_Group_Color();
+
 	ui->text_actions_groupBox->setEnabled(false);
 	ui->picture_actions_groupBox->setEnabled(false);
 	ui->sketch_actions_groupBox->setEnabled(false);
@@ -87,6 +120,8 @@ void CobotKuka::on_svg_radioButton_clicked()
 void CobotKuka::on_text_radioButton_clicked()
 {
 	ui->text_actions_groupBox->setEnabled(true);
+
+	change_Action_Group_Color();
 
 	ui->svg_actions_groupBox->setEnabled(false);
 	ui->picture_actions_groupBox->setEnabled(false);
@@ -97,6 +132,8 @@ void CobotKuka::on_picture_radioButton_clicked()
 {
 	ui->picture_actions_groupBox->setEnabled(true);
 
+	change_Action_Group_Color();
+
 	ui->text_actions_groupBox->setEnabled(false);
 	ui->svg_actions_groupBox->setEnabled(false);
 	ui->sketch_actions_groupBox->setEnabled(false);
@@ -105,6 +142,8 @@ void CobotKuka::on_picture_radioButton_clicked()
 void CobotKuka::on_sketch_radioButton_clicked()
 {
 	ui->sketch_actions_groupBox->setEnabled(true);
+
+	change_Action_Group_Color();
 
 	ui->text_actions_groupBox->setEnabled(false);
 	ui->picture_actions_groupBox->setEnabled(false);
@@ -208,8 +247,8 @@ bool CobotKuka::connectToServer(){
 	if(ip.setAddress(ui->connect_ip_lineEdit->text())){
 		qDebug() << "trying to connect to server " << ip << ":" << ui->connect_port_lineEdit->text().toInt();
 			tcpSocket->connectToHost(ip, ui->connect_port_lineEdit->text().toInt());
-			//wait for the connection to be established
-			return tcpSocket->waitForConnected();
+			//wait 5s max for the connection to be established
+			return tcpSocket->waitForConnected(3000);
 	}
 	else {
 		QMessageBox::warning(this,"Socket Error : IP Adress Invalid", "The IP Adress is invalid. \nIP Adress must be in the form of xxx.xxx.xxx.xxx with only digits and dots. example : 192.168.0.18 \nPlease enter a valid Adress and retry.", QMessageBox::Ok, QMessageBox::NoButton);
@@ -219,7 +258,8 @@ bool CobotKuka::connectToServer(){
 
 bool CobotKuka::disconnectFromServer(){
 	tcpSocket->disconnectFromHost();
-	return tcpSocket->waitForDisconnected();
+	//wait 3s max for the connection to be close
+	return tcpSocket->waitForDisconnected(3000);
 }
 
 void CobotKuka::on_picture_file_pushButton_clicked()
@@ -228,6 +268,7 @@ void CobotKuka::on_picture_file_pushButton_clicked()
 	filedialog = new QFileDialog(this,"Choose an Image", QDir::toNativeSeparators(QDir::homePath()), tr("Image(*.jpg, *.jpeg, *.png)"));
 	filedialog->setFileMode(QFileDialog::ExistingFile);
 	filedialog->setViewMode(QFileDialog::Detail);
+	//when open, only this window can be clicked in the application
 	filedialog->setModal(true);
 
 	//show it. return 1 if OK and 0 otherwise.
@@ -468,11 +509,12 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 
 		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
 
+		ligne = "";
 
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
 
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-			ligne+=" "+charList.at(j).toLatin1().replace("\n","");
+			ligne+=" "+charList.at(j).toLatin1().replace("\n"," ");
 
 		}
 
@@ -543,5 +585,42 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		jsonChainList.append(json);
 		node = node.nextSibling(); //Aller au Path suivant
 
+	}
+}
+
+void CobotKuka::change_Action_Group_Color(){
+	if(ui->svg_radioButton->isChecked()){
+		ui->svg_groupBox->setStyleSheet("background: rgb(232, 255, 232)");
+
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+	else if(ui->text_radioButton->isChecked()){
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 220, 255)");
+
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+	else if(ui->picture_radioButton->isChecked()){
+		ui->picture_groupBox->setStyleSheet("background: rgb(220, 255, 255)");
+
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+	else if(ui->sketch_radioButton->isChecked()){
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 220)");
+
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+	}
+	else{
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
 	}
 }

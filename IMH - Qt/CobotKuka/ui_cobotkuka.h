@@ -128,13 +128,13 @@ public:
         global_gridLayout->setSizeConstraint(QLayout::SetMaximumSize);
         ok_pushButton = new QPushButton(centralWidget);
         ok_pushButton->setObjectName(QStringLiteral("ok_pushButton"));
-        ok_pushButton->setEnabled(false);
+        ok_pushButton->setEnabled(true);
 
         global_gridLayout->addWidget(ok_pushButton, 2, 0, 1, 3);
 
         stop_pushButton = new QPushButton(centralWidget);
         stop_pushButton->setObjectName(QStringLiteral("stop_pushButton"));
-        stop_pushButton->setEnabled(false);
+        stop_pushButton->setEnabled(true);
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Expanding);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
@@ -145,13 +145,13 @@ public:
         font.setBold(true);
         font.setWeight(75);
         stop_pushButton->setFont(font);
-        stop_pushButton->setStyleSheet(QStringLiteral("color:orange; background-color: red"));
+        stop_pushButton->setStyleSheet(QStringLiteral(""));
 
         global_gridLayout->addWidget(stop_pushButton, 2, 3, 2, 1);
 
         send_pushButton = new QPushButton(centralWidget);
         send_pushButton->setObjectName(QStringLiteral("send_pushButton"));
-        send_pushButton->setEnabled(false);
+        send_pushButton->setEnabled(true);
         QFont font1;
         font1.setBold(true);
         font1.setWeight(75);

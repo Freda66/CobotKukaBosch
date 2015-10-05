@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_CobotKuka_t {
-    QByteArrayData data[28];
-    char stringdata[677];
+    QByteArrayData data[29];
+    char stringdata[685];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -39,30 +39,31 @@ QT_MOC_LITERAL(6, 81, 18),
 QT_MOC_LITERAL(7, 100, 11),
 QT_MOC_LITERAL(8, 112, 1),
 QT_MOC_LITERAL(9, 114, 29),
-QT_MOC_LITERAL(10, 144, 44),
-QT_MOC_LITERAL(11, 189, 1),
-QT_MOC_LITERAL(12, 191, 26),
-QT_MOC_LITERAL(13, 218, 27),
-QT_MOC_LITERAL(14, 246, 30),
-QT_MOC_LITERAL(15, 277, 29),
-QT_MOC_LITERAL(16, 307, 37),
-QT_MOC_LITERAL(17, 345, 35),
-QT_MOC_LITERAL(18, 381, 30),
-QT_MOC_LITERAL(19, 412, 26),
-QT_MOC_LITERAL(20, 439, 34),
-QT_MOC_LITERAL(21, 474, 23),
-QT_MOC_LITERAL(22, 498, 24),
-QT_MOC_LITERAL(23, 523, 22),
-QT_MOC_LITERAL(24, 546, 37),
-QT_MOC_LITERAL(25, 584, 26),
-QT_MOC_LITERAL(26, 611, 36),
-QT_MOC_LITERAL(27, 648, 28)
+QT_MOC_LITERAL(10, 144, 7),
+QT_MOC_LITERAL(11, 152, 44),
+QT_MOC_LITERAL(12, 197, 1),
+QT_MOC_LITERAL(13, 199, 26),
+QT_MOC_LITERAL(14, 226, 27),
+QT_MOC_LITERAL(15, 254, 30),
+QT_MOC_LITERAL(16, 285, 29),
+QT_MOC_LITERAL(17, 315, 37),
+QT_MOC_LITERAL(18, 353, 35),
+QT_MOC_LITERAL(19, 389, 30),
+QT_MOC_LITERAL(20, 420, 26),
+QT_MOC_LITERAL(21, 447, 34),
+QT_MOC_LITERAL(22, 482, 23),
+QT_MOC_LITERAL(23, 506, 24),
+QT_MOC_LITERAL(24, 531, 22),
+QT_MOC_LITERAL(25, 554, 37),
+QT_MOC_LITERAL(26, 592, 26),
+QT_MOC_LITERAL(27, 619, 36),
+QT_MOC_LITERAL(28, 656, 28)
     },
     "CobotKuka\0displayError\0\0"
     "QAbstractSocket::SocketError\0socketError\0"
     "serverConnected\0serverDisconnected\0"
     "datawritten\0w\0on_connect_pushButton_clicked\0"
-    "on_text_font_fontComboBox_currentFontChanged\0"
+    "checked\0on_text_font_fontComboBox_currentFontChanged\0"
     "f\0on_svg_radioButton_clicked\0"
     "on_text_radioButton_clicked\0"
     "on_picture_radioButton_clicked\0"
@@ -100,32 +101,32 @@ static const uint qt_meta_data_CobotKuka[] = {
        5,    0,  127,    2, 0x08 /* Private */,
        6,    0,  128,    2, 0x08 /* Private */,
        7,    1,  129,    2, 0x08 /* Private */,
-       9,    0,  132,    2, 0x08 /* Private */,
-      10,    1,  133,    2, 0x08 /* Private */,
-      12,    0,  136,    2, 0x08 /* Private */,
-      13,    0,  137,    2, 0x08 /* Private */,
-      14,    0,  138,    2, 0x08 /* Private */,
-      15,    0,  139,    2, 0x08 /* Private */,
-      16,    0,  140,    2, 0x08 /* Private */,
-      17,    0,  141,    2, 0x08 /* Private */,
-      18,    0,  142,    2, 0x08 /* Private */,
-      19,    0,  143,    2, 0x08 /* Private */,
-      20,    0,  144,    2, 0x08 /* Private */,
-      21,    0,  145,    2, 0x08 /* Private */,
-      22,    0,  146,    2, 0x08 /* Private */,
-      23,    0,  147,    2, 0x08 /* Private */,
-      24,    0,  148,    2, 0x08 /* Private */,
-      25,    0,  149,    2, 0x08 /* Private */,
-      26,    0,  150,    2, 0x08 /* Private */,
-      27,    0,  151,    2, 0x08 /* Private */,
+       9,    1,  132,    2, 0x08 /* Private */,
+      11,    1,  135,    2, 0x08 /* Private */,
+      13,    0,  138,    2, 0x08 /* Private */,
+      14,    0,  139,    2, 0x08 /* Private */,
+      15,    0,  140,    2, 0x08 /* Private */,
+      16,    0,  141,    2, 0x08 /* Private */,
+      17,    0,  142,    2, 0x08 /* Private */,
+      18,    0,  143,    2, 0x08 /* Private */,
+      19,    0,  144,    2, 0x08 /* Private */,
+      20,    0,  145,    2, 0x08 /* Private */,
+      21,    0,  146,    2, 0x08 /* Private */,
+      22,    0,  147,    2, 0x08 /* Private */,
+      23,    0,  148,    2, 0x08 /* Private */,
+      24,    0,  149,    2, 0x08 /* Private */,
+      25,    0,  150,    2, 0x08 /* Private */,
+      26,    0,  151,    2, 0x08 /* Private */,
+      27,    0,  152,    2, 0x08 /* Private */,
+      28,    0,  153,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, 0x80000000 | 3,    4,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void, QMetaType::LongLong,    8,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::QFont,   11,
+    QMetaType::Void, QMetaType::Bool,   10,
+    QMetaType::Void, QMetaType::QFont,   12,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -155,7 +156,7 @@ void CobotKuka::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 1: _t->serverConnected(); break;
         case 2: _t->serverDisconnected(); break;
         case 3: _t->datawritten((*reinterpret_cast< qint64(*)>(_a[1]))); break;
-        case 4: _t->on_connect_pushButton_clicked(); break;
+        case 4: _t->on_connect_pushButton_clicked((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 5: _t->on_text_font_fontComboBox_currentFontChanged((*reinterpret_cast< const QFont(*)>(_a[1]))); break;
         case 6: _t->on_svg_radioButton_clicked(); break;
         case 7: _t->on_text_radioButton_clicked(); break;

@@ -15,7 +15,11 @@ int main(int argc, char *argv[])
 
 	QDomDocument *dom = new QDomDocument("MonDom");
 
-	QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/pirate.svg");
+	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/pirate.svg");
+	QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/line.svg");
+	//QFile svg_doc("C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/IMERIR-Kuka-master/SVG/city21.svg");
+
+
 	if (!svg_doc.open(QIODevice::ReadOnly)) {
 		qDebug("false");
 	}
@@ -37,7 +41,7 @@ int main(int argc, char *argv[])
 
 		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
 
-
+		ligne = "";
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
 
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
