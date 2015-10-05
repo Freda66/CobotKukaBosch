@@ -47,12 +47,13 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private ObjectFrame paperBase;
 	private ObjectFrame paperApproach;
 	
-	//private BezierCurve curve
+	private BezierCurve curve;
 	
-	//private Frame[][] trajectory;
+	private Vector2[] trajectory;
+		
+	private Frame[] frames;
 	
-	
-	//private Frame[] frames;
+	private Vector2[] bezierControlPoints;
 	
 	
 	
@@ -85,7 +86,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 */
 	public void initialize() {
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
-		serveur = new TCPServer(30001);
+		serveur = new TCPServer(30002);
 		
 		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1, "LBR_iiwa_14_R820_1");
@@ -121,17 +122,20 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 * 
 	 */
 	public void run() {
+		Spline linMovement = null;
 		try {
 			double velocity = 0.2;
 			
 			String message = "";
 			
-			int zOffsetForPen = 10;
+			/*int zOffsetForPen = 10;
 			int zOffsetForPaper = -3;
 			
 			ArrayList<RelativeLIN> alSpline = new ArrayList<RelativeLIN>();
 			RelativeLIN[] relAlSpline = null; 
-			ArrayList<ArrayList<Frame>> trajectories = new ArrayList<ArrayList<Frame>>();
+			ArrayList<ArrayList<Frame>> trajectories = new ArrayList<ArrayList<Frame>>();*/
+			
+			int cpt = 0;
 			
 			ISafetyState currentState = lbr_iiwa_14_R820_1.getSafetyState();
 			OperationMode mode = currentState.getOperationMode();
@@ -143,6 +147,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 				velocity = 1;
 			}
 			
+			//Init position
 			lbr_iiwa_14_R820_1.move(ptpHome());
 			
 			
@@ -181,7 +186,50 @@ public class TestBaseMove extends RoboticsAPIApplication {
 					
 					try {
 						// On récupère la chaîne de caractère qu'on converti en JSON
-						org.json.JSONObject jMainObject  = new org.json.JSONObject(message);
+						org.json.JSONObject jObject = new org.json.JSONObject(message);
+						// On récupère l'objet pointé par "svg"
+						org.json.JSONObject jSvgObject = jObject.getJSONObject("svg");
+						// On récupère l'objet pointé par "M"
+						org.json.JSONArray jMArray = jSvgObject.getJSONArray("M");
+						// On créé la première frame
+						Frame firstFrame = new Frame(jMArray.getInt(0) * 297 / 4000, jMArray.getInt(1) * 210 / 4000, 10.0);
+						// On créé la frame correspondante sur le papier
+						Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * 297 / 4000, 210 - jMArray.getInt(1) * 210 / 4000, -3.0);
+						// On récupère l'Array des points de la courbe de bezier
+						org.json.JSONArray jCArray = jSvgObject.getJSONArray("c");
+						// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
+						bezierControlPoints = new Vector2[jCArray.length() / 2];
+						int i = 0;
+						while (cpt < jCArray.length()) {
+							bezierControlPoints[i].x = (jMArray.getInt(0) + jCArray.getInt(cpt)) * 297 / 4000;
+							bezierControlPoints[i].y = 210 - (jMArray.getInt(1) + jCArray.getInt(++cpt)) * 210 / 4000;
+							cpt++;
+							i++;
+						}
+						curve = new BezierCurve(bezierControlPoints);
+						trajectory = curve.getTrajectory(40);
+						// On crée des frames robot Kuka depuis notre courbe
+						frames = new Frame[trajectory.length];
+						for (i = 0; i < trajectory.length; i++)
+						{	
+							frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
+						}
+						RelativeLIN [] splineArray = new RelativeLIN[frames.length+1];
+						//  On approche de la feuille à 10 au dessus du point init
+						splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
+						// Le stylo touche la feuille
+						splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+						
+						for (i = 0; i < frames.length-1; i++)
+						{
+							RelativeLIN moveLin = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
+							splineArray[i+2] = moveLin;
+						}
+						linMovement = new Spline(splineArray);
+						
+						
+						
+						/*
 						// On récupère l'objet principale pointé par la key "svg"
 						org.json.JSONArray jArray = jMainObject.getJSONArray("svg");
 						// On parcours chaque tableau de l'objet principal
@@ -202,7 +250,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 								 *			- La remonté du stylo
 								 *			- La translation vers le nouveau point
 								 * 			- La descente du stylo vers le papier
-								 */
+								 
 								if (j != 0 && i == 0) {
 									// On récupère le dernier segment ajouté
 									ArrayList<Frame> lastSegment = trajectories.get(trajectories.size() - 1);
@@ -229,7 +277,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 									alSpline.add(linRel(getTranslationFromFrame(offsetAimFrame, aimFrameOnPaper), paperBase));
 									
 								/* On se place au dessus du premier point à dessiner
-								 */
+								 
 								} else if (j == 0 && i == 0) {
 									// On récupère le permier point pour se placer au-dessus
 									Frame firstFrame = trajectories2.get(0);
@@ -254,19 +302,19 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							for (int i = 0; i < trajectories2.size() - 1; i++) {
 								alSpline.add(linRel(getTranslationFromFrame(trajectories2.get(i), trajectories2.get(i + 1)), paperBase));
 							}
-						}
+						}*/
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
 					
-					relAlSpline = new RelativeLIN[alSpline.size()];
+					/*relAlSpline = new RelativeLIN[alSpline.size()];
 					
 					for (int i = 0; i < alSpline.size(); i++)
 					{
 						relAlSpline[i] = alSpline.get(i);
 						getLogger().info(relAlSpline[i].toString());
 					}
-					Spline linMovement = new Spline(relAlSpline);
+					Spline linMovement = new Spline(relAlSpline);*/
 					
 					penToolTCP.move(linMovement.setJointVelocityRel(velocity));
 			
