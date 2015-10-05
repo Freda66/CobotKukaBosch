@@ -2,8 +2,6 @@ package application;
 
 
 import java.util.ArrayList;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import serveur.TCPServer;
@@ -24,7 +22,6 @@ import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 import com.kuka.roboticsAPI.motionModel.Spline;
 import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
-import com.kuka.roboticsAPI.publishing.common.ncf.serialization.json.JSONObject;
 /**
  * Classe TestBaseMove
  * @author Bosch, Berriche, Cano, Danjoux, Durand, Olivieri
@@ -48,19 +45,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private ObjectFrame penToolTCP;
 	
 	private ObjectFrame paperBase;
-	private Frame P1;
-	private Frame P2;
-	private Frame P3;
-	private Frame P4;
-	private Frame P5;
-	
-	/*private Vector2 P1;
-	private Vector2 P2;
-	private Vector2 P3;
-	private Vector2 P4;
-	private Vector2 P5;*/
-	
-	private ObjectFrame nearPaper0;
 	private ObjectFrame paperApproach;
 	
 	//private BezierCurve curve
@@ -128,7 +112,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		paperBase = getApplicationData().getFrame("/Paper");
 		
 		// On charge les points
-		nearPaper0 = getApplicationData().getFrame("/Paper/NearPaper0");
 		paperApproach = getApplicationData().getFrame("/Paper/PaperApproach");
 		
 		/*// On définit les points du parcours
@@ -177,7 +160,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			
 			int zOffsetForPen = 10;
 			int zOffsetForPaper = -3;
-			int cptSpline = 0;
 			
 			ArrayList<RelativeLIN> alSpline = new ArrayList<RelativeLIN>();
 			RelativeLIN[] relAlSpline = null; 
@@ -264,7 +246,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 									getLogger().info("offsetLastFrame " + j + " " + i + " " + offsetLastFrame.toString());
 									// On remonte le stylo
 									alSpline.add(linRel(getTranslationFromFrame(lastFrame, offsetLastFrame), paperBase));
-									cptSpline++;
 									// On récupère la dernière frame ajoutée
 									Frame aimFrame = trajectories2.get(trajectories2.size() - 1);
 									getLogger().info("aimFrame " + j + " " + i + " " + aimFrame.toString());
@@ -273,13 +254,11 @@ public class TestBaseMove extends RoboticsAPIApplication {
 									getLogger().info("offsetAimFrame " + j + " " + i + " " + offsetAimFrame.toString());
 									// On ajoute la translation vers le nouveau point
 									alSpline.add(linRel(getTranslationFromFrame(offsetLastFrame, offsetAimFrame), paperBase));
-									cptSpline++;
 									// On créer le point sur le papier
 									Frame aimFrameOnPaper = new Frame (aimFrame.getX(), aimFrame.getY(), zOffsetForPaper);
 									getLogger().info("aimFrameOnPaper " + j + " " + i + " " + aimFrameOnPaper.toString());
 									// On ajoute la translation suivant Z pour toucher le papier
 									alSpline.add(linRel(getTranslationFromFrame(offsetAimFrame, aimFrameOnPaper), paperBase));
-									cptSpline++;
 								} else if (j == 0 && i == 0) {
 									// On récupère le permier point pour se placer au-dessus
 									Frame firstFrame = trajectories2.get(0);
@@ -289,13 +268,11 @@ public class TestBaseMove extends RoboticsAPIApplication {
 									getLogger().info("offsetFirstFrame " + j + " " + i + " " + offsetFirstFrame.toString());
 									// On ajoute le déplacement vers le premier point
 									alSpline.add(linRel(getTranslationFromFrame(new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ()), offsetFirstFrame), paperBase));
-									cptSpline++;
 									// On créé le premier point sur le papier
 									Frame firstFrameOnPaper = new Frame(offsetFirstFrame.getX(), offsetFirstFrame.getY(), zOffsetForPaper);
 									getLogger().info("firstFrameOnPaper " + j + " " + i + " " + firstFrameOnPaper.toString());
 									// On ajoute le mouvement de descente sur le papier
 									alSpline.add(linRel(getTranslationFromFrame(offsetFirstFrame, firstFrameOnPaper), paperBase));
-									cptSpline++;
 								}
 							}
 							
@@ -305,7 +282,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							// On enregistre les mouvements dans une ArrayList
 							for (int i = 0; i < trajectories2.size() - 1; i++) {
 								alSpline.add(linRel(getTranslationFromFrame(trajectories2.get(i), trajectories2.get(i + 1)), paperBase));
-								cptSpline++;
 							}
 						}
 					} catch (JSONException e) {
