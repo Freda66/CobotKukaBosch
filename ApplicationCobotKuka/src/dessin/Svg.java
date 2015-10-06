@@ -14,8 +14,6 @@ import com.kuka.roboticsAPI.geometricModel.Frame;
 import com.kuka.roboticsAPI.geometricModel.ObjectFrame;
 import com.kuka.roboticsAPI.geometricModel.math.Transformation;
 import com.kuka.roboticsAPI.motionModel.RelativeLIN;
-import com.kuka.roboticsAPI.motionModel.Spline;
-
 
 
 public class Svg {
@@ -62,7 +60,7 @@ public class Svg {
 	/**
 	 * Fonction qui dessine
 	 * @param jSvgObject
-	 * @return
+	 * @return RelativeLIN[]
 	 * @throws JSONException 
 	 */
 	public RelativeLIN[] draw(JSONObject jSvgObject) throws JSONException {
@@ -73,24 +71,40 @@ public class Svg {
 		// Récupère le M
 		JSONArray jMArray = jSvgObject.getJSONArray("M");
 		
+		System.out.println("Avant parcours JSON");
+		
 		// Parcours les objets JSON 
 		for (@SuppressWarnings("rawtypes") Iterator iterator = jSvgObject.keys(); iterator.hasNext();) {
 			// Récupère la clé (M, c, l,...)    
 			String cle = String.valueOf(iterator.next());
+			
+			System.out.println("Cle : " + cle);
+			
 			// Récupère le tableau de valeur de la cle
 			JSONArray jArray = jSvgObject.getJSONArray(cle);
 			
-			if     (cle == "c") linMovements.add(this.JsonKeyc(jMArray, jArray));
-			//else if(cle == "l") linMovements.add(this.JsonKeyl(jMArray, val));
-			//else if(cle == "m") linMovements.add(this.JsonKeym(jMArray, val));
+			if     (cle.equals("c")) linMovements.add(this.JsonKeyc(jMArray, jArray));
+			//else if(cle.equals("l")) linMovements.add(this.JsonKeyl(jMArray, val));
+			//else if(cle.equals("m")) linMovements.add(this.JsonKeym(jMArray, val));
+		}
+
+		System.out.println("Fin parcours JSON");
+		
+		// Recupere le nombre d'element
+		int nbElements = 0;
+		for(RelativeLIN[] relLin : linMovements){				
+			nbElements += relLin.length;
 		}
 		
-		linMovement = new RelativeLIN[linMovements.size()];
+		//
+		linMovement = new RelativeLIN[nbElements];
 		for(RelativeLIN[] relLin : linMovements){
 			for (int i = 0; i < relLin.length; i++) {
 				linMovement[i] = relLin[i];
 			}
 		}
+		
+		System.out.println("Fin ajout des RelativeLIN");
 	    
 		return linMovement;
 	}
@@ -98,12 +112,16 @@ public class Svg {
 	private RelativeLIN[] JsonKeyc(JSONArray jMArray, JSONArray jCArray){
 		RelativeLIN[] splineArray = null;
 		
+		System.out.println("Debut JsonKeyc");
+		
 		try {
 			// On créé la première frame
 			Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
+			System.out.println(firstFrame.toString());
 			
 			// On créé la frame correspondante sur le papier
 			Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
+			System.out.println(firstFrameOnPaper.toString());
 			
 			// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
 			bezierControlPoints = new Vector2[jCArray.length() / 2];
@@ -120,8 +138,7 @@ public class Svg {
 			trajectory = curve.getTrajectory(40);
 			// On crée des frames robot Kuka depuis notre courbe
 			frames = new Frame[trajectory.length];
-			for (i = 0; i < trajectory.length; i++)
-			{	
+			for (i = 0; i < trajectory.length; i++) {	
 				frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
 			}
 
@@ -150,6 +167,8 @@ public class Svg {
 			*/
 			
 		} catch (JSONException e) {	e.printStackTrace(); }
+		
+		System.out.println("Fin JsonKeyc");
 		
 		return splineArray;
 	}
