@@ -16,6 +16,7 @@ import com.kuka.roboticsAPI.deviceModel.OperationMode;
 import com.kuka.roboticsAPI.geometricModel.CartDOF;
 import com.kuka.roboticsAPI.geometricModel.ObjectFrame;
 import com.kuka.roboticsAPI.geometricModel.Tool;
+import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 import com.kuka.roboticsAPI.motionModel.Spline;
 import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
@@ -52,7 +53,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 */
 	public void initialize() {
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
-		serveur = new TCPServer(30004);
+		serveur = new TCPServer(30005);
 		
 		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1, "LBR_iiwa_14_R820_1");
@@ -88,7 +89,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 * 
 	 */
 	public void run() {
-		Spline linMovement = null;
+		Spline[] linMovement = null;
+		RelativeLIN[] relLin = null;
 		
 		try {
 			double velocity = 0.2;
@@ -109,7 +111,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			
 			
 			// Approche de la base "Paper" en PTP
-			
 			getLogger().info("Move near Paper");
 					
 			penToolTCP.move(
@@ -151,7 +152,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 						JSONArray jScaleArray = null;
 						if(jObject.has("scale")) jScaleArray = jObject.getJSONArray("scale");
 						// On récupère l'objet pointé par "translate"
-						//JSONArray jTranslateArray = jObject.getJSONArray("translate");
+						JSONArray jTranslateArray = null;
+						if(jObject.has("translate")) jTranslateArray = jObject.getJSONArray("translate");
 						
 						// On récupère l'objet pointé par "pt" ou "px"
 						JSONArray jTypeArray= null;
@@ -172,6 +174,13 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							scaleX = scaleX / Math.abs(jScaleArray.getDouble(0));
 							scaleY = scaleY / Math.abs(jScaleArray.getDouble(1));
 						}
+						// Recupere le translate x et y
+						double translateX = 1.0;
+						double translateY = 1.0;
+						if(jTranslateArray != null){
+							translateX = jTranslateArray.getDouble(0);
+							translateY = jTranslateArray.getDouble(1);
+						}
 						
 						// Log
 						getLogger().info("WidthSheet : " + widthSheet + " | HeightSheet : " + heightSheet + " | ScaleX : " + scaleX + " | ScaleY : " + scaleY + "Px : " + px + " | Height dessin : " + height + " Width dessin : " + width);
@@ -185,25 +194,56 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							JSONObject jSvgObject = jObject.getJSONObject("svg");
 							
 							// Appel la fonction pour dessiner l'image
-							linMovement = new Spline(svg.draw(jSvgObject));
+							relLin = svg.draw(jSvgObject);
 							
 						} else if(jObject.has("webcam")){
 							// Crée un objet CAM
-							Webcam cam = new Webcam(paperApproach, paperBase, widthSheet, heightSheet, scaleX, scaleY);
+							Webcam cam = new Webcam(paperApproach, paperBase, widthSheet, heightSheet, scaleX, scaleY, translateX, translateY);
 							
 							// Récupère l'objet CAM
 							JSONArray jCamArray = jObject.getJSONArray("webcam");
 							
 							// Appel la fonction pour dessiner l'image
-							linMovement = new Spline(cam.draw(jCamArray));	
+							relLin = cam.draw(jCamArray);
 							
 						}
+						
+						/*
+						 * Traitement de la limite du nombre (250) de RelativeLIN traitable par une spline et un move
+						 */
+						int j = 0;
+						int cpt = 0;
+						int taille = (int) Math.ceil(relLin.length / 250);
+						RelativeLIN[] t_relLin = null;
+						linMovement = new Spline[taille];
+						
+						for(int i = 0; i < relLin.length; i++){
+							if(cpt == 250) {
+								linMovement[j] = new Spline(t_relLin);
+								cpt = 0;
+								j++;
+							}
+							
+							if(cpt == 0) t_relLin = new RelativeLIN[250];
+							
+							t_relLin[cpt] = relLin[i];
+							cpt++;
+						}
+						
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}					
 					
 					// Dessine le message
-					if(linMovement != null) penToolTCP.move(linMovement.setJointVelocityRel(velocity));
+					if(linMovement != null) {
+						for(int i = 0; i < linMovement.length; i++){
+							penToolTCP.move(linMovement[i].setJointVelocityRel(velocity));
+						}
+					}
+					
+					// On retourne à la position initiale du robot
+					getLogger().info("Retour position initiale");
+					penToolTCP.move(lin(paperApproach).setJointVelocityRel(velocity));
 				}
 			}
 			

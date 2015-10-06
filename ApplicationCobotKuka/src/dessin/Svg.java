@@ -31,6 +31,7 @@ public class Svg {
 	private int heightSheet;
 	private double scaleX;
 	private double scaleY;
+	private Vector2 currentPoint;
 	
 	/**
 	 * Constructeur par defaut
@@ -55,6 +56,8 @@ public class Svg {
 		heightSheet = hS;
 		scaleX = sX;
 		scaleY = sY;
+		currentPoint.x = 0.0;
+		currentPoint.y = 0.0;
 	}
 	
 	/**
@@ -73,6 +76,21 @@ public class Svg {
 		
 		System.out.println("Avant parcours JSON");
 		
+		// On créé la première frame
+		Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
+		System.out.println(firstFrame.toString());
+		// On créé la frame correspondante sur le papier
+		Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
+		System.out.println(firstFrameOnPaper.toString());
+		
+		RelativeLIN[] splineArray = new RelativeLIN[2];
+		// On approche de la feuille à 10 au dessus du point init
+		splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
+		// Le stylo touche la feuille
+		splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+		
+		linMovements.add(splineArray);
+		
 		// Parcours les objets JSON 
 		for (@SuppressWarnings("rawtypes") Iterator iterator = jSvgObject.keys(); iterator.hasNext();) {
 			// Récupère la clé (M, c, l,...)    
@@ -84,10 +102,10 @@ public class Svg {
 			JSONArray jArray = jSvgObject.getJSONArray(cle);
 			
 			if     (cle.equals("c")) linMovements.add(this.JsonKeyc(jMArray, jArray));
-			//else if(cle.equals("l")) linMovements.add(this.JsonKeyl(jMArray, val));
+			else if(cle.equals("l")) linMovements.add(this.JsonKeyl(jMArray, jArray));
 			//else if(cle.equals("m")) linMovements.add(this.JsonKeym(jMArray, val));
 		}
-
+		
 		System.out.println("Fin parcours JSON");
 		
 		// Recupere le nombre d'element
@@ -109,20 +127,18 @@ public class Svg {
 		return linMovement;
 	}
 	
+	/**
+	 * Traitement de la lettre c
+	 * @param jMArray
+	 * @param jCArray
+	 * @return RelativeLIN[]
+	 */
 	private RelativeLIN[] JsonKeyc(JSONArray jMArray, JSONArray jCArray){
 		RelativeLIN[] splineArray = null;
 		
 		System.out.println("Debut JsonKeyc");
 		
 		try {
-			// On créé la première frame
-			Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
-			System.out.println(firstFrame.toString());
-			
-			// On créé la frame correspondante sur le papier
-			Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
-			System.out.println(firstFrameOnPaper.toString());
-			
 			// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
 			bezierControlPoints = new Vector2[jCArray.length() / 2];
 			
@@ -142,29 +158,55 @@ public class Svg {
 				frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
 			}
 
-			splineArray = new RelativeLIN[frames.length+1];
-			// On approche de la feuille à 10 au dessus du point init
-			splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
-			// Le stylo touche la feuille
-			splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
-			
+			splineArray = new RelativeLIN[frames.length-1];
 			for (i = 0; i < frames.length-1; i++) {
 				RelativeLIN moveLin = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
-				splineArray[i+2] = moveLin;
+				splineArray[i] = moveLin;
+			}
+			
+		} catch (JSONException e) {	e.printStackTrace(); }
+		
+		System.out.println("Fin JsonKeyc");
+		
+		return splineArray;
+	}
+	
+	/**
+	 * Traitement de la lettre l
+	 * @param jMArray
+	 * @param jLArray
+	 * @return RelativeLIN[]
+	 */
+	private RelativeLIN[] JsonKeyl(JSONArray jMArray, JSONArray jLArray){
+		RelativeLIN[] splineArray = null;
+		
+		System.out.println("Debut JsonKeyc");
+		
+		try {
+			// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
+			bezierControlPoints = new Vector2[jLArray.length() / 2];
+			
+			int i = 0;
+			int cpt = 0;
+			while (cpt < jLArray.length()) {
+				bezierControlPoints[i] = new Vector2((jMArray.getInt(0) + jLArray.getInt(cpt)) * widthSheet / scaleX, heightSheet - (jMArray.getInt(1) + jLArray.getInt(++cpt)) * heightSheet / scaleY);
+				cpt++;
+				i++;
+			}
+			
+			curve = new BezierCurve(bezierControlPoints);
+			trajectory = curve.getTrajectory(40);
+			// On crée des frames robot Kuka depuis notre courbe
+			frames = new Frame[trajectory.length];
+			for (i = 0; i < trajectory.length; i++) {	
+				frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
 			}
 
-			/*
-			//  On approche de la feuille à 10 au dessus du point init
-			splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
-			// Le stylo touche la feuille
-			splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
-			
-			for (i = 0; i < frames.length-1; i++)
-			{
+			splineArray = new RelativeLIN[frames.length-1];
+			for (i = 0; i < frames.length-1; i++) {
 				RelativeLIN moveLin = linRel(getTranslationFromFrame(frames[i], frames[i+1]),paperBase);
-				splineArray[i+2] = moveLin;
+				splineArray[i] = moveLin;
 			}
-			*/
 			
 		} catch (JSONException e) {	e.printStackTrace(); }
 		
