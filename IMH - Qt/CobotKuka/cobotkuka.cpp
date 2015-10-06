@@ -6,14 +6,11 @@
 
 void CobotKuka::init(){
 
-
-
 	//disable the actions while not connected
 	ui->picture_groupBox->setEnabled(false);
 	ui->text_groupBox->setEnabled(false);
 	ui->svg_groupBox->setEnabled(false);
 	ui->sketch_groupBox->setEnabled(false);
-
 
 	//TODO : load TTF fonts exclusively
 
@@ -162,7 +159,6 @@ void CobotKuka::on_picture_webcam_radioButton_clicked()
 
 	ui->picture_file_lineEdit->setEnabled(false);
 	ui->picture_file_pushButton->setEnabled(false);
-
 }
 
 void CobotKuka::on_picture_file_radioButton_clicked()
@@ -227,16 +223,20 @@ void CobotKuka::on_send_pushButton_clicked()
 	if(!connected) {
 
 		/* CODE A COMMENTER POUR TEST HORS LIGNE*/
+
 //		if(connectToServer()){
 //			//Once the connection is established, send the JSON chain to the server.
 //			writeJSONToServer(jsonChainList);
 //		}
+
 		/* /CODE A COMMENTER POUR TEST HORS LIGNE*/
 
 		// ---
 
 		/* CODE A DECOMMENTER POUR TEST HORS LIGNE */
+
 		writeJSONToServer(json);
+
 		/* /CODE A DECOMMENTER POUR TEST HORS LIGNE*/
 	}
 	else{
@@ -408,7 +408,35 @@ void CobotKuka::on_stop_pushButton_clicked()
 int CobotKuka::on_picture_webcam_pushButton_clicked()
 {
 
+	VideoCapture cap(0); // Ouvrir la caméra par défaut
+	   if(!cap.isOpened())
+		   {
+		   // check if we succeeded
+			return -1;
+	   }
+
+	   for(;;)
+	   {
+		   cap >> frame; // get a new frame from camera
+		   cvtColor(frame, grey, CV_BGR2GRAY);
+
+
+		   //Appliquer un blurring pour enlever le bruit
+			blur(grey, grey, Size(3,3));
+
+
+			//Appliquer la fonction Canny.
+			Canny(grey, cannye, 100, 100, 3);
+			imshow("Canny",cannye);
+			resizeWindow("Canny", 635, 475);
+
+
+
+		   if(waitKey(30) >= 0) break;
+		}
+
 	activate_OK_pushButton();
+	return 0;
 }
 
 void CobotKuka::on_sketch_pushButton_clicked()
