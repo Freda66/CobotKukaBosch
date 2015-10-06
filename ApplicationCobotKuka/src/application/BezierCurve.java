@@ -4,7 +4,7 @@ public class BezierCurve {
 
 	Vector2 points[];
 	
-	BezierCurve(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+	public BezierCurve(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
 	{
 		points = new Vector2[4];
 		
@@ -18,7 +18,7 @@ public class BezierCurve {
 		points = tab;
 	}
 
-	Vector2 get(double step)
+	public Vector2 get(double step)
 	{
 	    double minusStep3 = Math.pow(1-step, 3);
 	    double minusStep2 = Math.pow(1-step, 2);
@@ -41,7 +41,7 @@ public class BezierCurve {
 	    return result;
 	}
 	
-	Vector2[] getTrajectory(int nbPoint)
+	public Vector2[] getTrajectory(int nbPoint)
 	{
 		double step = (1.0 / ((double)nbPoint + 0.0));
 
