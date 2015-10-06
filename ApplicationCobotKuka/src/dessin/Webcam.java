@@ -91,7 +91,7 @@ public class Webcam {
 	    			t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 				}
 				// On reboucle à la fin entre le dernier point de la courbe en cours et le point init de cette meme courbe
-				t_firstPoint = new Frame(scalePointX(jCamArray2.getInt(jCamArray2.length() - 1)), scalePointY(jCamArray2.getInt(jCamArray2.length())), 0.0);
+				t_firstPoint = new Frame(scalePointX(jCamArray2.getInt(jCamArray2.length() - 1)), scalePointY(jCamArray2.getInt(jCamArray2.length() - 1)), 0.0);
 				t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(0)), scalePointY(jCamArray2.getInt(1)), 0.0);
 				t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 	    	}

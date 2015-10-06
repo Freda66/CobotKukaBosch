@@ -2,8 +2,7 @@ package application;
 
 import dessin.*;
 
-import java.util.ArrayList;
-import org.json.JSONException;
+import org.json.*;
 
 import serveur.TCPServer;
 
@@ -15,11 +14,8 @@ import com.kuka.roboticsAPI.controllerModel.sunrise.ISafetyState;
 import com.kuka.roboticsAPI.deviceModel.LBR;
 import com.kuka.roboticsAPI.deviceModel.OperationMode;
 import com.kuka.roboticsAPI.geometricModel.CartDOF;
-import com.kuka.roboticsAPI.geometricModel.Frame;
 import com.kuka.roboticsAPI.geometricModel.ObjectFrame;
 import com.kuka.roboticsAPI.geometricModel.Tool;
-import com.kuka.roboticsAPI.geometricModel.math.Transformation;
-import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 import com.kuka.roboticsAPI.motionModel.Spline;
 import com.kuka.roboticsAPI.motionModel.SplineJP;
 import com.kuka.roboticsAPI.motionModel.controlModeModel.CartesianSineImpedanceControlMode;
@@ -145,98 +141,40 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	
 					getLogger().info("Message du client : " + this.serveur.getMessage());
 					
+					// Initialise le mouvement à faire
+					linMovement = null;
+					
 					try {
 						// On récupère la chaîne de caractère qu'on converti en JSON
-						org.json.JSONObject jObject = new org.json.JSONObject(message);
-<<<<<<< .mine
-						// On récupère l'objet pointé par "svg"
-						org.json.JSONObject jSvgObject = jObject.getJSONObject("svg");
-						// On récupère l'objet pointé par "M"
-						org.json.JSONArray jMArray = jSvgObject.getJSONArray("M");
-						jMArray.ge
-						// On créé la première frame
-						Frame firstFrame = new Frame(jMArray.getInt(0) * 297 / 4000, jMArray.getInt(1) * 210 / 4000, 10.0);
-						// On créé la frame correspondante sur le papier
-						Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * 297 / 4000, 210 - jMArray.getInt(1) * 210 / 4000, -3.0);
-						// On récupère l'Array des points de la courbe de bezier
-						org.json.JSONArray jCArray = jSvgObject.getJSONArray("c");
-						// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
-						bezierControlPoints = new Vector2[jCArray.length() / 2];
-						int i = 0;
-						while (cpt < jCArray.length()) {
-							bezierControlPoints[i].x = (jMArray.getInt(0) + jCArray.getInt(cpt)) * 297 / 4000;
-							bezierControlPoints[i].y = 210 - (jMArray.getInt(1) + jCArray.getInt(++cpt)) * 210 / 4000;
-							cpt++;
-							i++;
-						}
-						curve = new BezierCurve(bezierControlPoints);
-						trajectory = curve.getTrajectory(40);
-						// On crée des frames robot Kuka depuis notre courbe
-						frames = new Frame[trajectory.length];
-						for (i = 0; i < trajectory.length; i++)
-						{	
-							frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
-						}
-						RelativeLIN [] splineArray = new RelativeLIN[frames.length+1];
-						//  On approche de la feuille à 10 au dessus du point init
-						splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
-						// Le stylo touche la feuille
-						splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
-||||||| .r93
-						// On récupère l'objet pointé par "svg"
-						org.json.JSONObject jSvgObject = jObject.getJSONObject("svg");
-						// On récupère l'objet pointé par "M"
-						org.json.JSONArray jMArray = jSvgObject.getJSONArray("M");
-						// On créé la première frame
-						Frame firstFrame = new Frame(jMArray.getInt(0) * 297 / 4000, jMArray.getInt(1) * 210 / 4000, 10.0);
-						// On créé la frame correspondante sur le papier
-						Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * 297 / 4000, 210 - jMArray.getInt(1) * 210 / 4000, -3.0);
-						// On récupère l'Array des points de la courbe de bezier
-						org.json.JSONArray jCArray = jSvgObject.getJSONArray("c");
-						// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
-						bezierControlPoints = new Vector2[jCArray.length() / 2];
-						int i = 0;
-						while (cpt < jCArray.length()) {
-							bezierControlPoints[i].x = (jMArray.getInt(0) + jCArray.getInt(cpt)) * 297 / 4000;
-							bezierControlPoints[i].y = 210 - (jMArray.getInt(1) + jCArray.getInt(++cpt)) * 210 / 4000;
-							cpt++;
-							i++;
-						}
-						curve = new BezierCurve(bezierControlPoints);
-						trajectory = curve.getTrajectory(40);
-						// On crée des frames robot Kuka depuis notre courbe
-						frames = new Frame[trajectory.length];
-						for (i = 0; i < trajectory.length; i++)
-						{	
-							frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
-						}
-						RelativeLIN [] splineArray = new RelativeLIN[frames.length+1];
-						//  On approche de la feuille à 10 au dessus du point init
-						splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
-						// Le stylo touche la feuille
-						splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
-=======
+						JSONObject jObject = new JSONObject(message);
 						// On récupère l'objet pointé par "scale"
-						org.json.JSONArray jScaleArray = jObject.getJSONArray("scale");
+						JSONArray jScaleArray = null;
+						if(jObject.has("scale")) jScaleArray = jObject.getJSONArray("scale");
 						// On récupère l'objet pointé par "translate"
-						org.json.JSONArray jTranslateArray = jObject.getJSONArray("translate");
->>>>>>> .r101
+						//JSONArray jTranslateArray = jObject.getJSONArray("translate");
 						
 						// On récupère l'objet pointé par "pt" ou "px"
-						org.json.JSONObject jTypeObject = null;
+						JSONArray jTypeArray= null;
 						double px = 1;
-						if(jObject.has("pt")) jTypeObject = jObject.getJSONObject("pt");
+						if(jObject.has("pt")) jTypeArray = jObject.getJSONArray("pt");
 						else {
-							jTypeObject = jObject.getJSONObject("px");
+							jTypeArray = jObject.getJSONArray("px");
 							px = 0.75;
 						}
-						// On récupère l'objet pointé par "height"
-						int height = jTypeObject.getInt("height");
 						// On récupère l'objet pointé par "width"
-						int width = jTypeObject.getInt("width");
-						//
-						double scaleX = height * px / Math.abs(jScaleArray.getInt(0));
-						double scaleY = width * px / Math.abs(jScaleArray.getInt(1));
+						double width = jTypeArray.getDouble(0);
+						// On récupère l'objet pointé par "height"
+						double height = jTypeArray.getDouble(1);
+						// Calcul le scaleX et scaleY
+						double scaleX = height * px;
+						double scaleY = width * px;
+						if(jScaleArray != null){
+							scaleX = scaleX / Math.abs(jScaleArray.getDouble(0));
+							scaleY = scaleY / Math.abs(jScaleArray.getDouble(1));
+						}
+						
+						// Log
+						getLogger().info("WidthSheet : " + widthSheet + " | HeightSheet : " + heightSheet + " | ScaleX : " + scaleX + " | ScaleY : " + scaleY + "Px : " + px + " | Height dessin : " + height + " Width dessin : " + width);
 						
 						// On récupère l'objet pointé par "svg"
 						if(jObject.has("svg")){
@@ -244,7 +182,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							Svg svg = new Svg(paperApproach, paperBase, widthSheet, heightSheet, scaleX, scaleY);
 							
 							// Récupère l'objet SVG
-							org.json.JSONObject jSvgObject = jObject.getJSONObject("svg");
+							JSONObject jSvgObject = jObject.getJSONObject("svg");
 							
 							// Appel la fonction pour dessiner l'image
 							linMovement = new Spline(svg.draw(jSvgObject));
@@ -254,7 +192,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							Webcam cam = new Webcam(paperApproach, paperBase, widthSheet, heightSheet, scaleX, scaleY);
 							
 							// Récupère l'objet CAM
-							org.json.JSONArray jCamArray = jObject.getJSONArray("webcam");
+							JSONArray jCamArray = jObject.getJSONArray("webcam");
 							
 							// Appel la fonction pour dessiner l'image
 							linMovement = new Spline(cam.draw(jCamArray));	
@@ -265,21 +203,21 @@ public class TestBaseMove extends RoboticsAPIApplication {
 					}					
 					
 					// Dessine le message
-					penToolTCP.move(linMovement.setJointVelocityRel(velocity));
-			
-					// On retourne à la position initiale du robot
-					getLogger().info("Retour position initiale");
-					
-					penToolTCP.move(lin(paperApproach).setJointVelocityRel(velocity));
-					
-					SplineJP moveBackToHome = new SplineJP( ptpHome());
-					
-					getLogger().info("Move Back");
-					lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
-					
-					ioFlange.setLEDBlue(false);
+					if(linMovement != null) penToolTCP.move(linMovement.setJointVelocityRel(velocity));
 				}
 			}
+			
+			// On retourne à la position initiale du robot
+			getLogger().info("Retour position initiale");
+			
+			penToolTCP.move(lin(paperApproach).setJointVelocityRel(velocity));
+			
+			SplineJP moveBackToHome = new SplineJP( ptpHome());
+			
+			getLogger().info("Move Back");
+			lbr_iiwa_14_R820_1.move(moveBackToHome.setJointVelocityRel(velocity));
+			
+			ioFlange.setLEDBlue(false);
 			
 			// Ferme le serveur
 			serveur.closeServer();
