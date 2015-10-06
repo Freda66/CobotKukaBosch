@@ -148,10 +148,79 @@ public class TestBaseMove extends RoboticsAPIApplication {
 					try {
 						// On récupère la chaîne de caractère qu'on converti en JSON
 						org.json.JSONObject jObject = new org.json.JSONObject(message);
+<<<<<<< .mine
+						// On récupère l'objet pointé par "svg"
+						org.json.JSONObject jSvgObject = jObject.getJSONObject("svg");
+						// On récupère l'objet pointé par "M"
+						org.json.JSONArray jMArray = jSvgObject.getJSONArray("M");
+						jMArray.ge
+						// On créé la première frame
+						Frame firstFrame = new Frame(jMArray.getInt(0) * 297 / 4000, jMArray.getInt(1) * 210 / 4000, 10.0);
+						// On créé la frame correspondante sur le papier
+						Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * 297 / 4000, 210 - jMArray.getInt(1) * 210 / 4000, -3.0);
+						// On récupère l'Array des points de la courbe de bezier
+						org.json.JSONArray jCArray = jSvgObject.getJSONArray("c");
+						// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
+						bezierControlPoints = new Vector2[jCArray.length() / 2];
+						int i = 0;
+						while (cpt < jCArray.length()) {
+							bezierControlPoints[i].x = (jMArray.getInt(0) + jCArray.getInt(cpt)) * 297 / 4000;
+							bezierControlPoints[i].y = 210 - (jMArray.getInt(1) + jCArray.getInt(++cpt)) * 210 / 4000;
+							cpt++;
+							i++;
+						}
+						curve = new BezierCurve(bezierControlPoints);
+						trajectory = curve.getTrajectory(40);
+						// On crée des frames robot Kuka depuis notre courbe
+						frames = new Frame[trajectory.length];
+						for (i = 0; i < trajectory.length; i++)
+						{	
+							frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
+						}
+						RelativeLIN [] splineArray = new RelativeLIN[frames.length+1];
+						//  On approche de la feuille à 10 au dessus du point init
+						splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
+						// Le stylo touche la feuille
+						splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+||||||| .r93
+						// On récupère l'objet pointé par "svg"
+						org.json.JSONObject jSvgObject = jObject.getJSONObject("svg");
+						// On récupère l'objet pointé par "M"
+						org.json.JSONArray jMArray = jSvgObject.getJSONArray("M");
+						// On créé la première frame
+						Frame firstFrame = new Frame(jMArray.getInt(0) * 297 / 4000, jMArray.getInt(1) * 210 / 4000, 10.0);
+						// On créé la frame correspondante sur le papier
+						Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * 297 / 4000, 210 - jMArray.getInt(1) * 210 / 4000, -3.0);
+						// On récupère l'Array des points de la courbe de bezier
+						org.json.JSONArray jCArray = jSvgObject.getJSONArray("c");
+						// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
+						bezierControlPoints = new Vector2[jCArray.length() / 2];
+						int i = 0;
+						while (cpt < jCArray.length()) {
+							bezierControlPoints[i].x = (jMArray.getInt(0) + jCArray.getInt(cpt)) * 297 / 4000;
+							bezierControlPoints[i].y = 210 - (jMArray.getInt(1) + jCArray.getInt(++cpt)) * 210 / 4000;
+							cpt++;
+							i++;
+						}
+						curve = new BezierCurve(bezierControlPoints);
+						trajectory = curve.getTrajectory(40);
+						// On crée des frames robot Kuka depuis notre courbe
+						frames = new Frame[trajectory.length];
+						for (i = 0; i < trajectory.length; i++)
+						{	
+							frames[i] = new Frame(trajectory[i].x, trajectory[i].y, 0.0);
+						}
+						RelativeLIN [] splineArray = new RelativeLIN[frames.length+1];
+						//  On approche de la feuille à 10 au dessus du point init
+						splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
+						// Le stylo touche la feuille
+						splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+=======
 						// On récupère l'objet pointé par "scale"
 						org.json.JSONArray jScaleArray = jObject.getJSONArray("scale");
 						// On récupère l'objet pointé par "translate"
 						org.json.JSONArray jTranslateArray = jObject.getJSONArray("translate");
+>>>>>>> .r101
 						
 						// On récupère l'objet pointé par "pt" ou "px"
 						org.json.JSONObject jTypeObject = null;
