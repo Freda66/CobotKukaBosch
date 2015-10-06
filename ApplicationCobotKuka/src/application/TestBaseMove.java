@@ -51,31 +51,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private static int widthSheet = 297;
 	private static int heightSheet = 210;
 	
-	
-	/*private Transformation getTranslationWithSpecifiedZ(ObjectFrame frameBefore, ObjectFrame frameDestination, double z)
-	{
-		return Transformation.ofTranslation(
-				frameDestination.getX()-frameBefore.getX(), 
-				frameDestination.getY()-frameBefore.getY(), 
-				z
-				);
-	}*/
-	
-	/**
-	 * 
-	 * @param frameBefore
-	 * @param frameDestination
-	 * @return
-	 */
-	private Transformation getTranslationFromFrame(Frame frameBefore, Frame frameDestination)
-	{
-		return Transformation.ofTranslation(
-				frameDestination.getX()-frameBefore.getX(), 
-				frameDestination.getY()-frameBefore.getY(), 
-				frameDestination.getZ()-frameBefore.getZ()
-				);
-	}
-	
 	/**
 	 * 
 	 */
@@ -204,6 +179,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							
 							// Appel la fonction pour dessiner l'image
 							linMovement = new Spline(svg.draw(jSvgObject));
+							
 						} else if(jObject.has("webcam")){
 							// Crée un objet CAM
 							Webcam cam = new Webcam(paperApproach, paperBase, widthSheet, heightSheet, scaleX, scaleY);
@@ -212,7 +188,8 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							org.json.JSONArray jCamArray = jObject.getJSONArray("webcam");
 							
 							// Appel la fonction pour dessiner l'image
-							linMovement = new Spline(cam.draw(jCamArray));							
+							linMovement = new Spline(cam.draw(jCamArray));	
+							
 						}
 					} catch (JSONException e) {
 						e.printStackTrace();
