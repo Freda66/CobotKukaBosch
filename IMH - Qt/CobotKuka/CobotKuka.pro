@@ -18,3 +18,7 @@ HEADERS  += cobotkuka.h \
     json.h
 
 FORMS    += cobotkuka.ui
+
+INCLUDEPATH += "C:\Qt\opencv\build\include"
+
+LIBS += -LC:\Qt\opencv\build\x64\vc12\lib -lopencv_world300d

@@ -14,10 +14,10 @@ CXX           = g++
 DEFINES       = -DUNICODE -DQT_NO_DEBUG -DQT_SVG_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -pipe -fno-keep-inline-dllexport -O2 -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -pipe -fno-keep-inline-dllexport -O2 -frtti -Wall -Wextra -fexceptions -mthreads $(DEFINES)
-INCPATH       = -I. -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtSvg" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtWidgets" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtXml" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtNetwork" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtGui" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtCore" -I"release" -I"." -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++"
+INCPATH       = -I. -I"C:\Qt\opencv\build\include" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtSvg" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtWidgets" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtXml" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtNetwork" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtGui" -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\include\QtCore" -I"release" -I"." -I"C:\Qt\Qt5.3.0\5.3\mingw482_32\mkspecs\win32-g++"
 LINKER      =        g++
 LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
-LIBS        =        -lglu32 -lopengl32 -lgdi32 -luser32 -lmingw32 -lqtmain -LC:/Qt/Qt5.3.0/5.3/mingw482_32/lib -lQt5Svg -lQt5Widgets -lQt5Xml -lQt5Network -lQt5Gui -lQt5Core 
+LIBS        =        -lglu32 -lopengl32 -lgdi32 -luser32 -lmingw32 -lqtmain -LC:\Qt\opencv\build\x64\vc12\lib -lopencv_world300d -LC:/Qt/Qt5.3.0/5.3/mingw482_32/lib -lQt5Svg -lQt5Widgets -lQt5Xml -lQt5Network -lQt5Gui -lQt5Core 
 QMAKE         = C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\qmake.exe
 IDC           = idc
 IDL           = midl
@@ -566,7 +566,7 @@ release/moc_cobotkuka.cpp: C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QMain
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qxml.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qtxmlversion.h \
 		cobotkuka.h
-	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -I"C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/Git/IMH - Qt/CobotKuka" -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtSvg -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtNetwork -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore cobotkuka.h -o release\moc_cobotkuka.cpp
+	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -I"C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/Git/IMH - Qt/CobotKuka" -IC:/Qt/opencv/build/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtSvg -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtNetwork -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore cobotkuka.h -o release\moc_cobotkuka.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:

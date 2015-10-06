@@ -230,10 +230,19 @@ void CobotKuka::on_send_pushButton_clicked()
 
 	//creation de la socket et connection au serveur
 	if(!connected) {
-		if(connectToServer()){
-			//Once the connection is established, send the JSON chain to the server.
-			writeJSONToServer(jsonChainList);
-		}
+
+		/* CODE A COMMENTER POUR TEST HORS LIGNE*/
+//		if(connectToServer()){
+//			//Once the connection is established, send the JSON chain to the server.
+//			writeJSONToServer(jsonChainList);
+//		}
+		/* /CODE A COMMENTER POUR TEST HORS LIGNE*/
+
+		// ---
+
+		/* CODE A DECOMMENTER POUR TEST HORS LIGNE */
+		writeJSONToServer(jsonChainList);
+		/* /CODE A DECOMMENTER POUR TEST HORS LIGNE*/
 	}
 	else{
 		//if the connection is already established, send the JSON chain to the server.
@@ -427,43 +436,49 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 	 */
 
 
-//	QString svg;
-//	static int i = 0;
-//	if(i == 0){
-
+/*	QString svg;
+	static int i = 0;
+	if(i == 0){
+*/
 //	/* TODO : procedure to send the data to the server */
-//	svg = "{[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]}";
-//	tcpSocket->write(QtJson::serialize(QtJson::parse(svg.toUtf8())));
-//	qDebug() << "writted : " << QtJson::serialize(QtJson::parse(svg.toUtf8()));
-//	i++;
-//	}
-//	else{
-//		svg = "{[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]}";
-//		tcpSocket->write(QtJson::serialize(QtJson::parse(svg.toUtf8())));
-//		i=0;
+/*	svg = "{[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]}";
+	tcpSocket->write(QtJson::serialize(QtJson::parse(svg.toUtf8())));
+	qDebug() << "writted : " << QtJson::serialize(QtJson::parse(svg.toUtf8()));
+	i++;
+	}
+	else{
+		svg = "{[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]}";
+		tcpSocket->write(QtJson::serialize(QtJson::parse(svg.toUtf8())));
+		i=0;
 
-//		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(svg.toUtf8()));
-//		desactivate_Send_pushButton();
-//	}
+		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(svg.toUtf8()));
+		desactivate_Send_pushButton();
+	}
+*/
 
 	/* DEBUG */
-//	QString test = "svg svg svg svg";
-//	tcpSocket->write(QtJson::serialize(QtJson::parse(test.toUtf8)));
-//		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(test"));
+/*	QString test = "svg svg svg svg";
+	tcpSocket->write(QtJson::serialize(QtJson::parse(test.toUtf8)));
+		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(test"));
+*/
 
 	/* DEBUG */
 	QString finalchain = "{";
-	//to verify if the scale and translate parameters have been read
+	//to verify if the parameters have been read
 	bool translate = false;
 	bool scale = false;
+	bool height = false;
+	bool width = false;
 	//allow to test if the element read is the first of the list, to know if a ',' is needed. Can't use the first() method in the foreach because of the pop_front() method : every iteration, the first element changes
 	QString last = jsonList.last();
 
 	foreach (QString str, jsonList) {
 
 
-		if(str.contains("translate")) {translate = true; qDebug()<<"translate : " + str;}
-		if(str.contains("scale")) {scale = true;qDebug()<<"scale : " + str;}
+		if(str.contains("translate")) translate = true;
+		if(str.contains("scale")) scale = true;
+		if(str.contains("height")) {height = true; qDebug() << "height";}
+		if(str.contains("width")) {width = true; qDebug() << "width";}
 
 
 		finalchain += str;
@@ -471,9 +486,9 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 
 		if(str != last) finalchain += ",";
 
-		if(scale && translate) {
+		if(scale && translate && height && width) {
 			finalchain += "\"svg\":";
-			scale = translate = false;
+			scale = translate = height = width = false;
 		}
 
 
@@ -484,24 +499,35 @@ void CobotKuka::writeJSONToServer(const QStringList& jsonList){
 	finalchain += "}";
 	qDebug() << "finalchain => " << finalchain;
 
-//	QRegExp regex("(\\d+)-(\\d+)");
-//	regex.indexIn(finalchain);
-//	QString tempString = regex.capturedTexts().at(0);
-//	int i = tempString.indexOf('-');
-//	tempString.insert(i, ",");
-//	qDebug() << "tempstring : " << tempString;
-//	finalchain.replace(regex, tempString);
-//	qDebug() << "finalchain apres replace : " << finalchain;
+/*	QRegExp regex("(\\d+)-(\\d+)");
+	regex.indexIn(finalchain);
+	QString tempString = regex.capturedTexts().at(0);
+	int i = tempString.indexOf('-');
+	tempString.insert(i, ",");
+	qDebug() << "tempstring : " << tempString;
+	finalchain.replace(regex, tempString);
+	qDebug() << "finalchain apres replace : " << finalchain;
+	*/
 
-	if(connected) {//tcpSocket->write( QtJson::serialize(QtJson::parse(finalchain.toUtf8())));
 
-		tcpSocket->write((QByteArray)finalchain.toUtf8());
 
-		tcpSocket->flush();
-	}
-	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
+
+
+
+	/* CODE A COMMENTER POUR TEST HORS LIGNE */
+//	if(connected) {//tcpSocket->write( QtJson::serialize(QtJson::parse(finalchain.toUtf8())));
+
+//		tcpSocket->write((QByteArray)finalchain.toUtf8());
+
+//		tcpSocket->flush();
+//	}
+//	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
+	/* /CODE A COMMENTER POUR TEST HORS LIGNE */
+
+
 
 }
+
 
 void CobotKuka::getJsonFromSvg(QString svgpath){
 
@@ -519,15 +545,47 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 	QString ligne= "";
 
 	/***/
-		QRegExp rx("(<g.+\n.+)\>");
+		QRegExp rxParam("(<g.+\n.+)\>"); //extrait les parametres dans la balise <g>
+		QRegExp rxProp("(<svg.+(\n.+|\n.+\n.+))>"); //extrait les proprietes dans la balise <svg>
 
 		 QStringList list;
 		 int pos = 0;
 		 QString translate_property="";
 		 QString scale_property="";
-		 if((pos = rx.indexIn(dom->toString(), pos)) != -1)
+		 QString height_property="";
+		 QString width_property="";
+
+
+		 /* TODO : detecter param height et width de la balise svg */
+
+		 //recupere les proprietes dans la balise <svg>
+		 if((pos = rxProp.indexIn(dom->toString(), pos)) != -1)
 		 {
-			QString nn=(QString)rx.cap(1);
+
+			QString nn=(QString)rxProp.cap(1);
+			QStringList charList =nn.split(' ');
+			QString chaineq="";
+			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
+
+			int nb = charList.count(); //compter le nombre d'élément dans la liste
+			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
+				if(chaine.contains("height") >= 1){
+					QStringList query = chaine.split(rxproperties);
+					height_property+="\"height\":"+query.at(1);
+				}
+				else if(chaine.contains("width") >= 1){
+					QStringList query = chaine.split(rxproperties);
+					width_property+="\"width\":"+query.at(1);
+				}
+			}
+		 }
+
+
+		 //Recupere les parametres de la balise <g>
+		 if((pos = rxParam.indexIn(dom->toString(), pos)) != -1)
+		 {
+			QString nn=(QString)rxParam.cap(1);
 			QStringList charList =nn.split(' ');
 			QString chaineq="";
 			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
@@ -640,6 +698,12 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		//json= scale_property+","+json;
 		jsonChainList.prepend(scale_property);
 	}
+	if(width_property!=""){
+		jsonChainList.prepend(width_property);
+	}
+	if(height_property!=""){
+		jsonChainList.prepend(height_property);
+	}
 	//json= translate_property+","+scale_property+","+json;
 	qDebug() <<json +"\n\r";
 
@@ -651,6 +715,7 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		node = node.nextSibling(); //Aller au Path suivant
 
 }
+
 
 void CobotKuka::change_Action_Group_Color(){
 	if(ui->svg_radioButton->isChecked()){
