@@ -141,7 +141,7 @@ static const uint qt_meta_data_CobotKuka[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Int,
     QMetaType::Void,
 
        0        // eod
@@ -172,7 +172,8 @@ void CobotKuka::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
         case 17: _t->on_CobotKuka_destroyed(); break;
         case 18: _t->on_text_text_lineEdit_editingFinished(); break;
         case 19: _t->on_stop_pushButton_clicked(); break;
-        case 20: _t->on_picture_webcam_pushButton_clicked(); break;
+        case 20: { int _r = _t->on_picture_webcam_pushButton_clicked();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = _r; }  break;
         case 21: _t->on_sketch_pushButton_clicked(); break;
         default: ;
         }

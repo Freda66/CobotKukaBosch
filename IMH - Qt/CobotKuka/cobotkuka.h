@@ -13,10 +13,23 @@
 #include <QHostAddress>
 
 #include "json.h"
-#include <wingdi.h>
 
 #include <QtXml/QtXml>
 #include <iostream>
+
+#include <opencv2/opencv.hpp>
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/calib3d/calib3d.hpp"
+#include "opencv2/photo/photo.hpp"
+#include "opencv2/core/core.hpp"
+#include "opencv2/video/video.hpp"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+using namespace cv;
+using namespace std;
 
 namespace Ui {
 class CobotKuka;
@@ -44,6 +57,8 @@ public:
 	bool disconnectFromServer();
 	void getJsonFromSvg(QString svgpath);
 
+
+	int getJsonFromWebcam();
 
 private slots:
 
@@ -86,7 +101,7 @@ private slots:
 
 	void on_stop_pushButton_clicked();
 
-	void on_picture_webcam_pushButton_clicked();
+	int on_picture_webcam_pushButton_clicked();
 
 	void on_sketch_pushButton_clicked();
 
@@ -103,6 +118,16 @@ private slots:
 	QTcpSocket *tcpSocket;
 	QHostAddress ip;
 	QStringList jsonChainList;
+
+	//opencv variables
+	Mat frame; //image caméra sans filtre
+	Mat grey; //image avec filtre gris
+	Mat cannye; //image avec filtre cannye
+	Mat drawing; //image avec contours
+	RNG rng; //Random Number Generator
+
+	vector<vector<Point> > contours; //Définition d'un vecteur de points
+	vector<Vec4i> hierarchy;
 };
 
 #endif // COBOTKUKA_H

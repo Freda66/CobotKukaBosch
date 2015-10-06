@@ -565,6 +565,61 @@ debug/moc_cobotkuka.cpp: C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QMainWi
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qdom.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qxml.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qtxmlversion.h \
+		C:/Qt/opencv/build/include/opencv2/opencv.hpp \
+		C:/Qt/opencv/build/include/opencv2/core.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvdef.h \
+		C:/Qt/opencv/build/include/opencv2/hal/defs.h \
+		C:/Qt/opencv/build/include/opencv2/core/version.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/base.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvstd.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/ptr.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/hal.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/sse_utils.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/traits.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/matx.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/types.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/mat.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/bufferpool.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/mat.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/persistence.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/operations.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvstd.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/utility.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/core_c.h \
+		C:/Qt/opencv/build/include/opencv2/core/types_c.h \
+		C:/Qt/opencv/build/include/opencv2/core/optim.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc/imgproc_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgproc/types_c.h \
+		C:/Qt/opencv/build/include/opencv2/photo.hpp \
+		C:/Qt/opencv/build/include/opencv2/photo/photo_c.h \
+		C:/Qt/opencv/build/include/opencv2/video.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/tracking.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/background_segm.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/tracking_c.h \
+		C:/Qt/opencv/build/include/opencv2/features2d.hpp \
+		C:/Qt/opencv/build/include/opencv2/flann/miniflann.hpp \
+		C:/Qt/opencv/build/include/opencv2/flann/defines.h \
+		C:/Qt/opencv/build/include/opencv2/flann/config.h \
+		C:/Qt/opencv/build/include/opencv2/objdetect.hpp \
+		C:/Qt/opencv/build/include/opencv2/objdetect/detection_based_tracker.hpp \
+		C:/Qt/opencv/build/include/opencv2/objdetect/objdetect_c.h \
+		C:/Qt/opencv/build/include/opencv2/calib3d.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/affine.hpp \
+		C:/Qt/opencv/build/include/opencv2/calib3d/calib3d_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgcodecs.hpp \
+		C:/Qt/opencv/build/include/opencv2/videoio.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui/highgui_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgcodecs/imgcodecs_c.h \
+		C:/Qt/opencv/build/include/opencv2/videoio/videoio_c.h \
+		C:/Qt/opencv/build/include/opencv2/ml.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui/highgui.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc/imgproc.hpp \
+		C:/Qt/opencv/build/include/opencv2/calib3d/calib3d.hpp \
+		C:/Qt/opencv/build/include/opencv2/photo/photo.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/core.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/video.hpp \
 		cobotkuka.h
 	C:\Qt\Qt5.3.0\5.3\mingw482_32\bin\moc.exe $(DEFINES) -D__GNUC__ -DWIN32 -IC:/Qt/Qt5.3.0/5.3/mingw482_32/mkspecs/win32-g++ -I"C:/Users/Thomas/Desktop/IMERIR/3A/Projet Robotique - Kuka/Git/IMH - Qt/CobotKuka" -IC:/Qt/opencv/build/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtSvg -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtNetwork -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtGui -IC:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtCore cobotkuka.h -o debug\moc_cobotkuka.cpp
 
@@ -1045,6 +1100,61 @@ debug/main.o: main.cpp cobotkuka.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qdom.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qxml.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qtxmlversion.h \
+		C:/Qt/opencv/build/include/opencv2/opencv.hpp \
+		C:/Qt/opencv/build/include/opencv2/core.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvdef.h \
+		C:/Qt/opencv/build/include/opencv2/hal/defs.h \
+		C:/Qt/opencv/build/include/opencv2/core/version.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/base.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvstd.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/ptr.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/hal.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/sse_utils.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/traits.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/matx.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/types.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/mat.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/bufferpool.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/mat.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/persistence.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/operations.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvstd.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/utility.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/core_c.h \
+		C:/Qt/opencv/build/include/opencv2/core/types_c.h \
+		C:/Qt/opencv/build/include/opencv2/core/optim.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc/imgproc_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgproc/types_c.h \
+		C:/Qt/opencv/build/include/opencv2/photo.hpp \
+		C:/Qt/opencv/build/include/opencv2/photo/photo_c.h \
+		C:/Qt/opencv/build/include/opencv2/video.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/tracking.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/background_segm.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/tracking_c.h \
+		C:/Qt/opencv/build/include/opencv2/features2d.hpp \
+		C:/Qt/opencv/build/include/opencv2/flann/miniflann.hpp \
+		C:/Qt/opencv/build/include/opencv2/flann/defines.h \
+		C:/Qt/opencv/build/include/opencv2/flann/config.h \
+		C:/Qt/opencv/build/include/opencv2/objdetect.hpp \
+		C:/Qt/opencv/build/include/opencv2/objdetect/detection_based_tracker.hpp \
+		C:/Qt/opencv/build/include/opencv2/objdetect/objdetect_c.h \
+		C:/Qt/opencv/build/include/opencv2/calib3d.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/affine.hpp \
+		C:/Qt/opencv/build/include/opencv2/calib3d/calib3d_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgcodecs.hpp \
+		C:/Qt/opencv/build/include/opencv2/videoio.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui/highgui_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgcodecs/imgcodecs_c.h \
+		C:/Qt/opencv/build/include/opencv2/videoio/videoio_c.h \
+		C:/Qt/opencv/build/include/opencv2/ml.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui/highgui.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc/imgproc.hpp \
+		C:/Qt/opencv/build/include/opencv2/calib3d/calib3d.hpp \
+		C:/Qt/opencv/build/include/opencv2/photo/photo.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/core.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/video.hpp \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\main.o main.cpp
 
@@ -1505,6 +1615,61 @@ debug/cobotkuka.o: cobotkuka.cpp cobotkuka.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qdom.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qxml.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtXml/qtxmlversion.h \
+		C:/Qt/opencv/build/include/opencv2/opencv.hpp \
+		C:/Qt/opencv/build/include/opencv2/core.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvdef.h \
+		C:/Qt/opencv/build/include/opencv2/hal/defs.h \
+		C:/Qt/opencv/build/include/opencv2/core/version.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/base.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvstd.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/ptr.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/hal.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/sse_utils.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/traits.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/matx.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/types.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/mat.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/bufferpool.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/mat.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/persistence.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/operations.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/cvstd.inl.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/utility.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/core_c.h \
+		C:/Qt/opencv/build/include/opencv2/core/types_c.h \
+		C:/Qt/opencv/build/include/opencv2/core/optim.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc/imgproc_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgproc/types_c.h \
+		C:/Qt/opencv/build/include/opencv2/photo.hpp \
+		C:/Qt/opencv/build/include/opencv2/photo/photo_c.h \
+		C:/Qt/opencv/build/include/opencv2/video.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/tracking.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/background_segm.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/tracking_c.h \
+		C:/Qt/opencv/build/include/opencv2/features2d.hpp \
+		C:/Qt/opencv/build/include/opencv2/flann/miniflann.hpp \
+		C:/Qt/opencv/build/include/opencv2/flann/defines.h \
+		C:/Qt/opencv/build/include/opencv2/flann/config.h \
+		C:/Qt/opencv/build/include/opencv2/objdetect.hpp \
+		C:/Qt/opencv/build/include/opencv2/objdetect/detection_based_tracker.hpp \
+		C:/Qt/opencv/build/include/opencv2/objdetect/objdetect_c.h \
+		C:/Qt/opencv/build/include/opencv2/calib3d.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/affine.hpp \
+		C:/Qt/opencv/build/include/opencv2/calib3d/calib3d_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgcodecs.hpp \
+		C:/Qt/opencv/build/include/opencv2/videoio.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui/highgui_c.h \
+		C:/Qt/opencv/build/include/opencv2/imgcodecs/imgcodecs_c.h \
+		C:/Qt/opencv/build/include/opencv2/videoio/videoio_c.h \
+		C:/Qt/opencv/build/include/opencv2/ml.hpp \
+		C:/Qt/opencv/build/include/opencv2/highgui/highgui.hpp \
+		C:/Qt/opencv/build/include/opencv2/imgproc/imgproc.hpp \
+		C:/Qt/opencv/build/include/opencv2/calib3d/calib3d.hpp \
+		C:/Qt/opencv/build/include/opencv2/photo/photo.hpp \
+		C:/Qt/opencv/build/include/opencv2/core/core.hpp \
+		C:/Qt/opencv/build/include/opencv2/video/video.hpp \
 		ui_cobotkuka.h \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QAction \
 		C:/Qt/Qt5.3.0/5.3/mingw482_32/include/QtWidgets/QApplication \

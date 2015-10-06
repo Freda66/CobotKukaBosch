@@ -3,6 +3,7 @@
 
 
 
+
 void CobotKuka::init(){
 	//disable the actions while not connected
 	ui->picture_groupBox->setEnabled(false);
@@ -202,6 +203,7 @@ void CobotKuka::on_ok_pushButton_clicked()
 	}
 	else if(ui->picture_radioButton->isChecked()){
 		qDebug() << "picture button is checked";
+		getJsonFromWebcam();
 		/* TODO : traitement pour extraire contour et points d'une image */
 	}
 	else if(ui->sketch_radioButton->isChecked()){
@@ -411,9 +413,48 @@ void CobotKuka::on_stop_pushButton_clicked()
 	qDebug() << "!!! STOP !!!";
 }
 
-void CobotKuka::on_picture_webcam_pushButton_clicked()
+int CobotKuka::on_picture_webcam_pushButton_clicked()
 {
 	/* TODO : code pour ouvrir une fenetre avec la webcam */
+//	QWidget camWindow(this, Qt::Dialog);
+//	camWindow.setWindowTitle("Press ENTER to validate");
+//	//QFrame camFrame(camWindow);
+//	QLabel camLabel(&camWindow);
+
+	VideoCapture cap(0); // Ouvrir la caméra par défaut
+	   if(!cap.isOpened())
+		   {
+		   // check if we succeeded
+			return -1;
+	   }
+
+
+
+	   for(;;)
+	   {
+
+
+		   cap >> frame; // get a new frame from camera
+		   cvtColor(frame, grey, CV_BGR2GRAY);
+
+
+		   //Appliquer un blurring pour enlever le bruit
+			blur(grey, grey, Size(3,3));
+
+
+			//Appliquer la fonction Canny.
+			Canny(grey, cannye, 100, 100, 3);
+//			camLabel.setPixmap(cannye.data);
+//			camLabel.setGeometry(camFrame.geometry());
+//			camWindow.show();
+			imshow("Canny",cannye);
+			resizeWindow("Canny", 635, 475);
+
+
+
+		   if(waitKey(30) >= 0) {/*camWindow.close();*/break;}
+		}
+
 	activate_OK_pushButton();
 }
 
@@ -544,9 +585,21 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 	node = node.firstChild();
 	QString ligne= "";
 
+	/* DEBUG */
+/*	qDebug() << dom->toString();
+	QRegExp rxe("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
+	int pos1 = 0;
+	if((pos1 = rxe.indexIn(dom->toString(), pos1)) != -1)
+	{
+		qDebug() <<"ee"+ (QString)rxe.cap(1);
+		qDebug() <<"ee"+ (QString)rxe.cap(3);
+	}*/
+
 	/***/
 		QRegExp rxParam("(<g.+\n.+)\>"); //extrait les parametres dans la balise <g>
-		QRegExp rxProp("(<svg.+(\n.+|\n.+\n.+))>"); //extrait les proprietes dans la balise <svg>
+		//QRegExp rxProp("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")"); //extrait les proprietes dans la balise <svg>
+		QRegExp rxe("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
+
 
 		 QStringList list;
 		 int pos = 0;
@@ -555,31 +608,6 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		 QString height_property="";
 		 QString width_property="";
 
-
-		 /* TODO : detecter param height et width de la balise svg */
-
-		 //recupere les proprietes dans la balise <svg>
-		 if((pos = rxProp.indexIn(dom->toString(), pos)) != -1)
-		 {
-
-			QString nn=(QString)rxProp.cap(1);
-			QStringList charList =nn.split(' ');
-			QString chaineq="";
-			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
-
-			int nb = charList.count(); //compter le nombre d'élément dans la liste
-			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
-				if(chaine.contains("height") >= 1){
-					QStringList query = chaine.split(rxproperties);
-					height_property+="\"height\":"+query.at(1);
-				}
-				else if(chaine.contains("width") >= 1){
-					QStringList query = chaine.split(rxproperties);
-					width_property+="\"width\":"+query.at(1);
-				}
-			}
-		 }
 
 
 		 //Recupere les parametres de la balise <g>
@@ -605,6 +633,32 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 			}
 		 }
 		/***/
+
+		 /*WARNING : OUVRIR LE FICHIER AVEC LE BOUTON OUVRIR ET PAS AVEC UN DOUBLE CLIC, SINON LA CHAINE N'EST PAS DETECTEE ! */
+		 /* TODO : FORMATTER LA CHAINE DETECTEE POUR CORRESPONDRE AU FORMAT ATTENDU */
+		 //recupere les proprietes dans la balise <svg>
+		 int pos1 = 0;
+		 if((pos1 = rxe.indexIn(dom->toString(), pos1)) != -1)
+		 {
+			 qDebug() << "height and width detected !";
+			QString nn=(QString)rxe.cap(1) + " " + (QString)rxe.cap(3);
+			QStringList charList =nn.split(' ');
+			QString chaineq="";
+			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
+
+			int nb = charList.count(); //compter le nombre d'élément dans la liste
+			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
+				if(chaine.contains("height") >= 1){
+					QStringList query = chaine.split(rxproperties);
+					height_property+="\"height\":"+query.at(1);
+				}
+				else if(chaine.contains("width") >= 1){
+					QStringList query = chaine.split(rxproperties);
+					width_property+="\"width\":"+query.at(1);
+				}
+			}
+		 }
 
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
@@ -752,4 +806,84 @@ void CobotKuka::change_Action_Group_Color(){
 		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
 		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
 	}
+}
+
+int CobotKuka::getJsonFromWebcam(){
+
+
+
+
+
+	rng(12345);
+
+	   //Appliquer la fonction « fondContours ».
+	   findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
+
+	   // Draw contours
+	   drawing = Mat::zeros(cannye.size(), CV_8UC3);
+
+	   for(int i = 0; i< contours.size(); i++)
+	   {
+		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
+		drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
+	   }
+
+		namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
+		imshow("Contours", drawing);
+		resizeWindow("Contours", 635, 475); //redimensionner la fenêtre
+
+
+
+//Format de renvoie des données des courbes: { "pt" : [taille x,taille y], "webcam" : [ [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], ...]}
+											//                                              courbe1             courbe2             courbe3
+
+		QString courbe="";
+
+		for(int i = 0; i < contours.size(); ++i) { //Boucler pour chaque Courbe
+
+			vector<Point>  res=contours.at(i);
+			courbe="";
+
+			QString coordonnees="";
+			courbe+="[";
+			for(int j = 0; j < res.size(); ++j){ //Récupérer les coordonnées des points
+			   Point pts = res.at(j);
+				   coordonnees+=QString::number(pts.x); //Récupérer coordonnée X d'un point dans le vecteur Point
+				   coordonnees+=",";
+				   coordonnees+= QString::number(pts.y); //Récupérer coordonnée Y d'un point dans le vecteur Point
+				   //***
+				   if(j==res.size()-1)
+					{}
+				   else
+					   coordonnees+=",";
+
+			   //qDebug() << "C" << i << "/" << "X" << j << ": " << pts.x;
+			   //qDebug() << "C" << i << "/" << "Y" << j << ": " << pts.y;
+
+
+
+		   }
+		   courbe+=coordonnees.toUtf8();
+			 courbe+="]";
+		   if(i==contours.size()-1)
+			{}
+		   else
+			   coordonnees+=",";
+		   courbe=courbe.replace("\n","");
+		   courbe=courbe.replace("\r","");
+		   courbe=courbe.replace("\t","");
+
+		}
+		QString courbetmp=courbe;
+
+		courbe="{\"pt\":[";
+		courbe+="635";
+		courbe+=",";
+		courbe+="475";
+		courbe+="],\"webcam\":[";
+		courbe+=courbetmp;
+		courbe+="]}";
+
+
+		qDebug() << courbe; //Renvoyer les données en format type Json
 }
