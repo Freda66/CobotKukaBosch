@@ -12,8 +12,6 @@
 #include <QAbstractSocket>
 #include <QHostAddress>
 
-#include "json.h"
-
 #include <QtXml/QtXml>
 #include <iostream>
 
@@ -44,7 +42,7 @@ public:
 	void init();
 	~CobotKuka();
 
-
+	/* UI */
 	void activate_OK_pushButton();
 	void desactivate_OK_pushButton();
 	void activate_Send_pushButton();
@@ -52,13 +50,19 @@ public:
 	void activate_Stop_pushButton();
 	void desactivate_Stop_pushButton();
 	void change_Action_Group_Color();
-	void writeJSONToServer(const QString& json);
+	void change_Action_Group_Activation();
+
+	/* RESEAU */
 	bool connectToServer();
 	bool disconnectFromServer();
+
+	/* JSON */
 	QString getJsonFromSvg(QString svgpath);
-
-
+	QString getJsonFromPicture();
+	QString getJsonFromSketch();
+	QString getJsonFromText();
 	QString getJsonFromWebcam();
+	void writeJSONToServer(const QString& json);
 
 private slots:
 
@@ -70,39 +74,22 @@ private slots:
 
 	//ui slots
 	void on_connect_pushButton_clicked(bool checked);
-
 	void on_text_font_fontComboBox_currentFontChanged(const QFont &f);
-
 	void on_svg_radioButton_clicked();
-
 	void on_text_radioButton_clicked();
-
 	void on_picture_radioButton_clicked();
-
 	void on_sketch_radioButton_clicked();
-
 	void on_picture_webcam_radioButton_clicked();
-
 	void on_picture_file_radioButton_clicked();
-
 	void on_svg_file_pushButton_clicked();
-
 	void on_send_pushButton_clicked();
-
 	void on_picture_file_pushButton_clicked();
-
 	void on_actionQuit_triggered();
-
 	void on_ok_pushButton_clicked();
-
 	void on_CobotKuka_destroyed();
-
 	void on_text_text_lineEdit_editingFinished();
-
 	void on_stop_pushButton_clicked();
-
 	int on_picture_webcam_pushButton_clicked();
-
 	void on_sketch_pushButton_clicked();
 
 	private:

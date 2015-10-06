@@ -2,8 +2,23 @@
 #include "ui_cobotkuka.h"
 
 
+CobotKuka::CobotKuka(QWidget *parent) :
+	QMainWindow(parent),
+	ui(new Ui::CobotKuka)
+{
+	ui->setupUi(this);
+	init();
+}
+
+CobotKuka::~CobotKuka()
+{
+	delete ui;
+}
 
 
+/* ----------- UI ---------- */
+
+/* INIT */
 void CobotKuka::init(){
 
 	//disable the actions while not connected
@@ -41,19 +56,180 @@ void CobotKuka::init(){
 	connected = false;
 }
 
-CobotKuka::CobotKuka(QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::CobotKuka)
+/* Font */
+void CobotKuka::on_text_font_fontComboBox_currentFontChanged(const QFont &f)
 {
-	ui->setupUi(this);
-	init();
+	ui->text_text_lineEdit->setFont(f);
 }
 
-CobotKuka::~CobotKuka()
-{
-	delete ui;
+
+/* PushButton */
+void CobotKuka::activate_OK_pushButton(){
+	ui->ok_pushButton->setEnabled(true);
+	ui->ok_pushButton->setStyleSheet("color:blue");
 }
 
+void CobotKuka::desactivate_OK_pushButton(){
+	ui->ok_pushButton->setEnabled(false);
+	ui->ok_pushButton->setStyleSheet("color:grey");
+}
+
+void CobotKuka::activate_Send_pushButton(){
+	ui->send_pushButton->setEnabled(true);
+	ui->send_pushButton->setStyleSheet("color:brown; background-color: green");
+}
+
+void CobotKuka::desactivate_Send_pushButton(){
+	ui->send_pushButton->setEnabled(false);
+	ui->send_pushButton->setStyleSheet("color:grey; background-color: palegreen ");
+}
+
+void CobotKuka::activate_Stop_pushButton(){
+	ui->stop_pushButton->setEnabled(true);
+	ui->stop_pushButton->setStyleSheet("color:orange; background-color: red");
+}
+
+void CobotKuka::desactivate_Stop_pushButton(){
+	ui->stop_pushButton->setEnabled(false);
+	ui->stop_pushButton->setStyleSheet("color:sandybrown; background-color: lightpink");
+}
+
+void CobotKuka::change_Action_Group_Color(){
+	if(ui->svg_radioButton->isChecked()){
+		ui->svg_groupBox->setStyleSheet("background: rgb(232, 255, 232)");
+
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+	else if(ui->text_radioButton->isChecked()){
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 220, 255)");
+
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+	else if(ui->picture_radioButton->isChecked()){
+		ui->picture_groupBox->setStyleSheet("background: rgb(220, 255, 255)");
+
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+	else if(ui->sketch_radioButton->isChecked()){
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 220)");
+
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+	}
+	else{
+		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
+		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
+		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
+		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
+	}
+}
+
+void CobotKuka::change_Action_Group_Activation(){
+	if(ui->svg_radioButton->isChecked()){
+		ui->svg_actions_groupBox->setEnabled(true);
+
+		ui->text_actions_groupBox->setEnabled(false);
+		ui->picture_actions_groupBox->setEnabled(false);
+		ui->sketch_actions_groupBox->setEnabled(false);
+	}
+	else if(ui->text_radioButton->isChecked()){
+		ui->text_actions_groupBox->setEnabled(true);
+
+		ui->svg_actions_groupBox->setEnabled(false);
+		ui->picture_actions_groupBox->setEnabled(false);
+		ui->sketch_actions_groupBox->setEnabled(false);
+	}
+	else if(ui->picture_radioButton->isChecked()){
+		ui->picture_actions_groupBox->setEnabled(true);
+
+		ui->text_actions_groupBox->setEnabled(false);
+		ui->svg_actions_groupBox->setEnabled(false);
+		ui->sketch_actions_groupBox->setEnabled(false);
+
+		if(ui->picture_webcam_radioButton->isChecked()){
+			ui->picture_file_lineEdit->setEnabled(false);
+			ui->picture_file_pushButton->setEnabled(false);
+
+			ui->picture_webcam_pushButton->setEnabled(true);
+		}
+		else if(ui->picture_file_radioButton->isChecked()){
+
+				ui->picture_file_lineEdit->setEnabled(true);
+				ui->picture_file_pushButton->setEnabled(true);
+
+				ui->picture_webcam_pushButton->setEnabled(false);
+		}
+		else{
+			ui->picture_file_lineEdit->setEnabled(false);
+			ui->picture_file_pushButton->setEnabled(false);
+
+			ui->picture_webcam_pushButton->setEnabled(false);
+		}
+	}
+	else if(ui->sketch_radioButton->isChecked()){
+		ui->sketch_actions_groupBox->setEnabled(true);
+
+		ui->text_actions_groupBox->setEnabled(false);
+		ui->svg_actions_groupBox->setEnabled(false);
+		ui->picture_actions_groupBox->setEnabled(false);
+	}
+	else{
+		ui->svg_actions_groupBox->setEnabled(false);
+		ui->text_actions_groupBox->setEnabled(false);
+		ui->picture_actions_groupBox->setEnabled(false);
+		ui->sketch_actions_groupBox->setEnabled(false);
+	}
+}
+
+
+
+/* ---------- SLOTS ---------- */
+
+/* RadioButton */
+void CobotKuka::on_svg_radioButton_clicked()
+{
+	change_Action_Group_Activation();
+	change_Action_Group_Color();
+}
+
+void CobotKuka::on_text_radioButton_clicked()
+{
+	change_Action_Group_Activation();
+	change_Action_Group_Color();}
+
+void CobotKuka::on_picture_radioButton_clicked()
+{
+	change_Action_Group_Activation();
+	change_Action_Group_Color();
+}
+
+void CobotKuka::on_sketch_radioButton_clicked()
+{
+	change_Action_Group_Activation();
+	change_Action_Group_Color();
+}
+
+
+// Picture mode selection
+void CobotKuka::on_picture_webcam_radioButton_clicked()
+{
+	change_Action_Group_Activation();
+}
+
+void CobotKuka::on_picture_file_radioButton_clicked()
+{
+	change_Action_Group_Activation();
+}
+
+
+/* PushButton */
 void CobotKuka::on_connect_pushButton_clicked(bool checked)
 {
 	/* Code de connection au serveur déporté dans la foncton on_send_pushButton_clicked()*/
@@ -68,6 +244,7 @@ void CobotKuka::on_connect_pushButton_clicked(bool checked)
 		ui->text_groupBox->setEnabled(true);
 		ui->svg_groupBox->setEnabled(true);
 		ui->sketch_groupBox->setEnabled(true);
+		change_Action_Group_Activation();
 
 		//can't change the socket while connected
 		ui->connect_groupBox->setEnabled(false);
@@ -99,76 +276,6 @@ void CobotKuka::on_connect_pushButton_clicked(bool checked)
 	}
 }
 
-
-/* Setting Font */
-void CobotKuka::on_text_font_fontComboBox_currentFontChanged(const QFont &f)
-{
-	ui->text_text_lineEdit->setFont(f);
-}
-
-/* Mod Selection*/
-void CobotKuka::on_svg_radioButton_clicked()
-{
-	ui->svg_actions_groupBox->setEnabled(true);
-
-	change_Action_Group_Color();
-
-	ui->text_actions_groupBox->setEnabled(false);
-	ui->picture_actions_groupBox->setEnabled(false);
-	ui->sketch_actions_groupBox->setEnabled(false);
-}
-
-void CobotKuka::on_text_radioButton_clicked()
-{
-	ui->text_actions_groupBox->setEnabled(true);
-
-	change_Action_Group_Color();
-
-	ui->svg_actions_groupBox->setEnabled(false);
-	ui->picture_actions_groupBox->setEnabled(false);
-	ui->sketch_actions_groupBox->setEnabled(false);
-}
-
-void CobotKuka::on_picture_radioButton_clicked()
-{
-	ui->picture_actions_groupBox->setEnabled(true);
-
-	change_Action_Group_Color();
-
-	ui->text_actions_groupBox->setEnabled(false);
-	ui->svg_actions_groupBox->setEnabled(false);
-	ui->sketch_actions_groupBox->setEnabled(false);
-}
-
-void CobotKuka::on_sketch_radioButton_clicked()
-{
-	ui->sketch_actions_groupBox->setEnabled(true);
-
-	change_Action_Group_Color();
-
-	ui->text_actions_groupBox->setEnabled(false);
-	ui->picture_actions_groupBox->setEnabled(false);
-	ui->svg_actions_groupBox->setEnabled(false);
-}
-
-
-/* Picture mode selection */
-void CobotKuka::on_picture_webcam_radioButton_clicked()
-{
-	ui->picture_webcam_pushButton->setEnabled(true);
-
-	ui->picture_file_lineEdit->setEnabled(false);
-	ui->picture_file_pushButton->setEnabled(false);
-}
-
-void CobotKuka::on_picture_file_radioButton_clicked()
-{
-	ui->picture_webcam_pushButton->setEnabled(false);
-
-	ui->picture_file_lineEdit->setEnabled(true);
-	ui->picture_file_pushButton->setEnabled(true);
-}
-
 void CobotKuka::on_svg_file_pushButton_clicked()
 {
 	//create and config the file dialog
@@ -189,25 +296,90 @@ void CobotKuka::on_svg_file_pushButton_clicked()
 	}
 }
 
+void CobotKuka::on_picture_file_pushButton_clicked()
+{
+	//create and config the file dialog
+	filedialog = new QFileDialog(this,"Choose an Image", QDir::toNativeSeparators(QDir::homePath()), tr("Image(*.jpg, *.jpeg, *.png)"));
+	filedialog->setFileMode(QFileDialog::ExistingFile);
+	filedialog->setViewMode(QFileDialog::Detail);
+	//when open, only this window can be clicked in the application
+	filedialog->setModal(true);
+
+	//show it. return 1 if OK and 0 otherwise.
+	int res = filedialog->exec();
+	if(res){
+		//get the selected file path and put it in the LineEdit
+		pictureFile = filedialog->selectedFiles().takeFirst();
+		ui->picture_file_lineEdit->setText(pictureFile);
+
+		activate_OK_pushButton();
+	}
+}
+
+int  CobotKuka::on_picture_webcam_pushButton_clicked()
+{
+
+	VideoCapture cap(0); // Ouvrir la caméra par défaut
+	   if(!cap.isOpened())
+		   {
+		   // check if we succeeded
+			return -1;
+	   }
+
+	   for(;;)
+	   {
+		   cap >> frame; // get a new frame from camera
+		   cvtColor(frame, grey, CV_BGR2GRAY);
+
+
+		   //Appliquer un blurring pour enlever le bruit
+			blur(grey, grey, Size(3,3));
+
+
+			//Appliquer la fonction Canny.
+			Canny(grey, cannye, 100, 100, 3);
+			imshow("Canny",cannye);
+			resizeWindow("Canny", 635, 475);
+
+
+
+		   if(waitKey(30) >= 0) break;
+		}
+
+	activate_OK_pushButton();
+	return 0;
+}
+
+void CobotKuka::on_sketch_pushButton_clicked()
+{
+	activate_OK_pushButton();
+}
+
 void CobotKuka::on_ok_pushButton_clicked()
 {
 	if(ui->svg_radioButton->isChecked()){
 		qDebug() << "svg button is checked";
-		//decode le fichier pour obtenir le json
 		json = getJsonFromSvg(svgFile);
 	}
 	else if(ui->text_radioButton->isChecked()){
 		qDebug() << "text button is checked";
-		/* TODO : traitement pour extraire points d'un texte */
+		json = getJsonFromText();
 	}
 	else if(ui->picture_radioButton->isChecked()){
 		qDebug() << "picture button is checked";
-		json = getJsonFromWebcam();
-		/* TODO : traitement pour extraire contour et points d'une image */
+		if(ui->picture_webcam_radioButton->isChecked()){
+			qDebug() << "picture webcam button is checked";
+			json = getJsonFromWebcam();
+		}
+		else if(ui->picture_file_radioButton->isChecked()){
+			qDebug() << "picture file button is checked";
+			json = getJsonFromPicture();
+		}
+
 	}
 	else if(ui->sketch_radioButton->isChecked()){
 		qDebug() << "sketch button is checked";
-		/* TODO : traitement pour extraire points d'un dessin en temps reel */
+		json = getJsonFromSketch();
 	}
 	else{
 		qDebug() << "no radio button checked";
@@ -247,55 +419,52 @@ void CobotKuka::on_send_pushButton_clicked()
 
 }
 
-bool CobotKuka::connectToServer(){
-	if(ip.setAddress(ui->connect_ip_lineEdit->text())){
-		qDebug() << "trying to connect to server " << ip << ":" << ui->connect_port_lineEdit->text().toInt();
-			tcpSocket->connectToHost(ip, ui->connect_port_lineEdit->text().toInt());
-			//wait 5s max for the connection to be established
-			return tcpSocket->waitForConnected(3000);
-	}
-	else {
-		QMessageBox::warning(this,"Socket Error : IP Adress Invalid", "The IP Adress is invalid. \nIP Adress must be in the form of xxx.xxx.xxx.xxx with only digits and dots. example : 192.168.0.18 \nPlease enter a valid Adress and retry.", QMessageBox::Ok, QMessageBox::NoButton);
-		return false;
-	}
-}
-
-bool CobotKuka::disconnectFromServer(){
-	tcpSocket->disconnectFromHost();
-	//wait 3s max for the connection to be close
-	return tcpSocket->waitForDisconnected(3000);
-}
-
-void CobotKuka::on_picture_file_pushButton_clicked()
+void CobotKuka::on_stop_pushButton_clicked()
 {
-	//create and config the file dialog
-	filedialog = new QFileDialog(this,"Choose an Image", QDir::toNativeSeparators(QDir::homePath()), tr("Image(*.jpg, *.jpeg, *.png)"));
-	filedialog->setFileMode(QFileDialog::ExistingFile);
-	filedialog->setViewMode(QFileDialog::Detail);
-	//when open, only this window can be clicked in the application
-	filedialog->setModal(true);
+	QString stop = "stop";
 
-	//show it. return 1 if OK and 0 otherwise.
-	int res = filedialog->exec();
-	if(res){
-		//get the selected file path and put it in the LineEdit
-		pictureFile = filedialog->selectedFiles().takeFirst();
-		ui->picture_file_lineEdit->setText(pictureFile);
-
-		activate_OK_pushButton();
+	if(!connected) {
+		if(connectToServer()){
+			tcpSocket->write(stop.toUtf8());
+		}
+		else{
+			qDebug() << "erreur connexion au serveur pour message STOP";
+		}
 	}
+	else tcpSocket->write(stop.toUtf8());;
+
+	qDebug() << "!!! STOP !!!";
 }
 
+
+/* LineEdit */
+void CobotKuka::on_text_text_lineEdit_editingFinished()
+{
+	/*QString aaa = ui->text_font_fontComboBox->currentText();
+	QFont currentFont = ui->text_font_fontComboBox->currentFont();
+	DWORD outline = GetGlyphOutlineW(this, (uint)aaa.at(0), GGO_BEZIER, );
+	*/
+	activate_OK_pushButton();
+}
+
+
+/* Exit */
 void CobotKuka::on_actionQuit_triggered()
 {
 	//close the program
 	this->close();
 }
 
+void CobotKuka::on_CobotKuka_destroyed()
+{
+	disconnectFromServer();
+}
+
+
+/* Reseau */
 void CobotKuka::serverConnected(){
 	qDebug() << "client connected !" << tcpSocket->peerAddress() << ":" << tcpSocket->peerPort() ;
 	connected = true;
-
 }
 
 void CobotKuka::serverDisconnected(){
@@ -340,123 +509,35 @@ void CobotKuka::displayError(QAbstractSocket::SocketError socketError)
 	}
 }
 
+
+/* ---------- RESEAU ---------- */
+
+bool CobotKuka::connectToServer(){
+	if(ip.setAddress(ui->connect_ip_lineEdit->text())){
+		qDebug() << "trying to connect to server " << ip << ":" << ui->connect_port_lineEdit->text().toInt();
+			tcpSocket->connectToHost(ip, ui->connect_port_lineEdit->text().toInt());
+			//wait 5s max for the connection to be established
+			return tcpSocket->waitForConnected(3000);
+	}
+	else {
+		QMessageBox::warning(this,"Socket Error : IP Adress Invalid", "The IP Adress is invalid. \nIP Adress must be in the form of xxx.xxx.xxx.xxx with only digits and dots. example : 192.168.0.18 \nPlease enter a valid Adress and retry.", QMessageBox::Ok, QMessageBox::NoButton);
+		return false;
+	}
+}
+
+bool CobotKuka::disconnectFromServer(){
+	tcpSocket->disconnectFromHost();
+	//wait 3s max for the connection to be close
+	return tcpSocket->waitForDisconnected(3000);
+}
+
 void CobotKuka::datawritten(qint64 w){
 	qDebug() << "Data written to the server. number of bytes written : " << w;
 }
 
-void CobotKuka::on_CobotKuka_destroyed()
-{
-	disconnectFromServer();
-}
+/* ---------- JSON ---------- */
 
-void CobotKuka::on_text_text_lineEdit_editingFinished()
-{
-	/*QString aaa = ui->text_font_fontComboBox->currentText();
-	QFont currentFont = ui->text_font_fontComboBox->currentFont();
-	DWORD outline = GetGlyphOutlineW(this, (uint)aaa.at(0), GGO_BEZIER, );
-	*/
-	activate_OK_pushButton();
-}
-
-void CobotKuka::activate_OK_pushButton(){
-	ui->ok_pushButton->setEnabled(true);
-	ui->ok_pushButton->setStyleSheet("color:blue");
-}
-
-void CobotKuka::desactivate_OK_pushButton(){
-	ui->ok_pushButton->setEnabled(false);
-	ui->ok_pushButton->setStyleSheet("color:grey");
-}
-
-void CobotKuka::activate_Send_pushButton(){
-	ui->send_pushButton->setEnabled(true);
-	ui->send_pushButton->setStyleSheet("color:brown; background-color: green");
-}
-
-void CobotKuka::desactivate_Send_pushButton(){
-	ui->send_pushButton->setEnabled(false);
-	ui->send_pushButton->setStyleSheet("color:grey; background-color: palegreen ");
-}
-
-void CobotKuka::activate_Stop_pushButton(){
-	ui->stop_pushButton->setEnabled(true);
-	ui->stop_pushButton->setStyleSheet("color:orange; background-color: red");
-}
-
-void CobotKuka::desactivate_Stop_pushButton(){
-	ui->stop_pushButton->setEnabled(false);
-	ui->stop_pushButton->setStyleSheet("color:sandybrown; background-color: lightpink");
-}
-
-void CobotKuka::on_stop_pushButton_clicked()
-{
-	QString stop = "stop";
-
-	if(!connected) {
-		if(connectToServer()){
-			tcpSocket->write(stop.toUtf8());
-		}
-		else{
-			qDebug() << "erreur connexion au serveur pour message STOP";
-		}
-	}
-	else tcpSocket->write(stop.toUtf8());;
-
-	qDebug() << "!!! STOP !!!";
-}
-
-int CobotKuka::on_picture_webcam_pushButton_clicked()
-{
-
-	VideoCapture cap(0); // Ouvrir la caméra par défaut
-	   if(!cap.isOpened())
-		   {
-		   // check if we succeeded
-			return -1;
-	   }
-
-	   for(;;)
-	   {
-		   cap >> frame; // get a new frame from camera
-		   cvtColor(frame, grey, CV_BGR2GRAY);
-
-
-		   //Appliquer un blurring pour enlever le bruit
-			blur(grey, grey, Size(3,3));
-
-
-			//Appliquer la fonction Canny.
-			Canny(grey, cannye, 100, 100, 3);
-			imshow("Canny",cannye);
-			resizeWindow("Canny", 635, 475);
-
-
-
-		   if(waitKey(30) >= 0) break;
-		}
-
-	activate_OK_pushButton();
-	return 0;
-}
-
-void CobotKuka::on_sketch_pushButton_clicked()
-{
-	activate_OK_pushButton();
-}
-
-void CobotKuka::writeJSONToServer(const QString& json){
-
-	/* CODE A COMMENTER POUR TEST HORS LIGNE */
-	if(connected) {
-		tcpSocket->write((QByteArray)json.toUtf8());
-		tcpSocket->flush();
-	}
-	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
-	/* /CODE A COMMENTER POUR TEST HORS LIGNE */
-
-}
-
-
+//From SVG
 QString CobotKuka::getJsonFromSvg(QString svgpath){
 
 
@@ -635,45 +716,7 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 	return finalchain;
 }
 
-
-void CobotKuka::change_Action_Group_Color(){
-	if(ui->svg_radioButton->isChecked()){
-		ui->svg_groupBox->setStyleSheet("background: rgb(232, 255, 232)");
-
-		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
-		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
-		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
-	}
-	else if(ui->text_radioButton->isChecked()){
-		ui->text_groupBox->setStyleSheet("background: rgb(255, 220, 255)");
-
-		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
-		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
-		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
-	}
-	else if(ui->picture_radioButton->isChecked()){
-		ui->picture_groupBox->setStyleSheet("background: rgb(220, 255, 255)");
-
-		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
-		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
-		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
-	}
-	else if(ui->sketch_radioButton->isChecked()){
-		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 220)");
-
-		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
-		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
-		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
-	}
-	else{
-		ui->svg_groupBox->setStyleSheet("background: rgb(240, 255, 240)");
-		ui->text_groupBox->setStyleSheet("background: rgb(255, 240, 255)");
-		ui->picture_groupBox->setStyleSheet("background: rgb(240, 255, 255)");
-		ui->sketch_groupBox->setStyleSheet("background: rgb(255, 255, 240)");
-	}
-}
-
-
+//From WebCam
 QString CobotKuka::getJsonFromWebcam(){
 
 	rng(12345);
@@ -747,6 +790,38 @@ QString CobotKuka::getJsonFromWebcam(){
 		courbe+="]}";
 
 
-		qDebug() << courbe; //Renvoyer les données en format type Json
+		qDebug() << "courbe :" << courbe; //Renvoyer les données en format type Json
 		return courbe;
+}
+
+//From Picture
+QString CobotKuka::getJsonFromPicture(){
+
+	/* TODO : traitement pour extraire points d'une image fixe non SVG */
+	return "picture";
+}
+
+//From Sketch
+QString CobotKuka::getJsonFromSketch(){
+	/* TODO : traitement pour extraire points d'un dessin en temps reel */
+	return "sketch";
+}
+
+//From Text
+QString CobotKuka::getJsonFromText(){
+	/* TODO : traitement pour extraire points de contour d'un texte avec une police TureType */
+	return "text";
+}
+
+//Write the JSON
+void CobotKuka::writeJSONToServer(const QString& json){
+
+	/* CODE A COMMENTER POUR TEST HORS LIGNE */
+	if(connected) {
+		tcpSocket->write((QByteArray)json.toUtf8());
+		tcpSocket->flush();
+	}
+	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
+	/* /CODE A COMMENTER POUR TEST HORS LIGNE */
+
 }

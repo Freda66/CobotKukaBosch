@@ -11,11 +11,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        cobotkuka.cpp \
-    json.cpp
+        cobotkuka.cpp
 
-HEADERS  += cobotkuka.h \
-    json.h
+HEADERS  += cobotkuka.h
 
 FORMS    += cobotkuka.ui
 
