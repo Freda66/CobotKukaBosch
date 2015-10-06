@@ -5,6 +5,9 @@
 
 
 void CobotKuka::init(){
+
+
+
 	//disable the actions while not connected
 	ui->picture_groupBox->setEnabled(false);
 	ui->text_groupBox->setEnabled(false);
@@ -195,7 +198,7 @@ void CobotKuka::on_ok_pushButton_clicked()
 	if(ui->svg_radioButton->isChecked()){
 		qDebug() << "svg button is checked";
 		//decode le fichier pour obtenir le json
-		getJsonFromSvg(svgFile);
+		json = getJsonFromSvg(svgFile);
 	}
 	else if(ui->text_radioButton->isChecked()){
 		qDebug() << "text button is checked";
@@ -203,7 +206,7 @@ void CobotKuka::on_ok_pushButton_clicked()
 	}
 	else if(ui->picture_radioButton->isChecked()){
 		qDebug() << "picture button is checked";
-		getJsonFromWebcam();
+		json = getJsonFromWebcam();
 		/* TODO : traitement pour extraire contour et points d'une image */
 	}
 	else if(ui->sketch_radioButton->isChecked()){
@@ -219,16 +222,6 @@ void CobotKuka::on_ok_pushButton_clicked()
 
 void CobotKuka::on_send_pushButton_clicked()
 {
-	/* DEBUG */
-	// lettre A
-	//QString tst = "[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]";
-	//QString tst2 = "[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]";
-
-	//
-	//QString tst = "[{\"x\":150,\"y\":150},{\"x\":110,\"y\":150},{\"x\":110,\"y\":110},{\"x\":150,\"y\":110}]";
-	//QString tst2 = "[{\"x\":110,\"y\":110},{\"x\":110,\"y\":70},{\"x\":150,\"y\":70}]";
-	//jsonChainList.append(tst);
-	//jsonChainList.append(tst2);
 
 	//creation de la socket et connection au serveur
 	if(!connected) {
@@ -243,12 +236,12 @@ void CobotKuka::on_send_pushButton_clicked()
 		// ---
 
 		/* CODE A DECOMMENTER POUR TEST HORS LIGNE */
-		writeJSONToServer(jsonChainList);
+		writeJSONToServer(json);
 		/* /CODE A DECOMMENTER POUR TEST HORS LIGNE*/
 	}
 	else{
 		//if the connection is already established, send the JSON chain to the server.
-		writeJSONToServer(jsonChainList);
+		writeJSONToServer(json);
 	}
 
 
@@ -329,7 +322,6 @@ void CobotKuka::serverDisconnected(){
 	desactivate_Send_pushButton();
 	desactivate_Stop_pushButton();
 }
-
 
 void CobotKuka::displayError(QAbstractSocket::SocketError socketError)
 {
@@ -415,45 +407,6 @@ void CobotKuka::on_stop_pushButton_clicked()
 
 int CobotKuka::on_picture_webcam_pushButton_clicked()
 {
-	/* TODO : code pour ouvrir une fenetre avec la webcam */
-//	QWidget camWindow(this, Qt::Dialog);
-//	camWindow.setWindowTitle("Press ENTER to validate");
-//	//QFrame camFrame(camWindow);
-//	QLabel camLabel(&camWindow);
-
-	VideoCapture cap(0); // Ouvrir la caméra par défaut
-	   if(!cap.isOpened())
-		   {
-		   // check if we succeeded
-			return -1;
-	   }
-
-
-
-	   for(;;)
-	   {
-
-
-		   cap >> frame; // get a new frame from camera
-		   cvtColor(frame, grey, CV_BGR2GRAY);
-
-
-		   //Appliquer un blurring pour enlever le bruit
-			blur(grey, grey, Size(3,3));
-
-
-			//Appliquer la fonction Canny.
-			Canny(grey, cannye, 100, 100, 3);
-//			camLabel.setPixmap(cannye.data);
-//			camLabel.setGeometry(camFrame.geometry());
-//			camWindow.show();
-			imshow("Canny",cannye);
-			resizeWindow("Canny", 635, 475);
-
-
-
-		   if(waitKey(30) >= 0) {/*camWindow.close();*/break;}
-		}
 
 	activate_OK_pushButton();
 }
@@ -463,117 +416,25 @@ void CobotKuka::on_sketch_pushButton_clicked()
 	activate_OK_pushButton();
 }
 
-void CobotKuka::writeJSONToServer(const QStringList& jsonList){
-
-
-//	ui->stop_pushButton->setEnabled(true);
-	/* coordonnes pour dessiner un A
-	 * 0,0
-	 * 20,40
-	 * 40,0
-	 *
-	 * 10,20
-	 * 30,20
-	 */
-
-
-/*	QString svg;
-	static int i = 0;
-	if(i == 0){
-*/
-//	/* TODO : procedure to send the data to the server */
-/*	svg = "{[{\"x\":0,\"y\":0},{\"x\":20,\"y\":40},{\"x\":40,\"y\":0}]}";
-	tcpSocket->write(QtJson::serialize(QtJson::parse(svg.toUtf8())));
-	qDebug() << "writted : " << QtJson::serialize(QtJson::parse(svg.toUtf8()));
-	i++;
-	}
-	else{
-		svg = "{[{\"x\":10,\"y\":20},{\"x\":30,\"y\":20}]}";
-		tcpSocket->write(QtJson::serialize(QtJson::parse(svg.toUtf8())));
-		i=0;
-
-		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(svg.toUtf8()));
-		desactivate_Send_pushButton();
-	}
-*/
-
-	/* DEBUG */
-/*	QString test = "svg svg svg svg";
-	tcpSocket->write(QtJson::serialize(QtJson::parse(test.toUtf8)));
-		qDebug() << "writted : " << QtJson::serialize(QtJson::parse(test"));
-*/
-
-	/* DEBUG */
-	QString finalchain = "{";
-	//to verify if the parameters have been read
-	bool translate = false;
-	bool scale = false;
-	bool height = false;
-	bool width = false;
-	//allow to test if the element read is the first of the list, to know if a ',' is needed. Can't use the first() method in the foreach because of the pop_front() method : every iteration, the first element changes
-	QString last = jsonList.last();
-
-	foreach (QString str, jsonList) {
-
-
-		if(str.contains("translate")) translate = true;
-		if(str.contains("scale")) scale = true;
-		if(str.contains("height")) {height = true; qDebug() << "height";}
-		if(str.contains("width")) {width = true; qDebug() << "width";}
-
-
-		finalchain += str;
-
-
-		if(str != last) finalchain += ",";
-
-		if(scale && translate && height && width) {
-			finalchain += "\"svg\":";
-			scale = translate = height = width = false;
-		}
-
-
-
-		jsonChainList.pop_front();
-		qDebug() << "str -> " << str;
-	}
-	finalchain += "}";
-	qDebug() << "finalchain => " << finalchain;
-
-/*	QRegExp regex("(\\d+)-(\\d+)");
-	regex.indexIn(finalchain);
-	QString tempString = regex.capturedTexts().at(0);
-	int i = tempString.indexOf('-');
-	tempString.insert(i, ",");
-	qDebug() << "tempstring : " << tempString;
-	finalchain.replace(regex, tempString);
-	qDebug() << "finalchain apres replace : " << finalchain;
-	*/
-
-
-
-
-
+void CobotKuka::writeJSONToServer(const QString& json){
 
 	/* CODE A COMMENTER POUR TEST HORS LIGNE */
-//	if(connected) {//tcpSocket->write( QtJson::serialize(QtJson::parse(finalchain.toUtf8())));
-
-//		tcpSocket->write((QByteArray)finalchain.toUtf8());
-
-//		tcpSocket->flush();
-//	}
-//	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
+	if(connected) {
+		tcpSocket->write((QByteArray)json.toUtf8());
+		tcpSocket->flush();
+	}
+	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
 	/* /CODE A COMMENTER POUR TEST HORS LIGNE */
-
-
 
 }
 
 
-void CobotKuka::getJsonFromSvg(QString svgpath){
+QString CobotKuka::getJsonFromSvg(QString svgpath){
 
 
-	QString json="";
+	QString finalchain = "{"; //String qui contiendra la chaine finale envoyée au serveur
+
+	QString json=""; //contiendra les valeurs du json extrait du xml
 
 	QDomDocument *dom = new QDomDocument("MonDom");
 
@@ -585,80 +446,83 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 	node = node.firstChild();
 	QString ligne= "";
 
-	/* DEBUG */
-/*	qDebug() << dom->toString();
-	QRegExp rxe("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
-	int pos1 = 0;
-	if((pos1 = rxe.indexIn(dom->toString(), pos1)) != -1)
-	{
-		qDebug() <<"ee"+ (QString)rxe.cap(1);
-		qDebug() <<"ee"+ (QString)rxe.cap(3);
-	}*/
 
 	/***/
-		QRegExp rxParam("(<g.+\n.+)\>"); //extrait les parametres dans la balise <g>
-		//QRegExp rxProp("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")"); //extrait les proprietes dans la balise <svg>
-		QRegExp rxe("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
+	QRegExp rxParam("(<g.+\n.+)\>"); //extrait les parametres dans la balise <g>
+	//QRegExp rxProp("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
+	QRegExp rxe("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")"); //extrait les proprietes height et width dans la balise <svg>
+
+	QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
+
+	 int pos = 0;
+	 QString translate_property=""; //contiendra la valeur de la translation
+	 QString scale_property=""; //contiendra la valeur du scale
+	 QString size_property=""; //contiendra la taille du dessin
 
 
-		 QStringList list;
-		 int pos = 0;
-		 QString translate_property="";
-		 QString scale_property="";
-		 QString height_property="";
-		 QString width_property="";
+
+	 //Recupere les parametres de la balise <g>
+	 if((pos = rxParam.indexIn(dom->toString(), pos)) != -1)
+	 {
+		QString nn=(QString)rxParam.cap(1);
+		QStringList charList =nn.split(' ');
 
 
-
-		 //Recupere les parametres de la balise <g>
-		 if((pos = rxParam.indexIn(dom->toString(), pos)) != -1)
-		 {
-			QString nn=(QString)rxParam.cap(1);
-			QStringList charList =nn.split(' ');
-			QString chaineq="";
-			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
-
-			int nb = charList.count(); //compter le nombre d'élément dans la liste
-			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
-				if(chaine.contains("translate") >= 1)
-				{
-					QStringList query = chaine.split(rxproperties);
-					translate_property+="\"translate\":["+query.at(1)+","+query.at(2)+"]";
-				}else if(chaine.contains("scale") >= 1)
-				{
-					QStringList query = chaine.split(rxproperties);
-					scale_property+="\"scale\":["+query.at(1)+","+query.at(2)+"]";
-				}
+		int nb = charList.count(); //compter le nombre d'élément dans la liste
+		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+		QString chaine =charList.at(j).toLatin1().replace("\n"," ");
+		QStringList queryList = chaine.split(rxproperties);
+			if(chaine.contains("translate") >= 1)
+			{
+				translate_property+="\"translate\":["+queryList.at(1)+","+queryList.at(2)+"]";
 			}
-		 }
-		/***/
-
-		 /*WARNING : OUVRIR LE FICHIER AVEC LE BOUTON OUVRIR ET PAS AVEC UN DOUBLE CLIC, SINON LA CHAINE N'EST PAS DETECTEE ! */
-		 /* TODO : FORMATTER LA CHAINE DETECTEE POUR CORRESPONDRE AU FORMAT ATTENDU */
-		 //recupere les proprietes dans la balise <svg>
-		 int pos1 = 0;
-		 if((pos1 = rxe.indexIn(dom->toString(), pos1)) != -1)
-		 {
-			 qDebug() << "height and width detected !";
-			QString nn=(QString)rxe.cap(1) + " " + (QString)rxe.cap(3);
-			QStringList charList =nn.split(' ');
-			QString chaineq="";
-			QRegExp rxproperties("(\\(|\\,|\\))"); //RegEx for ' ' or ',' or '.' or ':' or '\t'
-
-			int nb = charList.count(); //compter le nombre d'élément dans la liste
-			for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-			QString chaine =charList.at(j).toLatin1().replace("\n"," ");
-				if(chaine.contains("height") >= 1){
-					QStringList query = chaine.split(rxproperties);
-					height_property+="\"height\":"+query.at(1);
-				}
-				else if(chaine.contains("width") >= 1){
-					QStringList query = chaine.split(rxproperties);
-					width_property+="\"width\":"+query.at(1);
-				}
+			else if(chaine.contains("scale") >= 1)
+			{
+				scale_property+="\"scale\":["+queryList.at(1)+","+queryList.at(2)+"]";
 			}
-		 }
+		}
+	 }
+	/***/
+
+	 /*WARNING : OUVRIR LE FICHIER AVEC LE BOUTON OUVRIR ET PAS AVEC UN DOUBLE CLIC, SINON LA CHAINE N'EST PAS DETECTEE ! */
+
+	 //recupere les proprietes dans la balise <svg>
+	 int pos1 = 0;
+	 if((pos1 = rxe.indexIn(dom->toString(), pos1)) != -1)
+	 {
+		QString nn=(QString)rxe.cap(1) + " " + (QString)rxe.cap(3); //extrait la width et la height des captures du regex
+		QStringList charList =nn.split(' '); //creer une liste contenant chaque capture
+
+		int nb = charList.count(); //compter le nombre d'élément dans la liste
+
+		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
+			QString chaine =charList.at(j).toLatin1().replace("\n"," ");//recupere l'element et nettoie les sauts de ligne
+
+			if(chaine.contains("height") >= 1){ //si on recupere la hauteur
+
+				chaine = chaine.replace("\"","");
+				chaine = chaine.replace("height=","").replace(chaine.right(2),""); //on ne garde que le nombre utile
+
+
+				chaine = chaine.replace(" ", ""); //on nettoie les espaces eventuels
+
+				/**********/
+				size_property.append(chaine + "]"); //on ajoute la valeur à la fin de la chaine. le format attendu est "pt":[width,heigh]
+			}
+			else if(chaine.contains("width") >= 1){
+
+				chaine = chaine.replace("\"","");//on nettoie d'abord les guillemets pour avoir acces a l'unite.
+				QString unite = chaine.right(2); //extrait l'unite de mesure (pt ou px)
+
+				chaine = chaine.replace("width=","").replace(chaine.right(2),""); //on ne garde que la valeur utile
+				chaine = chaine.replace(" ", ""); //on nettoie les espaces eventuels
+				/**********/
+				size_property.prepend("\"" + unite + "\":[" + chaine + ","); //on ajoute la valeur et l'unite au début de la chaine. le format attendu est   "pt":[width,heigh]
+			}
+		}
+	 }
+
+	 finalchain += translate_property + "," + scale_property +"," + size_property + ",\"svg\":"; //ajoute les proprietes dans la chaine finale, avant de detecter les coordonnees.
 
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
@@ -671,7 +535,6 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
 			ligne+=" "+charList.at(j).toLatin1().replace("\n"," ");
-
 		}
 
 		// Création d'une liste avec chaque paramètre
@@ -718,9 +581,6 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 				   }
 
 				   json+=jsonelement;
-
-
-
 			   }
 
 		}
@@ -732,42 +592,19 @@ void CobotKuka::getJsonFromSvg(QString svgpath){
 		json=json.replace("l","\"l\"");
 		json=json.replace("m","\"m\"");
 		json=json.replace("\n\"","");
-
-		/*if(translate_property!="")
-		{
-			json= translate_property;
-		} */
+		json=json.replace("\r", "");
 
 		node = node.nextSibling(); //Aller au Path suivant
-
-	}
-	if(translate_property!="")
-	{
-		//json= translate_property+","+json;
-		jsonChainList.prepend(translate_property);
 	}
 
-	if(scale_property!="")
-	{
-		//json= scale_property+","+json;
-		jsonChainList.prepend(scale_property);
-	}
-	if(width_property!=""){
-		jsonChainList.prepend(width_property);
-	}
-	if(height_property!=""){
-		jsonChainList.prepend(height_property);
-	}
-	//json= translate_property+","+scale_property+","+json;
-	qDebug() <<json +"\n\r";
+	finalchain.append(json); //ajoute le json à la liste des vecteurs
+	finalchain.append("}");
 
-		//TODO : expression reguliere et methode pour corriger chaine.
-		//QRegExp("(/d)-(/d)")
+	node = node.nextSibling(); //Aller au Path suivant
 
-		//ajoute le json à la liste des vecteurs
-		jsonChainList.append(json);
-		node = node.nextSibling(); //Aller au Path suivant
+	qDebug() << "finalchain: " << finalchain;
 
+	return finalchain;
 }
 
 
@@ -808,29 +645,26 @@ void CobotKuka::change_Action_Group_Color(){
 	}
 }
 
-int CobotKuka::getJsonFromWebcam(){
 
-
-
-
+QString CobotKuka::getJsonFromWebcam(){
 
 	rng(12345);
 
-	   //Appliquer la fonction « fondContours ».
-	   findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
+   //Appliquer la fonction « fondContours ».
+   findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
 
-	   // Draw contours
-	   drawing = Mat::zeros(cannye.size(), CV_8UC3);
+   // Draw contours
+   drawing = Mat::zeros(cannye.size(), CV_8UC3);
 
-	   for(int i = 0; i< contours.size(); i++)
-	   {
-		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
-		drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
-	   }
+   for(int i = 0; i< contours.size(); i++)
+   {
+	Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
+	drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
+   }
 
-		namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
-		imshow("Contours", drawing);
-		resizeWindow("Contours", 635, 475); //redimensionner la fenêtre
+	namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
+	imshow("Contours", drawing);
+	resizeWindow("Contours", 635, 475); //redimensionner la fenêtre
 
 
 
@@ -886,4 +720,5 @@ int CobotKuka::getJsonFromWebcam(){
 
 
 		qDebug() << courbe; //Renvoyer les données en format type Json
+		return courbe;
 }

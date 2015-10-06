@@ -52,13 +52,13 @@ public:
 	void activate_Stop_pushButton();
 	void desactivate_Stop_pushButton();
 	void change_Action_Group_Color();
-	void writeJSONToServer(const QStringList& jsonList);
+	void writeJSONToServer(const QString& json);
 	bool connectToServer();
 	bool disconnectFromServer();
-	void getJsonFromSvg(QString svgpath);
+	QString getJsonFromSvg(QString svgpath);
 
 
-	int getJsonFromWebcam();
+	QString getJsonFromWebcam();
 
 private slots:
 
@@ -117,7 +117,9 @@ private slots:
 	//Client variables
 	QTcpSocket *tcpSocket;
 	QHostAddress ip;
-	QStringList jsonChainList;
+
+	//Json Variables
+	QString json;
 
 	//opencv variables
 	Mat frame; //image caméra sans filtre
