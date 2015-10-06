@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QMap>
 
 class QPaintEvent;
 class QMouseEvent;
@@ -11,6 +12,8 @@ class DrawWidget : public QWidget
     Q_OBJECT
 public:
     explicit DrawWidget(QWidget *parent = 0);
+    QMap<int, QPoint> Coordonnees;
+    int index=0;
     ~DrawWidget();
 
     void drawPixel(QPoint pt);

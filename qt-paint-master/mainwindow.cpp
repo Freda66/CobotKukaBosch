@@ -3,6 +3,7 @@
 #include "drawwidget.h"
 #include <QColorDialog>
 #include <QLayout>
+#include <QDebug>
 
 class MainWindowPrivate {
 public:
@@ -10,6 +11,9 @@ public:
     ~MainWindowPrivate();
 
     void pickColor();
+
+private slots:
+    void on_pushButton_clicked();
 
 private:
     DrawWidget *m_drawWidget;
@@ -26,7 +30,10 @@ MainWindowPrivate::MainWindowPrivate(MainWindow *owner) :
     m_ui->centralWidget->setLayout(new QVBoxLayout(m_Owner));
     m_ui->centralWidget->layout()->addWidget(m_drawWidget);
 }
-
+void MainWindowPrivate::on_pushButton_clicked()
+{
+    qDebug("ZZ");
+}
 void MainWindowPrivate::pickColor()
 {
     QColor color = QColorDialog::getColor(

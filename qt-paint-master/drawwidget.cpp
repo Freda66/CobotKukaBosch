@@ -3,10 +3,12 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRgb>
+#include "qdebug.h"
 
 DrawWidget::DrawWidget(QWidget *parent) : QWidget(parent)
 {
     m_drawColor = QColor(Qt::black);
+
 }
 
 DrawWidget::~DrawWidget()
@@ -16,7 +18,39 @@ DrawWidget::~DrawWidget()
 
 void DrawWidget::drawPixel(QPoint pt){
     QRgb value = m_drawColor.rgb();
-    m_canvas.setPixel(pt.x(),pt.y(),value);
+    //m_canvas.setPixel(pt.x(),pt.y(),value);
+    QPainter p;
+    p.begin(&m_canvas);
+    QBrush brush = p.brush();
+    brush.setStyle(Qt::SolidPattern);
+    p.setBrush(brush);
+    p.setPen(QPen(Qt::color1)); // use 1 to draw, the pen with is 1 pixel solid line
+    qint32 x=pt.x();
+    qint32 y=pt.y();
+
+    if(x>=0 && y>=0)
+    {
+        p.drawEllipse(QRect(x,y,5,5));
+        p.end();
+        Coordonnees.insert(++index,QPoint(x,500-y));// 500 : taille de la fenêtre
+    }
+
+
+    QString json="{\"pt\"[500,500] ,\"dessin\":[";
+    qint32 index=0;
+    for(auto e : Coordonnees.keys())
+    {
+        json+=QString::number(Coordonnees.value(e).x())+","+QString::number(Coordonnees.value(e).y());
+
+        if (index<Coordonnees.size()-1)
+        {
+
+            json+=",";
+        }
+        index++;
+    }
+    json+="]}";
+    qDebug()  << json.toUtf8();
 }
 
 void DrawWidget::mousePressEvent(QMouseEvent *event){

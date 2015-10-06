@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>474</width>
-    <height>406</height>
+    <width>500</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>474</width>
-     <height>27</height>
+     <width>500</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>
@@ -32,6 +32,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionColorPick"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionColorPick">
@@ -53,8 +54,8 @@
    <slot>colorPickTriggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>236</x>
-     <y>202</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>236</x>
