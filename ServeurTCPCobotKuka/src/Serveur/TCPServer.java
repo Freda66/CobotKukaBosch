@@ -1,7 +1,11 @@
 package Serveur;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.ClassNotFoundException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -30,7 +34,7 @@ public class TCPServer {
     public TCPServer() throws IOException {
         port = 9191; // Port socket du serveur
         message = ""; // Initialisation du message
-        sizeChar = 4096; // Fixe la taille du nombre de caractere
+        sizeChar = 65534; // Fixe la taille du nombre de caractere
         characters = new char[sizeChar]; // Chaine de caractere
         // Demarre le serveur
         try {
@@ -68,24 +72,25 @@ public class TCPServer {
         try {
         	// Créer la socket du serveur et attend une connexion du client
 	        Socket socket = server.accept();
-	        
+	     
 	        // Créer un objet pour lire le message du client dans la socket
 	        InputStreamReader isr = new InputStreamReader(socket.getInputStream(),"utf-8");
 	        // Lit le buffer
 	        int bytesread = isr.read(characters);
-
+	        
 	        // Converti le char en string
 		    message = new String(characters);
 		    // Recupère la sous chaine du message
 		    message = message.substring(0, bytesread);
 		    
 		    // Initialise le char
-		    characters = new char[sizeChar]; 
+		    characters = new char[sizeChar];
+		    
 		    // Ferme les ressources
 	        isr.close();
 	        socket.close();
 	
-	        System.out.println("Message du client (IHM) : " +  getMessage()); // Log le message
+	        System.out.println("Message du client (IHM) : ["+bytesread+"] " +  getMessage()); // Log le message
         } catch(Exception e){
         	message = ""; // Vide le message
         	System.out.println("Erreur lors de la réception du message du client (IHM) : " + e); // Log le message d'erreur
