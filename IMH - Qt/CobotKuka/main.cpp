@@ -8,24 +8,24 @@
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	CobotKuka w;
-	w.show();
+    CobotKuka w;
+    w.show();
 
 
-//	VideoCapture cap(0); // open the default camera
-//	  if(!cap.isOpened())  // check if we succeeded
-//	  {
-//		  qDebug() <<"cam not opened";
-//		  return 0;
-//	  }
-//	  namedWindow("edges",1);
-//	  for(;;)
-//	  {
-//		  Mat frame;
-//		  cap >> frame;
-//		  imshow("edges", frame);
-//		  if(waitKey(30) >= 0) break;
-//	  }
+//    VideoCapture cap(0); // open the default camera
+//      if(!cap.isOpened())  // check if we succeeded
+//      {
+//          qDebug() <<"cam not opened";
+//          return 12;
+//      }
+//      namedWindow("edges",1);
+//      for(;;)
+//      {
+//          Mat frame;
+//          cap >> frame;
+//          imshow("edges", frame);
+//          if(waitKey(30) >= 0) break;
+//      }
 
 
 

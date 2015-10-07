@@ -4,7 +4,7 @@
 
 CobotKuka::CobotKuka(QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::CobotKuka)
+    ui(new Ui::CobotKuka)
 {
 	ui->setupUi(this);
 	init();
@@ -12,7 +12,7 @@ CobotKuka::CobotKuka(QWidget *parent) :
 
 CobotKuka::~CobotKuka()
 {
-	delete ui;
+    delete ui;
 }
 
 
@@ -558,7 +558,7 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 	node = node.firstChild();
 	QString ligne= "";
 
-	qDebug() << dom->toString();
+    //qDebug() << dom->toString();
 	/***/
 	QRegExp rxParam("(<g.+\n.+)\>"); //extrait les parametres dans la balise <g>
 	//QRegExp rxProp("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
@@ -634,9 +634,10 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 		}
 	 }
 
+     if(size_property=="") size_property="\"pt\":[600.0,600.0]";
 	 finalchain += translate_property + "," + scale_property +"," + size_property + ",\"svg\":{"; //ajoute les proprietes dans la chaine finale, avant de detecter les coordonnees.
 
-QStringList charList ;
+    QStringList charList ;
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
 		charList += node.attributes().item(0).toAttr().value().split(' ');
@@ -648,7 +649,6 @@ QStringList charList ;
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
 			toto="";
 			toto+=" "+charList.at(j).toLatin1();
-			//qDebug() << toto;
 			ligne+=toto;
 		}
 
@@ -663,15 +663,8 @@ QStringList charList ;
 		ligne=ligne.replace("[,","[");
 		ligne=ligne.replace(",-","-");
 		ligne=ligne.replace(","," ");
-		qDebug() << ligne;
+        //qDebug() << ligne;
 
-
-		qint32 index_M=0;
-		qint32 index_m=0;
-		qint32 index_c=0;
-		qint32 index_C=0;
-		qint32 index_l=0;
-		qint32 index_L=0;
 
 
 		// Création d'une liste avec chaque paramètre
@@ -688,26 +681,17 @@ QStringList charList ;
 			   {
 				   if(str.startsWith("M"))
 				   {
-					   //a chaque nouveau path, les indices sont remis a zero.
-					   index_M = index_m = index_c = index_C = index_l = index_L = 0 ;
-
-					   index_M++;
-					   jsonelement+="M"+QString::number(index_M)+"\"";
-					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+                       jsonelement+="M:["+QString("%1").arg(str.right(str.size()-1));
 					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("m"))
 				   {
-					   index_m+=1;
-					   jsonelement+="],m"+QString::number(index_m)+"\"";
-					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+                       jsonelement+="],m:["+QString("%1").arg(str.right(str.size()-1));
 					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("c"))
 				   {
-					   index_c+=1;
-					   jsonelement+="],c"+QString::number(index_c)+"\"";
-					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+                       jsonelement+="],c:["+QString("%1").arg(str.right(str.size()-1));
 						 if(QString("%1").arg(str.right(str.size()-1))!="")
 					   {
 						   jsonelement+=",";
@@ -715,26 +699,20 @@ QStringList charList ;
 				   }
 				   else if(str.startsWith("C"))
 				   {
-					   index_C+=1;
-					   jsonelement+="],C"+QString::number(index_C)+"\"";
-					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+                       jsonelement+="],C:["+QString("%1").arg(str.right(str.size()-1));
 					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("l"))
-				   {
-					   index_l+=1;
-					   jsonelement+="],l"+QString::number(index_l)+"\"";
-					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+                   {
+                       jsonelement+="],l:["+QString("%1").arg(str.right(str.size()-1));
 					   if(QString("%1").arg(str.right(str.size()-1))!="")
 					   {
 						   jsonelement+=",";
 					   }
 				   }
 				   else if(str.startsWith("L"))
-				   {
-					   index_L+=1;
-					   jsonelement+="],L"+QString::number(index_L)+"\"";
-					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+                   {
+                       jsonelement+="],L:["+QString("%1").arg(str.right(str.size()-1));
 						jsonelement+=",";
 				   }
 				   else if (str.endsWith("z"))
@@ -752,53 +730,61 @@ QStringList charList ;
 				   json+=jsonelement;
 			   }
 		}
-		json=json.replace("\n","");
-		json=json.replace("\r","");
-		json=json.replace("\t","");
-		json=json.replace("M","\"M");
-		json=json.replace("L","\"L");
-		json=json.replace("C","\"C");
-		json=json.replace("c","\"c");
-		json=json.replace("l","\"l");
-		json=json.replace("m","\"m");
-		json=json.replace("\n\"","");
-		json=json.replace("}{",",");
-		json=json.replace("],{","],");
-		json=json.replace("]}]","]");
-		json=json.replace("]},","],");
-		json=json.replace("]]","]");
-		json=json.replace(":\":",":\"");
-		json=json.replace("::",":");
-		json=json.replace(":[,","[");
-		json=json.replace(",]","]");
-		json=json.replace(",{\"M","],\"M");
-		json=json.replace("}\"M",",\"M");
-		json=json.replace("\"[","\":[");
-		json=json.replace(",,",",");
 
-
-
-
-
-		/*json=json.replace("M","\"M");
-
-
-
-
-
-
-*/
+        json=json.replace("\n","");
+        json=json.replace("\r","");
+        json=json.replace("\t","");
+        json=json.replace(",]","]");
+        json=json.replace("M","\"M\"");
+        json=json.replace(",{\"M\"","],\"M\"");
+        json=json.replace("L","\"L\"");
+        json=json.replace("C","\"C\"");
+        json=json.replace("c","\"c\"");
+        json=json.replace("l","\"l\"");
+        json=json.replace("m","\"m\":");
+        json=json.replace("\n\"","");
+        json=json.replace("}{",",");
+        json=json.replace("],{","],");
+        json=json.replace("]}]","]");
+        json=json.replace("}\"M\":","},\"M\":");
+        json=json.replace("]},","],");
+        json=json.replace(",\"M\"","],\"M\"");
+        json=json.replace("]]","]");
+        json=json.replace(":\":",":\"");
+        json=json.replace("::",":");
+        json=json.replace(":[,","[");
+        json=json.replace("\"m\"[","\"m\":[");
 
 		node = node.nextSiblingElement("path"); //Aller au Path suivant
 	}
+
+    int pos_chaine = 0;
+    int index_chaine = 0;
+    QChar c;
+    for(index_chaine =0; index_chaine<json.length(); index_chaine++)
+    {
+       // qDebug() << "char : " << json.at(index_chaine);
+        if(json.at(index_chaine) == "c" || json.at(index_chaine) =='M' || json.at(index_chaine) =='m' || json.at(index_chaine) =='L' || json.at(index_chaine) =='l' || json.at(index_chaine) =='C')
+        {
+            QString nb="";
+            if(pos_chaine < 10) nb+="0";
+            nb += QString::number(pos_chaine);
+            json.insert(index_chaine, nb);
+            index_chaine += nb.length();
+            pos_chaine++;
+        }
+    }
+
+
 
 	finalchain.append(json); //ajoute le json à la liste des vecteurs
 	finalchain.append("}");
 
 
-	qDebug();
-	qDebug();
-	qDebug() << "finalchain:      " << finalchain;
+
+    qDebug() << " ";
+    qDebug() << " ";
+    qDebug() << "finalchain:      " << finalchain.toUtf8();
 
 	return finalchain;
 
@@ -938,11 +924,11 @@ QString CobotKuka::getJsonFromWebcam(){
 //		total += "]";
 //		QString tmp = total;
 
-//		total = "{\"pt\":[";
+//		total = "{\"px\":[";
 //		total += "635";
 //		total += ",";
 //		total += "475";
-//		total += "],\"webcam\":";
+//		total += "],\"dessin\":";
 //		total += tmp;
 //		total += "}";
 
@@ -975,7 +961,13 @@ void CobotKuka::writeJSONToServer(const QString& json){
 
 	/* CODE A COMMENTER POUR TEST HORS LIGNE */
 	if(connected) {
-		tcpSocket->write((QByteArray)json.toUtf8());
+        tcpSocket->write((QByteArray)json.toUtf8());
+//        QString temp = "";
+//        temp += "b";
+//        for(int i=0; i < 60000; i++) temp += "a";
+//        temp += "b";
+//        //qDebug() << temp;
+//        tcpSocket->write((QByteArray)temp.toUtf8());
 		tcpSocket->flush();
 	}
 	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";

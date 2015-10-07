@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'cobotkuka.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.2
+** Created by: Qt User Interface Compiler version 5.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -97,8 +97,8 @@ public:
     QMenu *menuFile;
     QMenu *menuAbout;
     QStatusBar *statusBar;
-    QButtonGroup *buttonGroup_Mod;
     QButtonGroup *buttonGroup_Picture;
+    QButtonGroup *buttonGroup_Mod;
 
     void setupUi(QMainWindow *CobotKuka)
     {
@@ -493,7 +493,6 @@ public:
         connect_pushButton->setSizePolicy(sizePolicy3);
         connect_pushButton->setCheckable(true);
         connect_pushButton->setAutoDefault(false);
-        connect_pushButton->setDefault(true);
         connect_pushButton->setFlat(false);
 
         connect_horizontalLayout->addWidget(connect_pushButton);
@@ -507,7 +506,7 @@ public:
         CobotKuka->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(CobotKuka);
         menuBar->setObjectName(QStringLiteral("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 703, 26));
+        menuBar->setGeometry(QRect(0, 0, 703, 21));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QStringLiteral("menuFile"));
         menuAbout = new QMenu(menuBar);
@@ -549,6 +548,9 @@ public:
 
         retranslateUi(CobotKuka);
 
+        connect_pushButton->setDefault(true);
+
+
         QMetaObject::connectSlotsByName(CobotKuka);
     } // setupUi
 
@@ -584,7 +586,7 @@ public:
         sketch_pushButton->setText(QApplication::translate("CobotKuka", "Open Sketch Window", 0));
         connect_groupBox->setTitle(QString());
         connect_ip_label->setText(QApplication::translate("CobotKuka", "IP : ", 0));
-        connect_ip_lineEdit->setText(QApplication::translate("CobotKuka", "172.30.1.150", 0));
+        connect_ip_lineEdit->setText(QApplication::translate("CobotKuka", "172.30.1.125", 0));
         connect_port_label->setText(QApplication::translate("CobotKuka", "Port : ", 0));
         connect_port_lineEdit->setText(QApplication::translate("CobotKuka", "9191", 0));
         connect_status_label->setText(QApplication::translate("CobotKuka", "Disconnected", 0));

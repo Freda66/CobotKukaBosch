@@ -632,7 +632,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>172.30.1.150</string>
+              <string>172.30.1.125</string>
              </property>
              <property name="maxLength">
               <number>15</number>
@@ -752,7 +752,7 @@
      <x>0</x>
      <y>0</y>
      <width>703</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -812,7 +812,7 @@
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="buttonGroup_Mod"/>
   <buttongroup name="buttonGroup_Picture"/>
+  <buttongroup name="buttonGroup_Mod"/>
  </buttongroups>
 </ui>
