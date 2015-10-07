@@ -64,7 +64,7 @@ public class Webcam {
 	    		// On récupère la courbe i
 	    		JSONArray jCamArray2 = jCamArray.getJSONArray(i);
 	    		// On parcours les coordonnées de la courbe i
-	    		for (int j = 0; j < jCamArray2.length() - 2; j += 2) {
+	    		for (int j = 0; j < jCamArray2.length() - 4; j += 2) {
 	    			// Si on est au premier point du dessin, on se déplace vers lui...
 	    			if (i == 0 && j == 0) {
 	    				//...d'abord à 10 du papier à partir du paperApproach...
@@ -92,7 +92,7 @@ public class Webcam {
 	    			}
 	    			// Dans tous les cas on parcours les coordonnées pour créer les liaisons entre les points des courbes
 	    			t_firstPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(j)), scalePointY(jCamArray2.getInt(j + 1)), 0.0);
-	    			t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(j + 2)), scalePointY(jCamArray2.getInt(j + 2)), 0.0);//scalePointY(jCamArray2.getInt(j + 3)), 0.0);
+	    			t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(j + 2)), scalePointY(jCamArray2.getInt(j + 3)), 0.0);
 	    			t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 	    			
 	    			// Si on est au dernier point de la courbe on releve le stylo en restant ou l'on se trouve (si non trace sur le papier)

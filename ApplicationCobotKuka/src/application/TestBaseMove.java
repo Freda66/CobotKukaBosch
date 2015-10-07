@@ -45,15 +45,15 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	private ObjectFrame paperBase;
 	private ObjectFrame paperApproach;
 
-	private static int widthSheet = 297;
-	private static int heightSheet = 210;
+	private static int widthSheet = 297; // Largeur feuille chevalet
+	private static int heightSheet = 210; // Hauteur feuille chevalet
 	
 	/**
 	 * 
 	 */
 	public void initialize() {
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
-		serveur = new TCPServer(30007);
+		serveur = new TCPServer(30008);
 		
 		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1, "LBR_iiwa_14_R820_1");
@@ -74,7 +74,6 @@ public class TestBaseMove extends RoboticsAPIApplication {
 		penTool = getApplicationData().createFromTemplate("penTool");
 		penTool.attachTo(lbr_iiwa_14_R820_1.getFlange() );
 		penToolTCP = penTool.getFrame("/penToolTCP");
-		
 		
 		// On charge la base de l'application
 		paperBase = getApplicationData().getFrame("/Paper");
@@ -106,9 +105,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 			//Init position
 			lbr_iiwa_14_R820_1.move(ptpHome());
 			
-			
 			ioFlange.setLEDBlue(true);
-			
 			
 			// Approche de la base "Paper" en PTP
 			getLogger().info("Move near Paper");
@@ -196,12 +193,12 @@ public class TestBaseMove extends RoboticsAPIApplication {
 							// Appel la fonction pour dessiner l'image
 							relLin = svg.draw(jSvgObject);
 							
-						} else if(jObject.has("webcam")){
+						} else if(jObject.has("dessin")){
 							// Crée un objet CAM
 							Webcam cam = new Webcam(paperApproach, paperBase, widthSheet, heightSheet, scaleX, scaleY, translateX, translateY);
 							
 							// Récupère l'objet CAM
-							JSONArray jCamArray = jObject.getJSONArray("webcam");
+							JSONArray jCamArray = jObject.getJSONArray("dessin");
 							
 							// Appel la fonction pour dessiner l'image
 							relLin = cam.draw(jCamArray);

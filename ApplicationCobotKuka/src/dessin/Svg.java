@@ -15,7 +15,6 @@ import com.kuka.roboticsAPI.geometricModel.ObjectFrame;
 import com.kuka.roboticsAPI.geometricModel.math.Transformation;
 import com.kuka.roboticsAPI.motionModel.RelativeLIN;
 
-
 public class Svg {
 
 	/**
@@ -61,34 +60,31 @@ public class Svg {
 	 * @return RelativeLIN[]
 	 * @throws JSONException 
 	 */
+	@SuppressWarnings("rawtypes")
 	public RelativeLIN[] draw(JSONObject jSvgObject) throws JSONException {
 		// ArrayList
 		ArrayList<RelativeLIN[]> linMovements = new ArrayList<RelativeLIN[]>();
 		RelativeLIN[] linMovement = null;
 
-		// Récupère le M
-		//JSONArray jMArray = jSvgObject.getJSONArray("M1");
-		
-		System.out.println("Avant parcours JSON");
-		
+		/*// Récupère le M
+		JSONArray jMArray = jSvgObject.getJSONArray("M1");
 		// On créé la première frame
-		//Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
-		//System.out.println(firstFrame.toString());
+		Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
 		// On créé la frame correspondante sur le papier
-		//Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
-		//currentPoint = firstFrameOnPaper;
-		//System.out.println(firstFrameOnPaper.toString());
-		
-		//RelativeLIN[] splineArray = new RelativeLIN[2];
+		Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
+		currentPoint = firstFrameOnPaper;
+		RelativeLIN[] splineArray = new RelativeLIN[2];
 		// On approche de la feuille à 10 au dessus du point init
-		//splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
+		splineArray[0] = linRel(getTranslationFromFrame(new Frame(paperApproach.getX(),paperApproach.getY(), paperApproach.getZ()), firstFrame), paperBase);
 		// Le stylo touche la feuille
-		//splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+		splineArray[1] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+		// Ajoute la spline
+		linMovements.add(splineArray);*/
 		
-		//linMovements.add(splineArray);
+		System.out.println("Début parcours JSON");
 		
 		// Parcours les objets JSON 
-		for (@SuppressWarnings("rawtypes") Iterator iterator = jSvgObject.keys(); iterator.hasNext();) {
+		for (Iterator iterator = jSvgObject.sortedKeys(); iterator.hasNext();) {
 			// Récupère la clé (M, c, l,...)    
 			String cle = String.valueOf(iterator.next());
 			
@@ -97,6 +93,7 @@ public class Svg {
 			// Récupère le tableau de valeur de la cle
 			JSONArray jArray = jSvgObject.getJSONArray(cle);
 			
+			// Appel la fonction de traitement 
 			if     (cle.contains("c")) linMovements.add(this.JsonKeyc(jArray));
 			else if(cle.contains("l")) linMovements.add(this.JsonKeyl(jArray));
 			else if(cle.contains("M")) linMovements.add(this.JsonKeyM(jArray));
@@ -142,7 +139,6 @@ public class Svg {
 			Frame upFrame = new Frame(paperApproach.getX(), paperApproach.getY(), 10.0);
 			// On créé la frame du premier point M à 10 au dessus du papier
 			Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
-			System.out.println(firstFrame.toString());
 			// On créé la frame de M correspondante sur le papier
 			Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
 			// Met à jours le current point 
@@ -170,7 +166,7 @@ public class Svg {
 	private RelativeLIN[] JsonKeym(JSONArray jmArray) {
 		RelativeLIN[] splineArray = null;
 		
-		System.out.println("Debut JsonKeyM");
+		System.out.println("Debut JsonKeym");
 		
 		try {
 			splineArray = new RelativeLIN[3];
@@ -179,7 +175,6 @@ public class Svg {
 			Frame upFrame = new Frame(currentPoint.getX(), currentPoint.getY(), 10.0);
 			// On créé la frame du premier point M à 10 au dessus du papier
 			Frame firstFrame = new Frame(jmArray.getInt(0) * widthSheet / scaleX, heightSheet - jmArray.getInt(1) * heightSheet / scaleY, 10.0);
-			System.out.println(firstFrame.toString());
 			// On créé la frame de M correspondante sur le papier
 			Frame firstFrameOnPaper = new Frame(jmArray.getInt(0) * widthSheet / scaleX, heightSheet - jmArray.getInt(1) * heightSheet / scaleY, -3.0);
 			// Met à jours le current point 
@@ -194,7 +189,7 @@ public class Svg {
 			
 		} catch (JSONException e) {	e.printStackTrace(); }
 		
-		System.out.println("Fin JsonKeyM");
+		System.out.println("Fin JsonKeym");
 
 		return splineArray;
 	}
@@ -271,7 +266,7 @@ public class Svg {
 			
 		} catch (JSONException e) {	e.printStackTrace(); }
 		
-		System.out.println("Fin JsonKeyc");
+		System.out.println("Fin JsonKeyl");
 		
 		return splineArray;
 	}

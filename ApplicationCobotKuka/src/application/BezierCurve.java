@@ -16,6 +16,10 @@ public class BezierCurve {
 	
 	public BezierCurve(Vector2[] tab) {
 		points = tab;
+		// Créer les points suivants avec la valeur du dernier s'il n'existe pas
+		for(int i = points.length; i < 4; i++){
+			points[i] = points[points.length-1];
+		}
 	}
 
 	public Vector2 get(double step)
