@@ -319,34 +319,37 @@ void CobotKuka::on_picture_file_pushButton_clicked()
 int  CobotKuka::on_picture_webcam_pushButton_clicked()
 {
 
-	VideoCapture cap(0); // Ouvrir la caméra par défaut
-	   if(!cap.isOpened())
-		   {
-		   // check if we succeeded
-			return -1;
-	   }
-
-	   for(;;)
-	   {
-		   cap >> frame; // get a new frame from camera
-		   cvtColor(frame, grey, CV_BGR2GRAY);
 
 
-		   //Appliquer un blurring pour enlever le bruit
-			blur(grey, grey, Size(3,3));
+//	VideoCapture cap(1); // Ouvrir la caméra par défaut
+//	   if(!cap.isOpened())
+//		   {
+//		   // check if we succeeded
+//			return -1;
+//	   }
 
 
-			//Appliquer la fonction Canny.
-			Canny(grey, cannye, 100, 100, 3);
-			imshow("Canny",cannye);
-			resizeWindow("Canny", 635, 475);
+//	   for(;;)
+//	   {
+//		   cap >> frame; // get a new frame from camera
+//	   cvtColor(frame, grey, CV_BGR2GRAY);
 
 
+//   //Appliquer un blurring pour enlever le bruit
+//			blur(grey, grey, Size(3,3));
 
-		   if(waitKey(30) >= 0) break;
-		}
 
-	activate_OK_pushButton();
+//			//Appliquer la fonction Canny.
+//			Canny(grey, cannye, 100, 100, 3);
+//			imshow("Canny",cannye);
+//			resizeWindow("Canny", 635, 475);
+
+
+//		   if(waitKey(30) >= 0) break;
+//		}
+
+//	activate_OK_pushButton();
+//	getJsonFromWebcam();
 	return 0;
 }
 
@@ -555,7 +558,7 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 	node = node.firstChild();
 	QString ligne= "";
 
-
+	qDebug() << dom->toString();
 	/***/
 	QRegExp rxParam("(<g.+\n.+)\>"); //extrait les parametres dans la balise <g>
 	//QRegExp rxProp("(width=\"\\d.+(pt)\").+(height=\"\\d.+(pt)\")");
@@ -631,21 +634,37 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 		}
 	 }
 
-	 finalchain += translate_property + "," + scale_property +"," + size_property + ",\"svg\":"; //ajoute les proprietes dans la chaine finale, avant de detecter les coordonnees.
+	 finalchain += translate_property + "," + scale_property +"," + size_property + ",\"svg\":{"; //ajoute les proprietes dans la chaine finale, avant de detecter les coordonnees.
 
+QStringList charList ;
 	while(!node.isNull()){ //vérifier si un noeud Path est dans le fichier
 
-		QStringList charList = node.attributes().item(0).toAttr().value().split(' ');
+		charList += node.attributes().item(0).toAttr().value().split(' ');
 
 
 		ligne = "";
-
+		QString toto="";
 		int nb = charList.count(); //compter le nombre d'élément dans la liste
-
 		for(int j=0; j < nb; j++){ //faire une boucle pour parcourir la liste
-			ligne+=" "+charList.at(j).toLatin1().replace("\n"," ");
+			toto="";
+			toto+=" "+charList.at(j).toLatin1();
+			//qDebug() << toto;
+			ligne+=toto;
 		}
 
+		ligne=ligne.replace("\n"," ");
+		ligne=ligne.replace("\t","");
+		ligne=ligne.replace("\r","");
+		ligne=ligne.replace("l"," l");
+		ligne=ligne.replace("c"," c");
+		ligne=ligne.replace("L"," L");
+		ligne=ligne.replace("C"," C");
+		ligne=ligne.replace("-"," -");
+		ligne=ligne.replace("[,","[");
+		ligne=ligne.replace(",-","-");
+		ligne=ligne.replace(","," ");
+
+		qDebug() << ligne;
 		// Création d'une liste avec chaque paramètre
 		QStringList query = ligne.split(" ");
 
@@ -665,16 +684,33 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 				   }
 				   else if(str.startsWith("m"))
 				   {
-					   jsonelement+=",m:["+QString("%1").arg(str.right(str.size()-1));
+					  jsonelement+="],m:["+QString("%1").arg(str.right(str.size()-1));
+					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("c"))
 				   {
 					   jsonelement+="],c:["+QString("%1").arg(str.right(str.size()-1));
+						 if(QString("%1").arg(str.right(str.size()-1))!="")
+					   {
+						   jsonelement+=",";
+					   }
+				   }
+else if(str.startsWith("C"))
+				   {
+					   jsonelement+="],C:["+QString("%1").arg(str.right(str.size()-1));
 						jsonelement+=",";
 				   }
 				   else if(str.startsWith("l"))
 				   {
 					   jsonelement+="],l:["+QString("%1").arg(str.right(str.size()-1));
+if(QString("%1").arg(str.right(str.size()-1))!="")
+					   {
+						   jsonelement+=",";
+					   }
+				   }
+				   else if(str.startsWith("L"))
+				   {
+					   jsonelement+="],L:["+QString("%1").arg(str.right(str.size()-1));
 						jsonelement+=",";
 				   }
 				   else if (str.endsWith("z"))
@@ -695,21 +731,35 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 		}
 
 		json=json.replace("\n","");
+		json=json.replace("\r","");
+		json=json.replace("\t","");
 		json=json.replace(",]","]");
-		json=json.replace("M","{\"M\"");
+		json=json.replace("M","\"M\"");
+		json=json.replace(",{\"M\"","],\"M\"");
+		json=json.replace("L","\"L\"");
+		json=json.replace("C","\"C\"");
 		json=json.replace("c","\"c\"");
 		json=json.replace("l","\"l\"");
-		json=json.replace("m","\"m\"");
+		json=json.replace("m","\"m\":");
 		json=json.replace("\n\"","");
-		json=json.replace("\r", "");
+		json=json.replace("}{",",");
+		json=json.replace("],{","],");
+		json=json.replace("]}]","]");
+		json=json.replace("}\"M\":","},\"M\":");
+		json=json.replace("]},","],");
+		json=json.replace(",\"M\"","],\"M\"");
+		json=json.replace("]]","]");
+		json=json.replace(":\":",":\"");
+		json=json.replace("::",":");
+		json=json.replace(":[,","[");
+		json=json.replace("\"m\"[","\"m\":[");
 
-		node = node.nextSibling(); //Aller au Path suivant
+		node = node.nextSiblingElement("path"); //Aller au Path suivant
 	}
 
 	finalchain.append(json); //ajoute le json à la liste des vecteurs
 	finalchain.append("}");
 
-	node = node.nextSibling(); //Aller au Path suivant
 
 	qDebug() << "finalchain: " << finalchain;
 
@@ -719,79 +769,147 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
 //From WebCam
 QString CobotKuka::getJsonFromWebcam(){
 
-	rng(12345);
+//	Mat frame; //image caméra sans filtre
+//	Mat grey; //image avec filtre gris
+//	Mat cannye; //image avec filtre cannye
+//	Mat drawing; //image avec contours
+//	RNG rng(12345); //Random Number Generator
 
-   //Appliquer la fonction « fondContours ».
-   findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
-
-   // Draw contours
-   drawing = Mat::zeros(cannye.size(), CV_8UC3);
-
-   for(int i = 0; i< contours.size(); i++)
-   {
-	Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
-	drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
-   }
-
-	namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
-	imshow("Contours", drawing);
-	resizeWindow("Contours", 635, 475); //redimensionner la fenêtre
+//	vector<vector<Point> > contours; //Définition d'un vecteur de points
+//	vector<Vec4i> hierarchy;
 
 
 
-//Format de renvoie des données des courbes: { "pt" : [taille x,taille y], "webcam" : [ [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], ...]}
-											//                                              courbe1             courbe2             courbe3
-
-		QString courbe="";
-
-		for(int i = 0; i < contours.size(); ++i) { //Boucler pour chaque Courbe
-
-			vector<Point>  res=contours.at(i);
-			courbe="";
-
-			QString coordonnees="";
-			courbe+="[";
-			for(int j = 0; j < res.size(); ++j){ //Récupérer les coordonnées des points
-			   Point pts = res.at(j);
-				   coordonnees+=QString::number(pts.x); //Récupérer coordonnée X d'un point dans le vecteur Point
-				   coordonnees+=",";
-				   coordonnees+= QString::number(pts.y); //Récupérer coordonnée Y d'un point dans le vecteur Point
-				   //***
-				   if(j==res.size()-1)
-					{}
-				   else
-					   coordonnees+=",";
-
-			   //qDebug() << "C" << i << "/" << "X" << j << ": " << pts.x;
-			   //qDebug() << "C" << i << "/" << "Y" << j << ": " << pts.y;
 
 
 
-		   }
-		   courbe+=coordonnees.toUtf8();
-			 courbe+="]";
-		   if(i==contours.size()-1)
-			{}
-		   else
-			   coordonnees+=",";
-		   courbe=courbe.replace("\n","");
-		   courbe=courbe.replace("\r","");
-		   courbe=courbe.replace("\t","");
-
-		}
-		QString courbetmp=courbe;
-
-		courbe="{\"pt\":[";
-		courbe+="635";
-		courbe+=",";
-		courbe+="475";
-		courbe+="],\"webcam\":[";
-		courbe+=courbetmp;
-		courbe+="]}";
 
 
-		qDebug() << "courbe :" << courbe; //Renvoyer les données en format type Json
-		return courbe;
+
+//	VideoCapture cap(1); // open the default camera
+//	  if(!cap.isOpened())  // check if we succeeded
+//		  return "error";
+///*
+//	//  Mat edges;
+//	  namedWindow("edges",1);
+//	  for(;;)
+//	  {
+//		  Mat frame;
+//		  cap >> frame;
+//		  imshow("edges", frame);
+//		  if(waitKey(30) >= 0) break;
+//	  }
+
+
+//*/
+
+
+
+
+
+
+
+
+
+//	VideoCapture cap(1); // Ouvrir la caméra par défaut
+//	   if(!cap.isOpened())
+//		   {
+//		   // check if we succeeded
+//			return -1;
+//	   }
+
+
+//	   //for(;;)
+//	   //{
+//	   char key = 0;
+//	   while(key !='q' || key !='Q'){
+
+//		  // cap >> frame; // get a new frame from camera
+//		   cap.read(frame);
+
+//		   frame = cvQueryFrame(cap);
+
+//		   cvtColor(frame, grey, CV_BGR2GRAY);
+
+
+//		   //Appliquer un blurring pour enlever le bruit
+//			blur(grey, grey, Size(3,3));
+
+
+//			//Appliquer la fonction Canny.
+//			Canny(grey, cannye, 100, 100, 3);
+//			imshow("Canny",cannye);
+//			resizeWindow("Canny", 635, 475);
+
+//			key = cvWaitKey(30);
+//}
+
+
+		  // if(waitKey(30) >= 0) break;
+		//}
+
+	   //Appliquer la fonction « fondContours ».
+//	   findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
+
+//	   // Draw contours
+//	   drawing = Mat::zeros(cannye.size(), CV_8UC3);
+
+//	   for(int i = 0; i< contours.size(); i++)
+//	   {
+//		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
+//		drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
+//	   }
+
+//		namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
+//		imshow("Contours", drawing);
+//		resizeWindow("Contours", 635, 475); //redimensionner la fenêtre
+
+
+
+////Format de renvoie des données des courbes: { "pt" : [taille x,taille y], "webcam" : [ [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], ...]}
+//											//                                              courbe1             courbe2             courbe3
+
+//		QString total = "[";
+
+//		for(int i = 0; i < contours.size(); ++i) { //Boucler pour chaque Courbe
+//			vector<Point>  res=contours.at(i);
+//			QString coordonnees = "";
+//			for(int j = 0; j < res.size(); ++j){ //Récupérer les coordonnées des points
+//			   Point pts = res.at(j);
+//				   coordonnees+=QString::number(pts.x); //Récupérer coordonnée X d'un point dans le vecteur Point
+//				   coordonnees+=",";
+//				   coordonnees+= QString::number(pts.y); //Récupérer coordonnée Y d'un point dans le vecteur Point
+//				   //***
+//				   if(j!=res.size()-1)
+//					   coordonnees+=",";
+
+//			   //qDebug() << "C" << i << "/" << "X" << j << ": " << pts.x;
+//			   //qDebug() << "C" << i << "/" << "Y" << j << ": " << pts.y;
+
+
+
+//		   }
+//		   total += "[" + coordonnees.toUtf8() + "]";
+
+
+//		   if(i!=contours.size()-1)
+//			   total += ",";
+//		}
+
+//		total += "]";
+//		QString tmp = total;
+
+//		total = "{\"pt\":[";
+//		total += "635";
+//		total += ",";
+//		total += "475";
+//		total += "],\"webcam\":";
+//		total += tmp;
+//		total += "}";
+
+
+//		qDebug() << total; //Renvoyer les données en format type Json
+		return "";
 }
 
 //From Picture

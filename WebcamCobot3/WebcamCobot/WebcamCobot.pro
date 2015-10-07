@@ -4,9 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QT       += core gui widgets
 
 TARGET = WebcamCobot
 TEMPLATE = app
@@ -19,7 +17,6 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
+INCLUDEPATH += "C:\Qt\opencv\build\include"
 
-INCLUDEPATH += C:\opencv\build\include
-
-LIBS+= -LC:\opencv\build\x64\vc12\lib -lopencv_world300 -lopencv_ts300
+LIBS += -LC:\Qt\opencv\build\x64\vc12\lib -lopencv_world300d

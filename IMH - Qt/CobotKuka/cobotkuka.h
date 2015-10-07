@@ -42,6 +42,16 @@ public:
 	void init();
 	~CobotKuka();
 
+	//opencv variables
+	Mat frame; //image caméra sans filtre
+	Mat grey; //image avec filtre gris
+	Mat cannye; //image avec filtre cannye
+	Mat drawing; //image avec contours
+	RNG rng; //Random Number Generator
+
+	vector<vector<Point> > contours; //Définition d'un vecteur de points
+	vector<Vec4i> hierarchy;
+
 	/* UI */
 	void activate_OK_pushButton();
 	void desactivate_OK_pushButton();
@@ -108,15 +118,7 @@ private slots:
 	//Json Variables
 	QString json;
 
-	//opencv variables
-	Mat frame; //image caméra sans filtre
-	Mat grey; //image avec filtre gris
-	Mat cannye; //image avec filtre cannye
-	Mat drawing; //image avec contours
-	RNG rng; //Random Number Generator
 
-	vector<vector<Point> > contours; //Définition d'un vecteur de points
-	vector<Vec4i> hierarchy;
 };
 
 #endif // COBOTKUKA_H

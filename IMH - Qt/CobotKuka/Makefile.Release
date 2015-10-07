@@ -17,7 +17,7 @@ CXXFLAGS      = -nologo -Zm200 -Zc:wchar_t -FS -O2 -MD -GR -W3 -w34100 -w34189 -
 INCPATH       = -I"C:\Qt\opencv\build\include" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtSvg" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtXml" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtNetwork" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtGui" -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtCore" -I"release" -I"." -I"C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\mkspecs\win32-msvc2013"
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /INCREMENTAL:NO /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = glu32.lib opengl32.lib gdi32.lib user32.lib /LIBPATH:C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\qtmain.lib /LIBPATH:C:\Qt\opencv\build\x64\vc12\lib C:\Qt\opencv\build\x64\vc12\lib\opencv_world300d.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Svg.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Widgets.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Xml.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Network.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Gui.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Core.lib 
+LIBS          = glu32.lib opengl32.lib gdi32.lib user32.lib /LIBPATH:C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\qtmain.lib /LIBPATH:C:\Qt\opencv\build\x64\vc12\lib C:\Qt\opencv\build\x64\vc12\lib\opencv_world300.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Svg.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Widgets.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Xml.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Network.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Gui.lib C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\lib\Qt5Core.lib 
 QMAKE         = C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\bin\qmake.exe
 IDC           = idc
 IDL           = midl
@@ -1693,7 +1693,24 @@ release\cobotkuka.obj: cobotkuka.cpp cobotkuka.h \
 		C:\Qt\opencv\build\include\opencv2\photo\photo.hpp \
 		C:\Qt\opencv\build\include\opencv2\core\core.hpp \
 		C:\Qt\opencv\build\include\opencv2\video\video.hpp \
-		ui_cobotkuka.h
+		ui_cobotkuka.h \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QAction \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QApplication \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QButtonGroup \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QFontComboBox \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QGridLayout \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QGroupBox \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QHBoxLayout \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QHeaderView \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QLabel \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QLineEdit \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QMenu \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QMenuBar \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QPushButton \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QRadioButton \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QSpacerItem \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QStatusBar \
+		C:\Qt\Qt5.3.0\5.3\msvc2013_64_opengl\include\QtWidgets\QVBoxLayout
 
 release\moc_cobotkuka.obj: release\moc_cobotkuka.cpp 
 
