@@ -399,10 +399,10 @@ void CobotKuka::on_send_pushButton_clicked()
 
 		/* CODE A COMMENTER POUR TEST HORS LIGNE*/
 
-//		if(connectToServer()){
-//			//Once the connection is established, send the JSON chain to the server.
-//			writeJSONToServer(jsonChainList);
-//		}
+		if(connectToServer()){
+			//Once the connection is established, send the JSON chain to the server.
+			writeJSONToServer(json);
+		}
 
 		/* /CODE A COMMENTER POUR TEST HORS LIGNE*/
 
@@ -410,7 +410,7 @@ void CobotKuka::on_send_pushButton_clicked()
 
 		/* CODE A DECOMMENTER POUR TEST HORS LIGNE */
 
-		writeJSONToServer(json);
+//		writeJSONToServer(json);
 
 		/* /CODE A DECOMMENTER POUR TEST HORS LIGNE*/
 	}
@@ -663,8 +663,17 @@ QStringList charList ;
 		ligne=ligne.replace("[,","[");
 		ligne=ligne.replace(",-","-");
 		ligne=ligne.replace(","," ");
-
 		qDebug() << ligne;
+
+
+		qint32 index_M=0;
+		qint32 index_m=0;
+		qint32 index_c=0;
+		qint32 index_C=0;
+		qint32 index_l=0;
+		qint32 index_L=0;
+
+
 		// Création d'une liste avec chaque paramètre
 		QStringList query = ligne.split(" ");
 
@@ -679,38 +688,53 @@ QStringList charList ;
 			   {
 				   if(str.startsWith("M"))
 				   {
-						jsonelement+="M:["+QString("%1").arg(str.right(str.size()-1));
-						jsonelement+=",";
+					   //a chaque nouveau path, les indices sont remis a zero.
+					   index_M = index_m = index_c = index_C = index_l = index_L = 0 ;
+
+					   index_M++;
+					   jsonelement+="M"+QString::number(index_M)+"\"";
+					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("m"))
 				   {
-					  jsonelement+="],m:["+QString("%1").arg(str.right(str.size()-1));
+					   index_m+=1;
+					   jsonelement+="],m"+QString::number(index_m)+"\"";
+					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
 					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("c"))
 				   {
-					   jsonelement+="],c:["+QString("%1").arg(str.right(str.size()-1));
+					   index_c+=1;
+					   jsonelement+="],c"+QString::number(index_c)+"\"";
+					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
 						 if(QString("%1").arg(str.right(str.size()-1))!="")
 					   {
 						   jsonelement+=",";
 					   }
 				   }
-else if(str.startsWith("C"))
+				   else if(str.startsWith("C"))
 				   {
-					   jsonelement+="],C:["+QString("%1").arg(str.right(str.size()-1));
-						jsonelement+=",";
+					   index_C+=1;
+					   jsonelement+="],C"+QString::number(index_C)+"\"";
+					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+					   jsonelement+=",";
 				   }
 				   else if(str.startsWith("l"))
 				   {
-					   jsonelement+="],l:["+QString("%1").arg(str.right(str.size()-1));
-if(QString("%1").arg(str.right(str.size()-1))!="")
+					   index_l+=1;
+					   jsonelement+="],l"+QString::number(index_l)+"\"";
+					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
+					   if(QString("%1").arg(str.right(str.size()-1))!="")
 					   {
 						   jsonelement+=",";
 					   }
 				   }
 				   else if(str.startsWith("L"))
 				   {
-					   jsonelement+="],L:["+QString("%1").arg(str.right(str.size()-1));
+					   index_L+=1;
+					   jsonelement+="],L"+QString::number(index_L)+"\"";
+					   jsonelement+=":["+QString("%1").arg(str.right(str.size()-1));
 						jsonelement+=",";
 				   }
 				   else if (str.endsWith("z"))
@@ -718,41 +742,52 @@ if(QString("%1").arg(str.right(str.size()-1))!="")
 					  jsonelement+= QString("%1").arg(str.left(str.size()-1));
 					  jsonelement+= "]";
 					  jsonelement+="}\n";
+
 				   }
 				   else
 				   {
 					   jsonelement+=QString("%1").arg(str);
 					   jsonelement+=",";
 				   }
-
 				   json+=jsonelement;
 			   }
-
 		}
-
 		json=json.replace("\n","");
 		json=json.replace("\r","");
 		json=json.replace("\t","");
-		json=json.replace(",]","]");
-		json=json.replace("M","\"M\"");
-		json=json.replace(",{\"M\"","],\"M\"");
-		json=json.replace("L","\"L\"");
-		json=json.replace("C","\"C\"");
-		json=json.replace("c","\"c\"");
-		json=json.replace("l","\"l\"");
-		json=json.replace("m","\"m\":");
+		json=json.replace("M","\"M");
+		json=json.replace("L","\"L");
+		json=json.replace("C","\"C");
+		json=json.replace("c","\"c");
+		json=json.replace("l","\"l");
+		json=json.replace("m","\"m");
 		json=json.replace("\n\"","");
 		json=json.replace("}{",",");
 		json=json.replace("],{","],");
 		json=json.replace("]}]","]");
-		json=json.replace("}\"M\":","},\"M\":");
 		json=json.replace("]},","],");
-		json=json.replace(",\"M\"","],\"M\"");
 		json=json.replace("]]","]");
 		json=json.replace(":\":",":\"");
 		json=json.replace("::",":");
 		json=json.replace(":[,","[");
-		json=json.replace("\"m\"[","\"m\":[");
+		json=json.replace(",]","]");
+		json=json.replace(",{\"M","],\"M");
+		json=json.replace("}\"M",",\"M");
+		json=json.replace("\"[","\":[");
+		json=json.replace(",,",",");
+
+
+
+
+
+		/*json=json.replace("M","\"M");
+
+
+
+
+
+
+*/
 
 		node = node.nextSiblingElement("path"); //Aller au Path suivant
 	}
@@ -761,9 +796,13 @@ if(QString("%1").arg(str.right(str.size()-1))!="")
 	finalchain.append("}");
 
 
-	qDebug() << "finalchain: " << finalchain;
+	qDebug();
+	qDebug();
+	qDebug() << "finalchain:      " << finalchain;
 
 	return finalchain;
+
+	//TODO : ajouter identificateur sur marqueur c (ex : c1, c2 , c3, etc...)
 }
 
 //From WebCam
