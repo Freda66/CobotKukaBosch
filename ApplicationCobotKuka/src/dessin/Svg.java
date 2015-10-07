@@ -22,6 +22,7 @@ public class Svg {
 	 * Attributs
 	 */
 	private ObjectFrame paperBase;
+	private ObjectFrame paperApproach;
 	private int widthSheet; 
 	private int heightSheet;
 	private double scaleX;
@@ -45,6 +46,7 @@ public class Svg {
 	 * @param sY
 	 */
 	public Svg(ObjectFrame pA, ObjectFrame pB, int wS, int hS, double sX, double sY) {
+		paperApproach = pA;
 		paperBase = pB;
 		widthSheet = wS;
 		heightSheet = hS;
@@ -65,7 +67,7 @@ public class Svg {
 		RelativeLIN[] linMovement = null;
 
 		// Récupère le M
-		//JSONArray jMArray = jSvgObject.getJSONArray("M");
+		//JSONArray jMArray = jSvgObject.getJSONArray("M1");
 		
 		System.out.println("Avant parcours JSON");
 		
@@ -95,10 +97,10 @@ public class Svg {
 			// Récupère le tableau de valeur de la cle
 			JSONArray jArray = jSvgObject.getJSONArray(cle);
 			
-			if     (cle.equals("c")) linMovements.add(this.JsonKeyc(jArray));
-			else if(cle.equals("l")) linMovements.add(this.JsonKeyl(jArray));
-			else if(cle.equals("M")) linMovements.add(this.JsonKeyM(jArray));
-			//else if(cle.equals("m")) linMovements.add(this.JsonKeym(jMArray, val));
+			if     (cle.contains("c")) linMovements.add(this.JsonKeyc(jArray));
+			else if(cle.contains("l")) linMovements.add(this.JsonKeyl(jArray));
+			else if(cle.contains("M")) linMovements.add(this.JsonKeyM(jArray));
+			else if(cle.contains("m")) linMovements.add(this.JsonKeym(jArray));
 		}
 		
 		System.out.println("Fin parcours JSON");
@@ -130,19 +132,57 @@ public class Svg {
 	private RelativeLIN[] JsonKeyM(JSONArray jMArray) {
 		RelativeLIN[] splineArray = null;
 		
-System.out.println("Debut JsonKeyM");
+		System.out.println("Debut JsonKeyM");
 		
 		try {
-			
 			splineArray = new RelativeLIN[3];
 			
 			// On créé la première frame
-			Frame upFrame = new Frame(currentPoint.getX(), currentPoint.getY(), 10.0);
+			//Frame upFrame = new Frame(currentPoint.getX(), currentPoint.getY(), 10.0);
+			Frame upFrame = new Frame(paperApproach.getX(), paperApproach.getY(), 10.0);
 			// On créé la frame du premier point M à 10 au dessus du papier
 			Frame firstFrame = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, 10.0);
 			System.out.println(firstFrame.toString());
 			// On créé la frame de M correspondante sur le papier
 			Frame firstFrameOnPaper = new Frame(jMArray.getInt(0) * widthSheet / scaleX, heightSheet - jMArray.getInt(1) * heightSheet / scaleY, -3.0);
+			// Met à jours le current point 
+			currentPoint = firstFrameOnPaper;
+			
+			// On approche de la feuille à 10 au dessus 
+			splineArray[0] = linRel(getTranslationFromFrame(currentPoint, upFrame), paperBase);
+			// On se deplace vers le premier point toujours à 10 au dessus
+			splineArray[1] = linRel(getTranslationFromFrame(upFrame, firstFrame), paperBase);			
+			// Le stylo touche la feuille
+			splineArray[2] = linRel(getTranslationFromFrame(firstFrame, firstFrameOnPaper), paperBase);
+			
+		} catch (JSONException e) {	e.printStackTrace(); }
+		
+		System.out.println("Fin JsonKeyM");
+
+		return splineArray;
+	}
+	
+	/**
+	 * Traitement de la lettre M
+	 * @param jmArra
+	 * @return RelativeLIN[]
+	 */	
+	private RelativeLIN[] JsonKeym(JSONArray jmArray) {
+		RelativeLIN[] splineArray = null;
+		
+		System.out.println("Debut JsonKeyM");
+		
+		try {
+			splineArray = new RelativeLIN[3];
+			
+			// On créé la première frame
+			Frame upFrame = new Frame(currentPoint.getX(), currentPoint.getY(), 10.0);
+			// On créé la frame du premier point M à 10 au dessus du papier
+			Frame firstFrame = new Frame(jmArray.getInt(0) * widthSheet / scaleX, heightSheet - jmArray.getInt(1) * heightSheet / scaleY, 10.0);
+			System.out.println(firstFrame.toString());
+			// On créé la frame de M correspondante sur le papier
+			Frame firstFrameOnPaper = new Frame(jmArray.getInt(0) * widthSheet / scaleX, heightSheet - jmArray.getInt(1) * heightSheet / scaleY, -3.0);
+			// Met à jours le current point 
 			currentPoint = firstFrameOnPaper;
 			
 			// On approche de la feuille à 10 au dessus 
@@ -171,7 +211,6 @@ System.out.println("Debut JsonKeyM");
 		
 		try {
 			// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
-
 			Vector2[] bezierControlPoints = new Vector2[jCArray.length() / 2];
 			
 			int i = 0;
@@ -214,7 +253,6 @@ System.out.println("Debut JsonKeyM");
 		
 		try {
 			// On récupère l'ensemble des points qu'on stock dans un tableau de Vector2
-
 			Frame[] linePoints = new Frame[jLArray.length() / 2];
 			
 			int i = 0;
@@ -253,3 +291,4 @@ System.out.println("Debut JsonKeyM");
 				);
 	}
 }
+

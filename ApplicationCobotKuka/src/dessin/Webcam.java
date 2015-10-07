@@ -42,14 +42,14 @@ public class Webcam {
     * @param sY
     */
     public Webcam(ObjectFrame pA, ObjectFrame pB, int wS, int hS, double sX, double sY, double tX, double tY){                               
-                   paperApproach = pA;
-                   paperBase = pB;
-                   widthSheet = wS;
-                   heightSheet = hS;
-                   scaleX = sX;
-                   scaleY = sY;
-                   translateX = tX;
-                   translateY = tY;
+       paperApproach = pA;
+       paperBase = pB;
+       widthSheet = wS;
+       heightSheet = hS;
+       scaleX = sX;
+       scaleY = sY;
+       translateX = tX;
+       translateY = tY;
     }
 
     public RelativeLIN[] draw (JSONArray jCamArray) {
@@ -69,11 +69,11 @@ public class Webcam {
 	    			if (i == 0 && j == 0) {
 	    				//...d'abord à 10 du papier à partir du paperApproach...
 				    	t_firstPoint = new Frame(paperApproach.getX(), paperApproach.getY(), paperApproach.getZ());
-				    	t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(0)-translateX), scalePointY(jCamArray2.getInt(1)-translateY), 10.0);
+				    	t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(0)), scalePointY(jCamArray2.getInt(1)), 10.0);
 				    	t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 				    	//...ensuite en faisant toucher le stylo au papier
 				    	t_firstPoint = t_secondPoint;
-				    	t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(0)-translateX), scalePointY(jCamArray2.getInt(1)-translateY), -3.0);
+				    	t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(0)), scalePointY(jCamArray2.getInt(1)), -3.0);
 				    	t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 				    // Si on est au début de la courbe suivante
 	    			} else if (i != 0 && j == 0) {
@@ -83,21 +83,29 @@ public class Webcam {
 	    				t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 	    				// On avance vers le point suivante
 	    				t_firstPoint = t_secondPoint;
-				    	t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(0)-translateX), scalePointY(jCamArray2.getInt(1)-translateY), 10.0);
+				    	t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(0)), scalePointY(jCamArray2.getInt(1)), 10.0);
 	    				t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 	    				// On redescend vers le point init de la courbe suivante
 	    				t_firstPoint = t_secondPoint;
-				    	t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(0)-translateX), scalePointY(jCamArray2.getInt(1)-translateY), -3.0);
+				    	t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(0)), scalePointY(jCamArray2.getInt(1)), -3.0);
 	    				t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 	    			}
-	    			// Dans tous les cas on parcours les coordonnées pour créer les liasons entre les points des courbes
-	    			t_firstPoint = new Frame(scalePointX(jCamArray2.getInt(j)-translateX), scalePointY(jCamArray2.getInt(j + 1)-translateY), 0.0);
-	    			t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(j + 2)-translateX), scalePointY(jCamArray2.getInt(j + 3)-translateY), 0.0);
+	    			// Dans tous les cas on parcours les coordonnées pour créer les liaisons entre les points des courbes
+	    			t_firstPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(j)), scalePointY(jCamArray2.getInt(j + 1)), 0.0);
+	    			t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(j + 2)), scalePointY(jCamArray2.getInt(j + 2)), 0.0);//scalePointY(jCamArray2.getInt(j + 3)), 0.0);
 	    			t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
+	    			
+	    			// Si on est au dernier point de la courbe on releve le stylo en restant ou l'on se trouve (si non trace sur le papier)
+	    			if(j == jCamArray2.length()-2){
+		    			t_linMovement.add(linRel(getTranslationFromFrame(
+		    					new Frame(scalePointX(widthSheet - jCamArray2.getInt(j + 2)), scalePointY(jCamArray2.getInt(j + 2)), 0.0),
+		    					new Frame(scalePointX(widthSheet - jCamArray2.getInt(j + 2)), scalePointY(jCamArray2.getInt(j + 2)), 10.0)
+		    					), paperBase));
+	    			}
 				}
 				// On reboucle à la fin entre le dernier point de la courbe en cours et le point init de cette meme courbe
-				t_firstPoint = new Frame(scalePointX(jCamArray2.getInt(jCamArray2.length() - 1)-translateX), scalePointY(jCamArray2.getInt(jCamArray2.length() - 1)-translateY), 0.0);
-				t_secondPoint = new Frame(scalePointX(jCamArray2.getInt(0)-translateX), scalePointY(jCamArray2.getInt(1)-translateY), 0.0);
+				t_firstPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(jCamArray2.length() - 1)), scalePointY(jCamArray2.getInt(jCamArray2.length() - 1)), 0.0);
+				t_secondPoint = new Frame(scalePointX(widthSheet - jCamArray2.getInt(0)), scalePointY(jCamArray2.getInt(1)), 0.0);
 				t_linMovement.add(linRel(getTranslationFromFrame(t_firstPoint, t_secondPoint), paperBase));
 	    	}
 	    	

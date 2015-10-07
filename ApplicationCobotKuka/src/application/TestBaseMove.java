@@ -53,7 +53,7 @@ public class TestBaseMove extends RoboticsAPIApplication {
 	 */
 	public void initialize() {
 		// Créer l'objet serveur tcp pour recevoir les commandes de dessin
-		serveur = new TCPServer(30005);
+		serveur = new TCPServer(30007);
 		
 		kuka_Sunrise_Cabinet_1 = getController("KUKA_Sunrise_Cabinet_1");
 		lbr_iiwa_14_R820_1 = (LBR) getDevice(kuka_Sunrise_Cabinet_1, "LBR_iiwa_14_R820_1");
