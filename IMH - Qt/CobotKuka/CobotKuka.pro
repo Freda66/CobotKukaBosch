@@ -11,11 +11,16 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        cobotkuka.cpp
+        cobotkuka.cpp \
+    drawwidget.cpp \
+    mainwindow.cpp
 
-HEADERS  += cobotkuka.h
+HEADERS  += cobotkuka.h \
+    drawwidget.h \
+    mainwindow.h
 
-FORMS    += cobotkuka.ui
+FORMS    += cobotkuka.ui \
+    mainwindow.ui
 
 INCLUDEPATH += "C:\opencv\build\include"
 

@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'cobotkuka.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'cobotkuka.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.0. It"
+#error "This file was generated using the moc from 5.5.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,44 +20,45 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_CobotKuka_t {
     QByteArrayData data[29];
-    char stringdata[685];
+    char stringdata0[685];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_CobotKuka_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_CobotKuka_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_CobotKuka_t qt_meta_stringdata_CobotKuka = {
     {
-QT_MOC_LITERAL(0, 0, 9),
-QT_MOC_LITERAL(1, 10, 12),
-QT_MOC_LITERAL(2, 23, 0),
-QT_MOC_LITERAL(3, 24, 28),
-QT_MOC_LITERAL(4, 53, 11),
-QT_MOC_LITERAL(5, 65, 15),
-QT_MOC_LITERAL(6, 81, 18),
-QT_MOC_LITERAL(7, 100, 11),
-QT_MOC_LITERAL(8, 112, 1),
-QT_MOC_LITERAL(9, 114, 29),
-QT_MOC_LITERAL(10, 144, 7),
-QT_MOC_LITERAL(11, 152, 44),
-QT_MOC_LITERAL(12, 197, 1),
-QT_MOC_LITERAL(13, 199, 26),
-QT_MOC_LITERAL(14, 226, 27),
-QT_MOC_LITERAL(15, 254, 30),
-QT_MOC_LITERAL(16, 285, 29),
-QT_MOC_LITERAL(17, 315, 37),
-QT_MOC_LITERAL(18, 353, 35),
-QT_MOC_LITERAL(19, 389, 30),
-QT_MOC_LITERAL(20, 420, 26),
-QT_MOC_LITERAL(21, 447, 34),
-QT_MOC_LITERAL(22, 482, 23),
-QT_MOC_LITERAL(23, 506, 24),
-QT_MOC_LITERAL(24, 531, 22),
-QT_MOC_LITERAL(25, 554, 37),
-QT_MOC_LITERAL(26, 592, 26),
-QT_MOC_LITERAL(27, 619, 36),
-QT_MOC_LITERAL(28, 656, 28)
+QT_MOC_LITERAL(0, 0, 9), // "CobotKuka"
+QT_MOC_LITERAL(1, 10, 12), // "displayError"
+QT_MOC_LITERAL(2, 23, 0), // ""
+QT_MOC_LITERAL(3, 24, 28), // "QAbstractSocket::SocketError"
+QT_MOC_LITERAL(4, 53, 11), // "socketError"
+QT_MOC_LITERAL(5, 65, 15), // "serverConnected"
+QT_MOC_LITERAL(6, 81, 18), // "serverDisconnected"
+QT_MOC_LITERAL(7, 100, 11), // "datawritten"
+QT_MOC_LITERAL(8, 112, 1), // "w"
+QT_MOC_LITERAL(9, 114, 29), // "on_connect_pushButton_clicked"
+QT_MOC_LITERAL(10, 144, 7), // "checked"
+QT_MOC_LITERAL(11, 152, 44), // "on_text_font_fontComboBox_cur..."
+QT_MOC_LITERAL(12, 197, 1), // "f"
+QT_MOC_LITERAL(13, 199, 26), // "on_svg_radioButton_clicked"
+QT_MOC_LITERAL(14, 226, 27), // "on_text_radioButton_clicked"
+QT_MOC_LITERAL(15, 254, 30), // "on_picture_radioButton_clicked"
+QT_MOC_LITERAL(16, 285, 29), // "on_sketch_radioButton_clicked"
+QT_MOC_LITERAL(17, 315, 37), // "on_picture_webcam_radioButton..."
+QT_MOC_LITERAL(18, 353, 35), // "on_picture_file_radioButton_c..."
+QT_MOC_LITERAL(19, 389, 30), // "on_svg_file_pushButton_clicked"
+QT_MOC_LITERAL(20, 420, 26), // "on_send_pushButton_clicked"
+QT_MOC_LITERAL(21, 447, 34), // "on_picture_file_pushButton_cl..."
+QT_MOC_LITERAL(22, 482, 23), // "on_actionQuit_triggered"
+QT_MOC_LITERAL(23, 506, 24), // "on_ok_pushButton_clicked"
+QT_MOC_LITERAL(24, 531, 22), // "on_CobotKuka_destroyed"
+QT_MOC_LITERAL(25, 554, 37), // "on_text_text_lineEdit_editing..."
+QT_MOC_LITERAL(26, 592, 26), // "on_stop_pushButton_clicked"
+QT_MOC_LITERAL(27, 619, 36), // "on_picture_webcam_pushButton_..."
+QT_MOC_LITERAL(28, 656, 28) // "on_sketch_pushButton_clicked"
+
     },
     "CobotKuka\0displayError\0\0"
     "QAbstractSocket::SocketError\0socketError\0"
@@ -151,6 +152,7 @@ void CobotKuka::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         CobotKuka *_t = static_cast<CobotKuka *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->displayError((*reinterpret_cast< QAbstractSocket::SocketError(*)>(_a[1]))); break;
         case 1: _t->serverConnected(); break;
@@ -193,7 +195,7 @@ void CobotKuka::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, v
 
 const QMetaObject CobotKuka::staticMetaObject = {
     { &QMainWindow::staticMetaObject, qt_meta_stringdata_CobotKuka.data,
-      qt_meta_data_CobotKuka,  qt_static_metacall, 0, 0}
+      qt_meta_data_CobotKuka,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -204,8 +206,8 @@ const QMetaObject *CobotKuka::metaObject() const
 
 void *CobotKuka::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_CobotKuka.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_CobotKuka.stringdata0))
         return static_cast<void*>(const_cast< CobotKuka*>(this));
     return QMainWindow::qt_metacast(_clname);
 }

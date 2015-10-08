@@ -2,6 +2,7 @@
 #include "ui_cobotkuka.h"
 
 
+
 CobotKuka::CobotKuka(QWidget *parent) :
 	QMainWindow(parent),
     ui(new Ui::CobotKuka)
@@ -299,7 +300,7 @@ void CobotKuka::on_svg_file_pushButton_clicked()
 void CobotKuka::on_picture_file_pushButton_clicked()
 {
 	//create and config the file dialog
-	filedialog = new QFileDialog(this,"Choose an Image", QDir::toNativeSeparators(QDir::homePath()), tr("Image(*.jpg, *.jpeg, *.png)"));
+    filedialog = new QFileDialog(this,"Choose an Image", QDir::toNativeSeparators(QDir::homePath()),tr("Images (*.png *.bmp *.jpg)"));
 	filedialog->setFileMode(QFileDialog::ExistingFile);
 	filedialog->setViewMode(QFileDialog::Detail);
 	//when open, only this window can be clicked in the application
@@ -312,6 +313,20 @@ void CobotKuka::on_picture_file_pushButton_clicked()
 		pictureFile = filedialog->selectedFiles().takeFirst();
 		ui->picture_file_lineEdit->setText(pictureFile);
 
+        frame  = imread(pictureFile.toStdString());
+        if(!frame.data) qDebug() << "mauvaise image selectionnee";
+        qDebug()<<"image chargee avec succes";
+        cvtColor(frame, grey, CV_BGR2GRAY);
+        //Appliquer la fonction Canny.
+        Canny(grey, cannye, 100, 100, 3);
+        qDebug() << "image transformee avec succes";
+        namedWindow("Canny", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_EXPANDED);
+        imshow("Canny",cannye);
+        resizeWindow("Canny", 640, 480);
+        if(waitKey(0))destroyWindow("Canny");
+
+
+
 		activate_OK_pushButton();
 	}
 }
@@ -320,42 +335,47 @@ int  CobotKuka::on_picture_webcam_pushButton_clicked()
 {
 
 
+    qDebug() << "trying to open the webcam";
 
-//	VideoCapture cap(1); // Ouvrir la caméra par défaut
-//	   if(!cap.isOpened())
-//		   {
-//		   // check if we succeeded
-//			return -1;
-//	   }
-
-
-//	   for(;;)
-//	   {
-//		   cap >> frame; // get a new frame from camera
-//	   cvtColor(frame, grey, CV_BGR2GRAY);
+    VideoCapture cap(0); // Ouvrir la caméra par défaut
+       if(!cap.isOpened())
+           {
+           // check if we succeeded
+           qDebug() << "failed to open webcam";
+            return -1;
+       }else{
+            qDebug() << "suceeded to open webcam ! ";
+       }
 
 
-//   //Appliquer un blurring pour enlever le bruit
-//			blur(grey, grey, Size(3,3));
+       for(;;)
+       {
+           cap >> frame; // get a new frame from camera
+       cvtColor(frame, grey, CV_BGR2GRAY);
 
 
-//			//Appliquer la fonction Canny.
-//			Canny(grey, cannye, 100, 100, 3);
-//			imshow("Canny",cannye);
-//			resizeWindow("Canny", 635, 475);
+   //Appliquer un blurring pour enlever le bruit
+            blur(grey, grey, Size(3,3));
 
 
-//		   if(waitKey(30) >= 0) break;
-//		}
+            //Appliquer la fonction Canny.
+            Canny(grey, cannye, 100, 100, 3);
+            imshow("Canny",cannye);
+            resizeWindow("Canny", 640, 480);
 
-//	activate_OK_pushButton();
-//	getJsonFromWebcam();
+
+           if(waitKey(30) >= 0) break;
+        }
+
+    activate_OK_pushButton();
 	return 0;
 }
 
 void CobotKuka::on_sketch_pushButton_clicked()
 {
-	activate_OK_pushButton();
+//    testWindow = new MainWindow(this);
+//    testWindow->show();
+    activate_OK_pushButton();
 }
 
 void CobotKuka::on_ok_pushButton_clicked()
@@ -370,19 +390,15 @@ void CobotKuka::on_ok_pushButton_clicked()
 	}
 	else if(ui->picture_radioButton->isChecked()){
 		qDebug() << "picture button is checked";
-		if(ui->picture_webcam_radioButton->isChecked()){
-			qDebug() << "picture webcam button is checked";
-			json = getJsonFromWebcam();
-		}
-		else if(ui->picture_file_radioButton->isChecked()){
-			qDebug() << "picture file button is checked";
-			json = getJsonFromPicture();
-		}
-
+        json = getJsonFromWebcam();
 	}
 	else if(ui->sketch_radioButton->isChecked()){
 		qDebug() << "sketch button is checked";
-		json = getJsonFromSketch();
+        //json = getJsonFromSketch();
+        //json formatted and set in the mainwindow class.
+        //json = testWindow->laChaineJSON;
+
+        //TODO : necessite une securité pour verifier que le json est bien obtenu, et que l'on envoi pas une chaine vide.
 	}
 	else{
 		qDebug() << "no radio button checked";
@@ -399,10 +415,10 @@ void CobotKuka::on_send_pushButton_clicked()
 
 		/* CODE A COMMENTER POUR TEST HORS LIGNE*/
 
-		if(connectToServer()){
-			//Once the connection is established, send the JSON chain to the server.
-			writeJSONToServer(json);
-		}
+//		if(connectToServer()){
+//			//Once the connection is established, send the JSON chain to the server.
+//			writeJSONToServer(json);
+//		}
 
 		/* /CODE A COMMENTER POUR TEST HORS LIGNE*/
 
@@ -410,7 +426,7 @@ void CobotKuka::on_send_pushButton_clicked()
 
 		/* CODE A DECOMMENTER POUR TEST HORS LIGNE */
 
-//		writeJSONToServer(json);
+        writeJSONToServer(json);
 
 		/* /CODE A DECOMMENTER POUR TEST HORS LIGNE*/
 	}
@@ -787,166 +803,88 @@ QString CobotKuka::getJsonFromSvg(QString svgpath){
     qDebug() << "finalchain:      " << finalchain.toUtf8();
 
 	return finalchain;
-
-	//TODO : ajouter identificateur sur marqueur c (ex : c1, c2 , c3, etc...)
 }
 
 //From WebCam
 QString CobotKuka::getJsonFromWebcam(){
 
-//	Mat frame; //image caméra sans filtre
-//	Mat grey; //image avec filtre gris
-//	Mat cannye; //image avec filtre cannye
-//	Mat drawing; //image avec contours
-//	RNG rng(12345); //Random Number Generator
-
-//	vector<vector<Point> > contours; //Définition d'un vecteur de points
-//	vector<Vec4i> hierarchy;
-
-
-
-
-
-
-
-
-
-//	VideoCapture cap(1); // open the default camera
-//	  if(!cap.isOpened())  // check if we succeeded
-//		  return "error";
-///*
-//	//  Mat edges;
-//	  namedWindow("edges",1);
-//	  for(;;)
-//	  {
-//		  Mat frame;
-//		  cap >> frame;
-//		  imshow("edges", frame);
-//		  if(waitKey(30) >= 0) break;
-//	  }
-
-
-//*/
-
-
-
-
-
-
-
-
-
-//	VideoCapture cap(1); // Ouvrir la caméra par défaut
-//	   if(!cap.isOpened())
-//		   {
-//		   // check if we succeeded
-//			return -1;
-//	   }
-
-
-//	   //for(;;)
-//	   //{
-//	   char key = 0;
-//	   while(key !='q' || key !='Q'){
-
-//		  // cap >> frame; // get a new frame from camera
-//		   cap.read(frame);
-
-//		   frame = cvQueryFrame(cap);
-
-//		   cvtColor(frame, grey, CV_BGR2GRAY);
-
-
-//		   //Appliquer un blurring pour enlever le bruit
-//			blur(grey, grey, Size(3,3));
-
-
-//			//Appliquer la fonction Canny.
-//			Canny(grey, cannye, 100, 100, 3);
-//			imshow("Canny",cannye);
-//			resizeWindow("Canny", 635, 475);
-
-//			key = cvWaitKey(30);
-//}
-
-
-		  // if(waitKey(30) >= 0) break;
-		//}
-
 	   //Appliquer la fonction « fondContours ».
-//	   findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
+       findContours(cannye, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE, Point(0, 0)); //Récupérer les points des contours
 
-//	   // Draw contours
-//	   drawing = Mat::zeros(cannye.size(), CV_8UC3);
+       qDebug() << "findContours : size : " << contours.size();
 
-//	   for(int i = 0; i< contours.size(); i++)
-//	   {
-//		Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
-//		drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
-//	   }
+       // Draw contours
+       drawing = Mat::zeros(cannye.size(), CV_8UC3);
 
-//		namedWindow( "Contours", CV_WINDOW_AUTOSIZE );
-//		imshow("Contours", drawing);
-//		resizeWindow("Contours", 635, 475); //redimensionner la fenêtre
+       for(int i = 0; i< contours.size(); i++)
+       {
+        Scalar color = Scalar(rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255)); //ajouter couleur pour chaque courbe
+        drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, Point()); //Fonction pour dessiner les contours ou courbes
+        qDebug() << "draw contour : " << i;
+       }
 
+       qDebug() << "finished drawing contours";
 
-
-////Format de renvoie des données des courbes: { "pt" : [taille x,taille y], "webcam" : [ [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], ...]}
-//											//                                              courbe1             courbe2             courbe3
-
-//		QString total = "[";
-
-//		for(int i = 0; i < contours.size(); ++i) { //Boucler pour chaque Courbe
-//			vector<Point>  res=contours.at(i);
-//			QString coordonnees = "";
-//			for(int j = 0; j < res.size(); ++j){ //Récupérer les coordonnées des points
-//			   Point pts = res.at(j);
-//				   coordonnees+=QString::number(pts.x); //Récupérer coordonnée X d'un point dans le vecteur Point
-//				   coordonnees+=",";
-//				   coordonnees+= QString::number(pts.y); //Récupérer coordonnée Y d'un point dans le vecteur Point
-//				   //***
-//				   if(j!=res.size()-1)
-//					   coordonnees+=",";
-
-//			   //qDebug() << "C" << i << "/" << "X" << j << ": " << pts.x;
-//			   //qDebug() << "C" << i << "/" << "Y" << j << ": " << pts.y;
+        namedWindow( "Contours", CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO | CV_GUI_EXPANDED );
+        imshow("Contours", drawing);
+        resizeWindow("Contours", 640, 480); //redimensionner la fenêtre
+        if(waitKey(0)) destroyWindow("Contours");
 
 
 
-//		   }
-//		   total += "[" + coordonnees.toUtf8() + "]";
+
+//Format de renvoie des données des courbes: { "pt" : [taille x,taille y], "webcam" : [ [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], [x1,y1,x2,y2,...], ...]}
+                                            //                                              courbe1             courbe2             courbe3
+
+        QString total = "[";
 
 
-//		   if(i!=contours.size()-1)
-//			   total += ",";
-//		}
 
-//		total += "]";
-//		QString tmp = total;
+        for(int i = 0; i < contours.size(); ++i) { //Boucler pour chaque Courbe
+            vector<Point>  res=contours.at(i);
+            QString coordonnees = "";
+            for(int j = 0; j < res.size(); ++j){ //Récupérer les coordonnées des points
+               Point pts = res.at(j);
+                   coordonnees+=QString::number(pts.x); //Récupérer coordonnée X d'un point dans le vecteur Point
+                   coordonnees+=",";
+                   coordonnees+= QString::number(pts.y); //Récupérer coordonnée Y d'un point dans le vecteur Point
+                   //***
+                   if(j!=res.size()-1)
+                       coordonnees+=",";
 
-//		total = "{\"px\":[";
-//		total += "635";
-//		total += ",";
-//		total += "475";
-//		total += "],\"dessin\":";
-//		total += tmp;
-//		total += "}";
+               //qDebug() << "C" << i << "/" << "X" << j << ": " << pts.x;
+               //qDebug() << "C" << i << "/" << "Y" << j << ": " << pts.y;
+
+            //qDebug() << "coordonnees : " << coordonnees;
+
+           }
+           total += "[" + coordonnees.toUtf8() + "]";
 
 
-//		qDebug() << total; //Renvoyer les données en format type Json
-		return "";
-}
+           if(i!=contours.size()-1)
+               total += ",";
+        }
 
-//From Picture
-QString CobotKuka::getJsonFromPicture(){
+        total += "]";
+        QString tmp = total;
+        qDebug() << "tmp : " << tmp;
 
-	/* TODO : traitement pour extraire points d'une image fixe non SVG */
-	return "picture";
+        total = "{\"px\":[";
+        total += "640";
+        total += ",";
+        total += "480";
+        total += "],\"dessin\":";
+        total += tmp;
+        total += "}";
+
+
+        qDebug() << "total : " << total; //Renvoyer les données en format type Json
+        return total;
 }
 
 //From Sketch
 QString CobotKuka::getJsonFromSketch(){
-	/* TODO : traitement pour extraire points d'un dessin en temps reel */
+    activate_OK_pushButton();
 	return "sketch";
 }
 
@@ -957,11 +895,17 @@ QString CobotKuka::getJsonFromText(){
 }
 
 //Write the JSON
-void CobotKuka::writeJSONToServer(const QString& json){
+void CobotKuka::writeJSONToServer(const QString& jsonToWrite){
+
+    qDebug() << " ";
+    qDebug() << " ";
+    qDebug() << " ";
+    qDebug() << "json :                 " << jsonToWrite;
+
 
 	/* CODE A COMMENTER POUR TEST HORS LIGNE */
 	if(connected) {
-        tcpSocket->write((QByteArray)json.toUtf8());
+        tcpSocket->write((QByteArray)jsonToWrite.toUtf8());
 //        QString temp = "";
 //        temp += "b";
 //        for(int i=0; i < 60000; i++) temp += "a";
@@ -973,4 +917,7 @@ void CobotKuka::writeJSONToServer(const QString& json){
 	else qDebug() << "Tentative d'ecriture du JSON sans connexion au serveur";
 	/* /CODE A COMMENTER POUR TEST HORS LIGNE */
 
+}
+void CobotKuka::setJson(QString jsonToSet){
+    json = jsonToSet;
 }

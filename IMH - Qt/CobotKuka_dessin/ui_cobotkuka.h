@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'cobotkuka.ui'
 **
-** Created by: Qt User Interface Compiler version 5.3.0
+** Created by: Qt User Interface Compiler version 5.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -493,7 +493,6 @@ public:
         connect_pushButton->setSizePolicy(sizePolicy3);
         connect_pushButton->setCheckable(true);
         connect_pushButton->setAutoDefault(false);
-        connect_pushButton->setDefault(true);
         connect_pushButton->setFlat(false);
 
         connect_horizontalLayout->addWidget(connect_pushButton);
@@ -548,6 +547,9 @@ public:
         menuAbout->addAction(actionAbout);
 
         retranslateUi(CobotKuka);
+
+        connect_pushButton->setDefault(true);
+
 
         QMetaObject::connectSlotsByName(CobotKuka);
     } // setupUi

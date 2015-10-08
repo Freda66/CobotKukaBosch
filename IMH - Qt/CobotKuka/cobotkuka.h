@@ -25,6 +25,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <QObject>
+#include <QWidget>
+#include <QMap>
+#include "mainwindow.h"
+
 
 using namespace cv;
 using namespace std;
@@ -32,6 +37,9 @@ using namespace std;
 namespace Ui {
 class CobotKuka;
 }
+
+class QPaintEvent;
+class QMouseEvent;
 
 class CobotKuka : public QMainWindow
 {
@@ -72,7 +80,10 @@ public:
 	QString getJsonFromSketch();
 	QString getJsonFromText();
 	QString getJsonFromWebcam();
-	void writeJSONToServer(const QString& json);
+    void writeJSONToServer(const QString& jsonToWrite);
+    void setJSONDrawing(const QString& json);
+    void setJson(QString jsonToSet);
+
 
 private slots:
 
@@ -116,8 +127,11 @@ private slots:
 	QHostAddress ip;
 
 	//Json Variables
-	QString json;
+    QString json;
+    //static boolean sketch_ok;
 
+    //TODO : voir pourquoi ca marche pas !
+    //MainWindow testWindow;
 
 };
 

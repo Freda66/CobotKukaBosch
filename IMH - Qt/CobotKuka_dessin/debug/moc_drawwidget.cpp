@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'drawwidget.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.3.0)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.5.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'drawwidget.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.3.0. It"
+#error "This file was generated using the moc from 5.5.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -20,20 +20,21 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_DrawWidget_t {
     QByteArrayData data[5];
-    char stringdata[41];
+    char stringdata0[41];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_DrawWidget_t, stringdata) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_DrawWidget_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
 static const qt_meta_stringdata_DrawWidget_t qt_meta_stringdata_DrawWidget = {
     {
-QT_MOC_LITERAL(0, 0, 10),
-QT_MOC_LITERAL(1, 11, 9),
-QT_MOC_LITERAL(2, 21, 0),
-QT_MOC_LITERAL(3, 22, 12),
-QT_MOC_LITERAL(4, 35, 5)
+QT_MOC_LITERAL(0, 0, 10), // "DrawWidget"
+QT_MOC_LITERAL(1, 11, 9), // "drawColor"
+QT_MOC_LITERAL(2, 21, 0), // ""
+QT_MOC_LITERAL(3, 22, 12), // "setDrawColor"
+QT_MOC_LITERAL(4, 35, 5) // "color"
+
     },
     "DrawWidget\0drawColor\0\0setDrawColor\0"
     "color"
@@ -68,6 +69,7 @@ void DrawWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
         DrawWidget *_t = static_cast<DrawWidget *>(_o);
+        Q_UNUSED(_t)
         switch (_id) {
         case 0: { QColor _r = _t->drawColor();
             if (_a[0]) *reinterpret_cast< QColor*>(_a[0]) = _r; }  break;
@@ -79,7 +81,7 @@ void DrawWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
 
 const QMetaObject DrawWidget::staticMetaObject = {
     { &QWidget::staticMetaObject, qt_meta_stringdata_DrawWidget.data,
-      qt_meta_data_DrawWidget,  qt_static_metacall, 0, 0}
+      qt_meta_data_DrawWidget,  qt_static_metacall, Q_NULLPTR, Q_NULLPTR}
 };
 
 
@@ -90,8 +92,8 @@ const QMetaObject *DrawWidget::metaObject() const
 
 void *DrawWidget::qt_metacast(const char *_clname)
 {
-    if (!_clname) return 0;
-    if (!strcmp(_clname, qt_meta_stringdata_DrawWidget.stringdata))
+    if (!_clname) return Q_NULLPTR;
+    if (!strcmp(_clname, qt_meta_stringdata_DrawWidget.stringdata0))
         return static_cast<void*>(const_cast< DrawWidget*>(this));
     return QWidget::qt_metacast(_clname);
 }
