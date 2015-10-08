@@ -1,6 +1,6 @@
 #include "cobotkuka.h"
 #include "ui_cobotkuka.h"
-
+#include "mainwindow.h"
 
 
 CobotKuka::CobotKuka(QWidget *parent) :
@@ -415,10 +415,10 @@ void CobotKuka::on_send_pushButton_clicked()
 
 		/* CODE A COMMENTER POUR TEST HORS LIGNE*/
 
-//		if(connectToServer()){
-//			//Once the connection is established, send the JSON chain to the server.
-//			writeJSONToServer(json);
-//		}
+        if(connectToServer()){
+            //Once the connection is established, send the JSON chain to the server.
+            writeJSONToServer(json);
+        }
 
 		/* /CODE A COMMENTER POUR TEST HORS LIGNE*/
 
@@ -426,7 +426,7 @@ void CobotKuka::on_send_pushButton_clicked()
 
 		/* CODE A DECOMMENTER POUR TEST HORS LIGNE */
 
-        writeJSONToServer(json);
+//        writeJSONToServer(json);
 
 		/* /CODE A DECOMMENTER POUR TEST HORS LIGNE*/
 	}
@@ -553,6 +553,7 @@ bool CobotKuka::disconnectFromServer(){
 void CobotKuka::datawritten(qint64 w){
 	qDebug() << "Data written to the server. number of bytes written : " << w;
 }
+
 
 /* ---------- JSON ---------- */
 

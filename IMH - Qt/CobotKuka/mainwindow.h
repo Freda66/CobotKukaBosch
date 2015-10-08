@@ -17,7 +17,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     QString laChaineJSON="";
-    //CobotKuka cobot;
+    CobotKuka cobot;
 
 public slots:
     void colorPickTriggered();

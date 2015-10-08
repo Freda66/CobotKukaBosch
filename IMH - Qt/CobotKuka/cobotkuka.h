@@ -28,7 +28,6 @@
 #include <QObject>
 #include <QWidget>
 #include <QMap>
-#include "mainwindow.h"
 
 
 using namespace cv;

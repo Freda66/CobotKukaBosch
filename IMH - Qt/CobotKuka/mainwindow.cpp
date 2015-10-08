@@ -76,6 +76,25 @@ void MainWindow::colorPickTriggered()
 
 void MainWindow::on_actionActionEnvoyerTrame_triggered()
 {
+//    d->getDrawWidget()->jsonToSend += "]}";
+////    d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("],]", "]]");
+//    d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace(",]", "]");
+//    d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("\n", "");
+//    d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("\r", "");
+//    d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("\t", "");
+
+//    //if(cobot.connectToServer()){
+//        //qDebug() <<"jsonToSend :    " << d->getDrawWidget()->jsonToSend;
+////        qDebug() << this->laChaineJSON;
+//        //Once the connection is established, send the JSON chain to the server.
+//       //cobot.writeJSONToServer(d->getDrawWidget()->jsonToSend);
+//        //cobot.setJson(d->getDrawWidget()->jsonToSend);
+//        laChaineJSON = d->getDrawWidget()->jsonToSend;
+//    //}
+
+////    cobot->activate_OK_pushButton();
+//      //cobot->getJsonFromSketch();
+
     d->getDrawWidget()->jsonToSend += "]}";
 //    d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("],]", "]]");
     d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace(",]", "]");
@@ -83,17 +102,12 @@ void MainWindow::on_actionActionEnvoyerTrame_triggered()
     d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("\r", "");
     d->getDrawWidget()->jsonToSend = d->getDrawWidget()->jsonToSend.replace("\t", "");
 
-    //if(cobot.connectToServer()){
-        //qDebug() <<"jsonToSend :    " << d->getDrawWidget()->jsonToSend;
+    if(cobot.connectToServer()){
+        qDebug() <<"jsonToSend :    " << d->getDrawWidget()->jsonToSend;
 //        qDebug() << this->laChaineJSON;
         //Once the connection is established, send the JSON chain to the server.
-       //cobot.writeJSONToServer(d->getDrawWidget()->jsonToSend);
-        //cobot.setJson(d->getDrawWidget()->jsonToSend);
-        laChaineJSON = d->getDrawWidget()->jsonToSend;
-    //}
-
-//    cobot->activate_OK_pushButton();
-      //cobot->getJsonFromSketch();
+       cobot.writeJSONToServer(d->getDrawWidget()->jsonToSend);
+    }
 
     this->close();
 }
