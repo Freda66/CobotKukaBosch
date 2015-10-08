@@ -11,7 +11,6 @@ public class BezierCurve {
 	    points[0] = p1; // points[0].x = p1.x; points[0].y = p1.y
 	    points[1] = p2;
 	    points[2] = p3;
-	    points[3] = p4;
 	}
 	
 	public BezierCurve(Vector2[] tab) {

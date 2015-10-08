@@ -72,7 +72,7 @@ public class TCPServer {
         try {
         	// Créer la socket du serveur et attend une connexion du client
 	        Socket socket = server.accept();
-	     
+
 	        // Créer un objet pour lire le message du client dans la socket
 	        InputStreamReader isr = new InputStreamReader(socket.getInputStream(),"utf-8");
 	        // Lit le buffer
@@ -104,7 +104,7 @@ public class TCPServer {
 	public String getMessage() {
 		return message;
 	}
-    
+	
     /**
      * Accesseurs get isRun
      * @return boolean (serveur en cours ?)
